@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Home</title>
+</head>
+<body>
+
+    <!-- Layout Wrapper Container -->
+    <div class="page-container">
+        
+        <!-- Text Group (Top-Left Corner) -->
+        <div class="header-text">
+            <h1>Hi, I'm Liz</h1>
+            <p>Welcome to my digital sphere</p>
+    </div>
+        <!-- The Sphere Frame: This element forces the perfect circle bounds -->
+        <div class="sphere-frame">
+            <!-- The actual textured element inside it that gets warped and animated -->
+            <div class="sphere-texture"></div>
+        </div>
+    </div>
+
+    <!-- The Hidden 3D Distortion Map Filter -->
+    <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <defs>
+    <!-- Add x, y, width, height, and filterUnits bounds -->
+    <filter id="spherical-warp" x="0%" y="0%" width="110%" height="110%">
+      <feTurbulence type="turbulence" baseFrequency="0.015" numOctaves="2" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    </defs>
+    </svg>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Home</title>
+</head>
+<body>
+
+    <div class="header-text">
+            <h1>Hi, I'm Liz</h1>
+            <p>Welcome to my digital sphere</p>
+    </div>
+ 
+
+    <!-- You can add more visible elements here, like links or images -->
+
+</body>
+
+
+
+<!-- 1. The Wrapper acts as the clean circular clipping mask -->
+<div class="sphere-mask-wrapper">
+    <!-- 2. Your existing sphere that holds the moving texture and distortion filter -->
+    <div class="rotating-sphere"></div>
+</div>
+
+<!-- The Hidden 3D Distortion Map Filter -->
+<svg style="position: absolute; width: 0; height: 0;">
+  <defs>
+    <!-- NEW: Define a perfect mathematical circle clip path -->
+    <clipPath id="circle-clip">
+      <circle cx="100" cy="100" r="100" />
+    </clipPath>
+
+    <filter id="spherical-warp">
+      <feRadialGradient id="lens" cx="50%" cy="50%" r="50%">
+        <stop offset="0%" stop-color="#fff"/>
+        <stop offset="100%" stop-color="#000"/>
+      </feRadialGradient>
+      <!-- Lowering octaves to 2 keeps this lovely texture but fixes rendering performance -->
+      <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </defs>
+</svg>
+
+
