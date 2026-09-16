@@ -1,80 +1,39 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;600;700&family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Sometype+Mono:wght@400;700&family=Fredoka+One&display=swap');
 @import url('https://googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 @import url('https://googleapis.com/css2?family=Inter:wght@100;700&display=swap');
 
 /* --- 1. PAGE LAYOUT POSITIONING --- */
 body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Space Mono', monospace;
-  background-color: #f8fafc; /* Clean, light background */
+margin: 0;
+padding: 0;
+font-family: 'Space Mono', monospace;
+background-color: #f8fafc;
 }
 
 .page-container {
-  display: flex;
-  flex-direction: column;   /* Stacks the text on top, sphere below */
-  min-height: 100vh;
-  padding: 40px;            /* Gives breathing room from screen edges */
-  box-sizing: border-box;
+display: flex;
+flex-direction: column;
+min-height: 100vh;
+padding: 40px;
+box-sizing: border-box;
 }
 
 .header-text {
-  align-self: flex-start;   /* Forces text to lock to the top-left corner */
+align-self: flex-start;
 }
 
 .header-text h1 {
-  margin: 0 0 10px 0;       /* Removes defaults, adds a small gap below h1 */
-  font-size: 2.5rem;
+margin: 0 0 10px 0;
+font-size: 2.5rem;
 }
 
 .header-text p {
-  margin: 0;
-  color: #64748b;
+margin: 0;
+color: #64748b;
 }
 
-/* Container/Frame styling */
-.sphere-frame {
-  width: 250px;
-  height: 250px;
-  margin-top: 40px;
-  align-self: flex-end;
-  border-radius: 50%;
-  overflow: hidden;
-  top: -50%;
-  left: -50%;
-  position: relative;
-  /* Masking to retain a crisp circle through SVG filter effects */
-  -webkit-mask-image: -webkit-radial-gradient(circle, black 100%, transparent 100%);
-  mask-image: radial-gradient(circle, black 100%, transparent 100%);
-
-  clip-path: circle(50% at 50% 50%);
-  -webkit-clip-path: circle(50% at 50% 50%);
-}
-
-/* The animated texture inside */
-.sphere-texture {
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 130%;
-  height: 130%;
-  
-  /* Applying your SVG distortion filter */
-  /*filter: url(#spherical-warp);
-  
-  /* Gradient & 3D Lighting */
-  background: linear-gradient(90deg, #ff0055 0%, #00daff 25%, #7a00ff 50%, #ff0055 100%);
-  background-size: 200% 200%;
-  
-  box-shadow: 
-    inset -40px -40px 60px rgba(0, 0, 0, 0.85),
-    inset 25px 25px 35px rgba(255, 255, 255, 0.45);
-    
-  animation: rotateTrue3D 4s linear infinite;
-}
-
-@keyframes rotateTrue3D {
-  0% { background-position: 0% 0%; }
-  100% { background-position: 200% 0%; }
+/* Layout alignment */
+.sphere-svg {
+margin-top: 40px;
+align-self: flex-end;
 }
