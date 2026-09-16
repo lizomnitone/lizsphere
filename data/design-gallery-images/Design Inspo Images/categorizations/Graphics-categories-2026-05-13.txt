@@ -1,0 +1,45 @@
+=== Graphics Categorizations ===
+Generated: 2026-05-12, 6:32:50 PM
+
+graphics_029.jpg: Graphics
+graphics_016.png: Graphics, typography, logos
+graphics_011.png: Graphics, logos
+graphics_009.jpg: Graphics, typography
+graphics_034.jpg: Graphics
+graphics_015.png: Graphics
+graphics_035.png: Graphics, typography, logos
+graphics_025.jpg: Graphics
+graphics_005.png: Graphics, logos
+graphics_031.jpg: Graphics
+graphics_039.jpg: Graphics
+graphics_013.png: Graphics
+graphics_022.jpg: Graphics, flat designs
+graphics_030.jpg: Graphics
+graphics_042.jpg: Graphics, typography
+graphics_038.png: Graphics, typography, logos
+graphics_018.jpg: Graphics, flat designs
+graphics_033.png: Graphics, typography
+graphics_006.jpg: Graphics, typography
+graphics_032.jpg: Graphics
+graphics_001.jpg: Graphics, flat designs
+graphics_019.jpg: Graphics, flat designs
+graphics_026.jpg: Graphics
+graphics_036.jpg: Graphics, typography, logos
+graphics_021.jpg: Graphics, typography
+graphics_027.jpg: Graphics
+graphics_017.jpg: Graphics, typography
+graphics_014.jpg: Graphics
+graphics_007.jpg: Graphics, logos
+graphics_023.png: Graphics
+graphics_028.png: Graphics
+graphics_004.jpg: Graphics, typography
+graphics_020.jpg: Graphics, typography
+graphics_024.jpg: Graphics, flat designs
+graphics_037.png: Graphics, typography, logos
+graphics_040.jpg: Graphics
+graphics_041.jpg: Graphics
+graphics_002.jpg: Graphics, flat designs
+graphics_010.jpg: Graphics, typography
+graphics_008.jpg: Graphics, typography, flat designs
+graphics_012.jpg: Graphics
+graphics_003.jpg: Graphics, typography

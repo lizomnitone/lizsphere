@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Import from Pinterest - Design Gallery</title>
+    <style>
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #fffef7;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            background-color: #fffef7;
+            border-color: #666;
+        }
+
+        button {
+            background-color: #333;
+            color: #fffef7;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+        }
+
+        .result {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .result.success {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .result.error {
+            background-color: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .result h3 {
+            margin-top: 0;
+        }
+
+        .info-box {
+            background-color: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            color: #1565c0;
+        }
+
+        .next-steps {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid currentColor;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <h1>📌 Import Images from Pinterest</h1>
+
+    <div class="info-box">
+        <strong>How to use:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px;">
+            <li>Copy the URL of a Pinterest board you want to import</li>
+            <li>Paste it below and select which category to add the images to</li>
+            <li>Click "Download & Import" and wait for the process to complete</li>
+            <li>The gallery manifest will be updated automatically</li>
+        </ul>
+    </div>
+
+    <form id="importForm">
+        <div class="form-group">
+            <label for="pinterestUrl">Pinterest Board URL:</label>
+            <input
+                type="text"
+                id="pinterestUrl"
+                placeholder="https://www.pinterest.com/yourname/your-board/"
+                required
+            >
+            <small style="display: block; margin-top: 5px; color: #666;">
+                Example: https://ca.pinterest.com/lizmdrewcalgs/art-design/
+            </small>
+        </div>
+
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" required>
+                <option value="">-- Select a category --</option>
+                <option value="Art">Art</option>
+                <option value="CMF">CMF (Color/Material/Finish)</option>
+                <option value="Graphics">Graphics</option>
+                <option value="Industrial Design">Industrial Design</option>
+            </select>
+        </div>
+
+        <button type="submit" id="submitBtn">📥 Download & Import</button>
+    </form>
+
+    <div class="loading" id="loading">
+        <p>⏳ Downloading images from Pinterest...</p>
+        <p style="font-size: 12px; color: #666;">This may take a few minutes depending on board size</p>
+    </div>
+
+    <div class="result" id="result"></div>
+
+    <script>
+        const form = document.getElementById('importForm');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const url = document.getElementById('pinterestUrl').value.trim();
+            const category = document.getElementById('category').value;
+
+            if (!url || !category) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            loading.style.display = 'block';
+            result.style.display = 'none';
+            submitBtn.disabled = true;
+
+            try {
+                const response = await fetch('pinterest-downloader.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, category })
+                });
+
+                const data = await response.json();
+
+                if (data.ok) {
+                    result.innerHTML = `
+                        <div class="success">
+                            <h3>✅ Success!</h3>
+                            <p>${data.message}</p>
+                            <div class="next-steps">
+                                <strong>Next steps:</strong>
+                                <ol>
+                                    <li><a href="generate-manifest.php" target="_blank">Update the gallery manifest</a></li>
+                                    <li><a href="design-gallery.html" target="_blank">View your updated gallery</a></li>
+                                </ol>
+                            </div>
+                        </div>
+                    `;
+                    result.classList.remove('error');
+                    result.classList.add('success');
+                    form.reset();
+                } else {
+                    result.innerHTML = `
+                        <div class="error">
+                            <h3>❌ Error</h3>
+                            <p>${data.error}</p>
+                        </div>
+                    `;
+                    result.classList.remove('success');
+                    result.classList.add('error');
+                }
+                result.style.display = 'block';
+            } catch (err) {
+                result.innerHTML = `
+                    <div class="error">
+                        <h3>❌ Error</h3>
+                        <p>${err.message}</p>
+                    </div>
+                `;
+                result.classList.remove('success');
+                result.classList.add('error');
+                result.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

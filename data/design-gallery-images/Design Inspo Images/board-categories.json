@@ -1,0 +1,20 @@
+{
+  "Art": ["ink drawings", "paintings", "objects", "light", "digital"],
+  "Industrial Design": ["synthesizers", "watches", "cameras", "lights", "misc", "furniture", "solutions", "products"],
+  "Graphics": ["typography", "logos", "packaging", "flat designs", "illustrations"],
+  "Colour": ["red", "orange", "yellow", "green", "blue", "purple", "pink", "brown", "beige", "grey", "white", "black", "multi"],
+  "Material": [
+    "wood",
+    "bare metal",
+    "finished metal",
+    "glass",
+    "acrylic",
+    "injection moulded plastic",
+    "recycled plastic",
+    "cork/compostable",
+    "leather",
+    "textiles"
+  ],
+  "Finish": ["natural finish", "stain", "paint & powder coat", "printed"],
+  "Paint Swatches": ["DE", "DEA", "DEB", "DEBN", "DEC", "DEFD", "DEGR", "DEHW", "DEPF", "DESS", "DET", "DEW"]
+}

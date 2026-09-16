@@ -1,0 +1,73 @@
+=== CMF Categorizations ===
+Generated: 2026-05-12, 6:28:46 PM
+
+cmf_035.jpg: CMF, glass, orange
+cmf_034.jpg: CMF, red
+cmf_023.jpg: CMF, orange
+cmf_024.jpg: CMF, injection moulded plastic, recycled plastic, multi
+cmf_058.jpg: CMF, wood
+cmf_032.jpg: CMF
+cmf_069.jpg: CMF, yellow
+cmf_054.jpg: CMF, finished metal
+cmf_005.jpg: CMF, schemes, multi
+cmf_062.jpg: CMF, wood, schemes
+cmf_008.jpg: CMF, purple
+cmf_040.jpg: CMF, acrylic, green
+cmf_031.jpg: CMF, purple, multi
+cmf_002.jpg: CMF, orange
+cmf_013.jpg: CMF
+cmf_019.jpg: CMF, cork/compostable
+cmf_056.jpg: CMF, green
+cmf_064.jpg: CMF, wood
+cmf_038.jpg: CMF, glass
+cmf_037.jpg: CMF, glass
+cmf_017.jpg: CMF, blue
+cmf_051.jpg: CMF, schemes
+cmf_028.jpg: CMF, cork/compostable
+cmf_026.jpg: CMF, recycled plastic, blue
+cmf_021.jpg: CMF, finished metal, blue
+cmf_047.jpg: CMF, bare metal
+cmf_068.jpg: CMF, schemes
+cmf_063.jpg: CMF, wood
+cmf_003.jpg: CMF, blue
+cmf_050.png: CMF, finished metal, yellow
+cmf_042.jpg: CMF, glass, purple
+cmf_006.jpg: CMF, green, multi
+cmf_039.jpg: CMF, acrylic
+cmf_007.jpg: CMF, red
+cmf_060.jpg: CMF, wood
+cmf_020.webp: CMF
+cmf_067.jpg: CMF, green, multi
+cmf_052.jpg: CMF, green
+cmf_025.jpg: CMF, recycled plastic
+cmf_044.jpg: CMF, bare metal, acrylic
+cmf_041.jpg: CMF, acrylic, green
+cmf_001.jpg: CMF, red
+cmf_010.jpg: CMF, purple, schemes, multi
+cmf_046.jpg: CMF, finished metal, purple
+cmf_018.png: CMF
+cmf_036.jpg: CMF, glass, green
+cmf_016.jpg: CMF, orange
+cmf_015.jpg: CMF, purple, multi
+cmf_053.jpg: CMF
+cmf_065.jpg: CMF, wood
+cmf_030.jpg: CMF, multi
+cmf_012.jpg: CMF, blue
+cmf_059.jpg: CMF, wood
+cmf_070.jpg: CMF, blue
+cmf_048.jpg: CMF, finished metal, purple
+cmf_033.jpg: CMF
+cmf_057.jpg: CMF, bare metal
+cmf_061.png: CMF, wood
+cmf_027.jpg: CMF, cork/compostable
+cmf_049.jpg: CMF
+cmf_043.jpg: CMF, yellow
+cmf_045.jpg: CMF, blue
+cmf_022.png: CMF, finished metal, purple
+cmf_014.jpg: CMF, schemes, multi
+cmf_055.jpg: CMF, orange
+cmf_009.jpg: CMF
+cmf_029.jpg: CMF, cork/compostable
+cmf_066.jpg: CMF, green
+cmf_004.png: CMF, orange, schemes, multi
+cmf_011.png: CMF, cork/compostable

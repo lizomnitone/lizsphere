@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Setup</title>
+    <style>
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #fffef7;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .setup-container {
+            background: rgba(245, 240, 230, 0.5);
+            border: 1px solid rgba(51, 51, 51, 0.2);
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        button {
+            background-color: #333;
+            color: #fffef7;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            width: 100%;
+            margin: 20px 0;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #555;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+        #status.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        #status.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        #status.loading {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        .steps {
+            list-style: none;
+            padding: 0;
+        }
+        .steps li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+        .steps li:last-child {
+            border-bottom: none;
+        }
+        .step-status {
+            display: inline-block;
+            width: 20px;
+            margin-right: 10px;
+        }
+        .step-status.done::before {
+            content: '✓';
+            color: #28a745;
+            font-weight: bold;
+        }
+        .step-status.pending::before {
+            content: '⏳';
+            color: #ffc107;
+        }
+        .step-status.error::before {
+            content: '✕';
+            color: #dc3545;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #333;
+        }
+        .back-link:hover {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h1>🖼️ Gallery Setup</h1>
+
+    <div class="setup-container">
+        <p>Initialize or refresh all gallery data (manifest, categorizations, paint swatches).</p>
+
+        <button id="setupBtn" onclick="runSetup()">Initialize Gallery</button>
+
+        <div id="status">
+            <strong id="statusTitle">Setting up...</strong>
+            <ul class="steps" id="steps"></ul>
+        </div>
+
+        <a href="design-gallery.html" class="back-link">← Back to Gallery</a>
+    </div>
+
+    <script>
+        async function runSetup() {
+            const btn = document.getElementById('setupBtn');
+            const status = document.getElementById('status');
+            const steps = document.getElementById('steps');
+
+            btn.disabled = true;
+            status.className = 'loading';
+            document.getElementById('statusTitle').textContent = 'Initializing...';
+            steps.innerHTML = '<li><span class="step-status pending"></span>Running initialization script...</li>';
+
+            try {
+                const response = await fetch('init-gallery.php');
+                const text = await response.text();
+                console.log('Raw response:', text);
+
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    throw new Error(`Invalid JSON response: ${text.substring(0, 200)}`);
+                }
+
+                // Display results
+                steps.innerHTML = '';
+                const stepNames = {
+                    'manifest': 'Generate manifest.json',
+                    'paintSwatches': 'Categorize paint swatches',
+                    'cmfJson': 'Update CMF.json',
+                    'boardCategories': 'Verify board categories'
+                };
+
+                for (const [key, result] of Object.entries(data.steps || {})) {
+                    const name = stepNames[key] || key;
+                    const stepEl = document.createElement('li');
+                    const statusSpan = document.createElement('span');
+                    statusSpan.className = `step-status ${result.ok ? 'done' : 'error'}`;
+                    stepEl.appendChild(statusSpan);
+
+                    const text = document.createTextNode(name);
+                    stepEl.appendChild(text);
+
+                    if (result.totalImages !== undefined) {
+                        stepEl.appendChild(document.createTextNode(` (${result.totalImages} images)`));
+                    }
+                    if (result.error) {
+                        stepEl.appendChild(document.createTextNode(` - Error: ${result.error}`));
+                    }
+
+                    steps.appendChild(stepEl);
+                }
+
+                if (data.success) {
+                    status.className = 'success';
+                    document.getElementById('statusTitle').textContent = '✓ Setup Complete!';
+                    steps.innerHTML += '<li style="margin-top:15px;padding-top:15px;border-top:2px solid #28a745;font-weight:bold;">Now hard refresh the gallery (Cmd+Shift+R) to see all changes.</li>';
+                } else {
+                    status.className = 'error';
+                    document.getElementById('statusTitle').textContent = '⚠ Some errors occurred';
+                }
+
+            } catch (err) {
+                console.error('Setup error:', err);
+                status.className = 'error';
+                document.getElementById('statusTitle').textContent = '✕ Setup Failed';
+                steps.innerHTML = `<li><span class="step-status error"></span>Error: ${err.message}</li><li style="margin-top:10px;font-size:0.9em;opacity:0.8;">Check browser console (F12) for more details.</li>`;
+            }
+
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
