@@ -8,6 +8,7 @@ body {
   padding: 0;
   font-family: 'Space Mono', monospace;
   background-color: #f8fafc;
+  background-color: #fffef7;
 }
 
 .page-container {
@@ -34,16 +35,17 @@ body {
 
 .home-header p {
   margin: 0;
-  color: #64748b;
+  color: #38414e;
 }
 
 /* --- BUBBLES LAYOUT --- */
 .bubbles-container {
   display: flex;
   flex-wrap: wrap;
+  font-weight:200; 
   align-items: flex-start;
   gap: 30px;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-top: 40px;
 }
 
@@ -77,7 +79,7 @@ body {
 /* --- TEXT INSIDE BUBBLE --- */
 .bubble-text {
   font-family: 'Space Mono', monospace;
-  font-weight: 700;
+  font-weight: 400;
   fill: #ffffff;
 }
 
