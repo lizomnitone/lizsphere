@@ -44,10 +44,40 @@ color: #64748b;
 }
 
 /* Layout alignment */
-.sphere-svg {
-margin: 10px 10px 10px 0;
 
-align-self: flex-start;
+
+.sphere-svg:hover {
+transform: scale(1.2);
 }
 
+.sphere-wrapper {
+  margin-top: 40px;
+  align-self: flex-start;
+  animation: floatBubble 1s ease-in-out infinite;
+}
 
+.sphere-svg {
+  cursor: pointer;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: block; /* removes SVG's default inline-element gap */
+}
+
+.sphere-svg:hover {
+  transform: scale(1.12);
+}
+
+.bubble-text {
+  font-family: 'Space Mono', monospaced;
+  font-size: 20px;
+  font-weight: 50;
+  fill: #ffffff;
+  animation: driftInside 5s ease-in-out infinite;
+}
+
+@keyframes floatBubble {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(8px, -14px); }
+  50%  { transform: translate(-6px, -8px); }
+  75%  { transform: translate(5px, 10px); }
+  100% { transform: translate(0px, 0); }
+}
