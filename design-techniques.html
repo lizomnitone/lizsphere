@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Techniques Wiki</title>
+    <link rel="icon" type="image/png" href="../assets/icons/favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;600;700&family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Sometype+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Sometype Mono', monospace;
+            background-color: #fffef7;
+            background-image: url('../assets/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @keyframes softFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #333;
+            font-family: 'Sometype Mono', monospace;
+            margin-bottom: 30px;
+        }
+
+        .nav-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .nav-section a {
+            display: inline-block;
+            margin: 0 15px;
+            padding: 12px 24px;
+            background-color: rgba(245, 240, 230, 0.4);
+            border-radius: 20px;
+            color: #333;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(10px);
+            font-family: 'Sometype Mono', monospace;
+        }
+
+        .nav-section a:hover {
+            background-color: rgba(245, 240, 230, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .design-section {
+            background-color: rgba(245, 240, 230, 0.3);
+            border-radius: 30px;
+            padding: 40px 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: left;
+            color: #333;
+            font-family: 'Sometype Mono', monospace;
+        }
+
+        /* Techniques Grid */
+        .techniques-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .technique-card {
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: all 0.3s ease;
+            animation: softFloat 4s ease-in-out 1;
+            position: relative;
+        }
+
+        .technique-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            animation: none;
+        }
+
+        .technique-card:nth-child(1) { animation-delay: 0s; }
+        .technique-card:nth-child(2) { animation-delay: 0.2s; }
+        .technique-card:nth-child(3) { animation-delay: 0.4s; }
+        .technique-card:nth-child(4) { animation-delay: 0.6s; }
+        .technique-card:nth-child(5) { animation-delay: 0.8s; }
+        .technique-card:nth-child(n+6) { animation-delay: 0.2s; }
+
+        .technique-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 12px;
+            font-family: 'Sometype Mono', monospace;
+        }
+
+        .technique-description {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            font-family: 'Sometype Mono', monospace;
+            flex-grow: 1;
+        }
+
+        .technique-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .technique-link {
+            font-size: 0.85em;
+            color: #4ecdc4;
+            text-decoration: none;
+            padding: 8px 12px;
+            background-color: rgba(78, 205, 196, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(78, 205, 196, 0.3);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .technique-link:hover {
+            background-color: rgba(78, 205, 196, 0.2);
+            border-color: rgba(78, 205, 196, 0.5);
+            color: #2ba39d;
+        }
+
+        .add-link-btn {
+            font-size: 0.85em;
+            padding: 8px 12px;
+            background-color: rgba(100, 200, 100, 0.15);
+            border: 1px dashed rgba(100, 200, 100, 0.4);
+            border-radius: 8px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .add-link-btn:hover {
+            background-color: rgba(100, 200, 100, 0.25);
+            border-color: rgba(100, 200, 100, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            .techniques-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 320px;
+            background-color: rgba(245, 240, 230, 0.98);
+            border: 1px solid rgba(78, 205, 196, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+        .preview-panel.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .preview-panel h3 {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 1.15em;
+            color: #333;
+            margin: 0 0 10px 0;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+            padding-bottom: 8px;
+        }
+
+        .preview-panel h4 {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 0.95em;
+            color: #555;
+            margin: 12px 0 6px 0;
+            font-weight: 700;
+        }
+
+        .preview-panel p {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.4;
+            margin: 0 0 8px 0;
+        }
+
+        .preview-panel ul {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 0.85em;
+            color: #666;
+            line-height: 1.4;
+            margin: 6px 0 8px 18px;
+            padding: 0;
+        }
+
+        .preview-panel li {
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 1200px) {
+            .preview-panel {
+                display: none;
+            }
+        }
+
+        .topics-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .topic-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 15px 20px;
+            border-radius: 10px;
+            color: #333;
+            font-family: 'Sometype Mono', monospace;
+            border-left: 4px solid rgba(78, 205, 196, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .topic-item:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-left-color: rgba(78, 205, 196, 1);
+            transform: translateX(5px);
+        }
+
+        .equipment-toggle {
+            background-color: rgba(78, 205, 196, 0.15);
+            border: 2px solid rgba(78, 205, 196, 0.4);
+            padding: 15px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-family: 'Sometype Mono', monospace;
+            font-size: 1.1em;
+            font-weight: 700;
+            color: #333;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .equipment-toggle:hover {
+            background-color: rgba(78, 205, 196, 0.25);
+            border-color: rgba(78, 205, 196, 0.6);
+        }
+
+        .toggle-icon {
+            font-size: 1.3em;
+            transition: transform 0.3s ease;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .equipment-dropdown {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+            margin-top: 15px;
+        }
+
+        .equipment-dropdown.open {
+            max-height: none;
+            overflow: visible;
+        }
+
+        .equipment-content {
+            background-color: rgba(255, 255, 255, 0.4);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .equipment-category {
+            margin-bottom: 25px;
+        }
+
+        .equipment-category h4 {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 1em;
+            font-weight: 700;
+            color: #333;
+            margin: 0 0 10px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .equipment-category ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .equipment-category li {
+            font-family: 'Sometype Mono', monospace;
+            color: #666;
+            padding: 6px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95em;
+        }
+
+        .equipment-category li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: rgba(78, 205, 196, 0.6);
+            font-weight: 700;
+        }
+
+        /* Courses Section */
+        .courses-section {
+            background-color: rgba(78, 205, 196, 0.08);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 25px;
+            border: 2px solid rgba(78, 205, 196, 0.2);
+        }
+
+        .courses-title {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .course-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-family: 'Sometype Mono', monospace;
+            color: #555;
+            font-size: 0.95em;
+            border-left: 3px solid rgba(78, 205, 196, 0.5);
+            transition: all 0.3s ease;
+            line-height: 1.4;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .course-item:hover {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-left-color: rgba(78, 205, 196, 0.9);
+            transform: translateX(3px);
+        }
+
+        .course-areas {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 280px;
+            background-color: rgba(245, 240, 230, 0.98);
+            border: 2px solid rgba(78, 205, 196, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .course-areas.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .course-areas h4 {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 1.1em;
+            color: #333;
+            margin: 0 0 15px 0;
+            border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+            padding-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .course-areas p {
+            font-family: 'Sometype Mono', monospace;
+            font-size: 0.9em;
+            color: #666;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .course-areas {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Design Techniques Wiki</h1>
+    
+    <div class="preview-panel" id="preview-panel">
+        <h3 id="preview-title"></h3>
+        <p id="preview-description"></p>
+        <h4>Equipment:</h4>
+        <ul id="preview-equipment"></ul>
+        <h4>First 3 Steps:</h4>
+        <ol id="preview-steps"></ol>
+    </div>
+    
+    <div class="course-areas" id="course-areas">
+        <h4 id="course-name"></h4>
+        <p id="course-disciplines"></p>
+    </div>
+    
+    <div class="nav-section">
+        <a href="design-resources.html">← Back to Design Resources</a>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Industrial Design & Craftsmanship</h2>
+        <div class="techniques-grid" id="industrial-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Digital Arts & Design</h2>
+        <div class="techniques-grid" id="digital-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Design & Typography</h2>
+        <div class="techniques-grid" id="design-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Painting & Drawing</h2>
+        <div class="techniques-grid" id="visual-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Sculpting & 3D Arts</h2>
+        <div class="techniques-grid" id="sculpting-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Fibre Arts & Textiles</h2>
+        <div class="techniques-grid" id="fibre-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <div class="design-section">
+        <h2 class="section-title">Printmaking & Relief Arts</h2>
+        <div class="techniques-grid" id="print-grid">
+            <!-- Techniques will be inserted here -->
+        </div>
+    </div>
+
+    <script>
+        const techniques = {
+            industrial: [
+                {
+                    name: 'Industrial Drawing',
+                    description: 'Technical drawing used in engineering and design with precision lines and measurements.',
+                    links: []
+                },
+                {
+                    name: 'Woodworking',
+                    description: 'Crafting functional and decorative objects from wood using hand and power tools.',
+                    links: []
+                },
+                {
+                    name: 'Pyrography',
+                    description: 'Burning detailed designs into wood using heated tools for decoration.',
+                    links: []
+                },
+                {
+                    name: 'Wood Carving',
+                    description: 'Sculpting wood using hand tools to create detailed forms and functional pieces.',
+                    links: []
+                },
+                {
+                    name: 'Foam Carving',
+                    description: 'Sculpting technique using foam materials for lightweight, detailed 3D designs.',
+                    links: []
+                },
+                {
+                    name: 'Ceramic Techniques',
+                    description: 'Working with clay and firing it in kilns for functional and decorative art.',
+                    links: []
+                },
+                {
+                    name: 'Metalworking',
+                    description: 'Shaping metal through forging, casting, welding, and CNC subtractive methods.',
+                    links: []
+                },
+                {
+                    name: 'Jewelry Making',
+                    description: 'Creating wearable art using metals, stones, and other materials.',
+                    links: []
+                },
+                {
+                    name: 'Leatherworking',
+                    description: 'Crafting with leather through cutting, tooling, stitching and finishing.',
+                    links: []
+                }
+            ],
+            fibre: [
+                {
+                    name: 'Weaving',
+                    description: 'Interlacing threads or fibers on looms to create textiles and patterns.',
+                    links: []
+                },
+                {
+                    name: 'Sewing',
+                    description: 'Creating garments and functional textiles through stitching and construction.',
+                    links: []
+                },
+                {
+                    name: 'Embroidery',
+                    description: 'Decorating fabric with needle and thread designs and embellishments.',
+                    links: []
+                },
+                {
+                    name: 'Cross-Stitch',
+                    description: 'Counted thread embroidery creating geometric patterns on fabric.',
+                    links: []
+                },
+                {
+                    name: 'Felting',
+                    description: 'Matting wool fibers together to create felt fabric or sculptural pieces.',
+                    links: []
+                },
+                {
+                    name: 'Batik',
+                    description: 'Wax-resist dyeing technique creating intricate patterns on fabric.',
+                    links: []
+                },
+                {
+                    name: 'Tie-Dye',
+                    description: 'Folding and dyeing fabric to create organic and vibrant color patterns.',
+                    links: []
+                },
+                {
+                    name: 'Papermaking',
+                    description: 'Creating paper from pulp, fibers, and other natural materials.',
+                    links: []
+                }
+            ],
+            print: [
+                {
+                    name: 'Printmaking',
+                    description: 'Umbrella term for techniques that transfer ink from a plate to paper.',
+                    links: []
+                },
+                {
+                    name: 'Relief Printing',
+                    description: 'Carving away material to create raised surfaces for printing.',
+                    links: []
+                },
+                {
+                    name: 'Linocut',
+                    description: 'Relief printing technique using carving into linoleum blocks to create prints.',
+                    links: []
+                },
+                {
+                    name: 'Screen Printing',
+                    description: 'Creating vibrant, opaque prints by pushing ink through stencil mesh screens onto substrates.',
+                    links: []
+                },
+                {
+                    name: 'Digital Printing',
+                    description: 'Producing images on substrates using inkjet or digital printing technology.',
+                    links: []
+                },
+                {
+                    name: 'Etching',
+                    description: 'Intaglio technique using acid to create fine lines on metal plates.',
+                    links: []
+                }
+            ],
+            visual: [
+                {
+                    name: 'Watercolor Painting',
+                    description: 'Fluid painting technique using transparent water-soluble pigments.',
+                    links: []
+                },
+                {
+                    name: 'Charcoal Drawing',
+                    description: 'Drawing medium using charcoal sticks for expressive, dramatic effects.',
+                    links: []
+                },
+                {
+                    name: 'Pen & Ink',
+                    description: 'Fine line drawing technique using ink pens for detailed illustrations.',
+                    links: []
+                },
+                {
+                    name: 'Oil Painting',
+                    description: 'Traditional painting technique using oil-based pigments on canvas.',
+                    links: []
+                },
+                {
+                    name: 'Acrylic Painting',
+                    description: 'Fast-drying water-based paint technique versatile for many styles.',
+                    links: []
+                },
+                {
+                    name: 'Gouache',
+                    description: 'Opaque watercolor medium offering vibrant, matte finishes.',
+                    links: []
+                },
+                {
+                    name: 'Photography',
+                    description: 'Capturing light and composition for portraiture, product, landscape, and macro photography.',
+                    links: []
+                },
+                {
+                    name: 'Collage',
+                    description: 'Assembling various materials and images to create compositions.',
+                    links: []
+                },
+                {
+                    name: 'Mixed Media',
+                    description: 'Combining multiple art materials and techniques in one work.',
+                    links: []
+                },
+                {
+                    name: 'Zentangle',
+                    description: 'Meditative drawing technique creating patterns with repetitive lines.',
+                    links: []
+                },
+                {
+                    name: 'Stippling',
+                    description: 'Creating images and tone using dots of ink or pigment.',
+                    links: []
+                },
+                {
+                    name: 'Hatching & Cross-Hatching',
+                    description: 'Building tone and shading through parallel and intersecting lines.',
+                    links: []
+                },
+                {
+                    name: 'Perspective Drawing',
+                    description: 'Technique for representing 3D space and depth on a 2D surface.',
+                    links: []
+                },
+                {
+                    name: 'Anatomy Drawing',
+                    description: 'Learning to draw human and animal figures with anatomical accuracy.',
+                    links: []
+                },
+                {
+                    name: 'Still Life',
+                    description: 'Drawing or painting arrangements of inanimate objects.',
+                    links: []
+                },
+                {
+                    name: 'Landscape Painting',
+                    description: 'Depicting natural scenery and outdoor environments.',
+                    links: []
+                },
+                {
+                    name: 'Portrait Painting',
+                    description: 'Creating likenesses of people focusing on facial features.',
+                    links: []
+                }
+            ],
+            sculpting: [
+                {
+                    name: 'Sculpture',
+                    description: 'Creating 3D artworks by carving, modeling, or assembling materials.',
+                    links: []
+                },
+                {
+                    name: 'Clay Modeling',
+                    description: 'Shaping clay by hand to create sculptural and functional forms.',
+                    links: []
+                },
+                {
+                    name: 'Stone Carving',
+                    description: 'Subtractive sculpture technique removing material from stone blocks.',
+                    links: []
+                },
+                {
+                    name: 'Glass Blowing',
+                    description: 'Shaping molten glass using breath and tools to create forms.',
+                    links: []
+                },
+                {
+                    name: 'Resin Casting',
+                    description: 'Creating objects by pouring liquid resin into molds for detailed, durable pieces.',
+                    links: []
+                },
+                {
+                    name: 'Mosaic',
+                    description: 'Creating images by arranging small colored tiles or glass pieces.',
+                    links: []
+                },
+                {
+                    name: 'Origami',
+                    description: 'Japanese art of folding paper into intricate geometric shapes.',
+                    links: []
+                }
+            ],
+            digital: [
+                {
+                    name: '3D Modeling',
+                    description: 'Creating 3D objects and structures using specialized software.',
+                    links: []
+                },
+                {
+                    name: '3D Rendering',
+                    description: 'Converting 3D models into 2D images with lighting and materials.',
+                    links: []
+                },
+                {
+                    name: 'Game Design',
+                    description: 'Designing interactive experiences and game mechanics.',
+                    links: []
+                },
+                {
+                    name: 'Character Design',
+                    description: 'Creating visual designs for characters in games, animation, or media.',
+                    links: []
+                },
+                {
+                    name: 'Concept Art',
+                    description: 'Visual development creating compelling aesthetics and designs before production.',
+                    links: []
+                },
+                {
+                    name: 'UI/UX Design',
+                    description: 'Designing user interfaces and experiences for digital products.',
+                    links: []
+                },
+                {
+                    name: 'Graphic Design',
+                    description: 'Creating visual content for print and digital media.',
+                    links: []
+                },
+                {
+                    name: 'Vector Graphics',
+                    description: 'Creating scalable digital illustrations using vector-based software.',
+                    links: []
+                },
+                {
+                    name: 'Digital Illustration',
+                    description: 'Drawing and painting digitally with stylus and software.',
+                    links: []
+                },
+                {
+                    name: 'Animation',
+                    description: 'Creating motion and sequences to bring static images to life.',
+                    links: []
+                },
+                {
+                    name: 'Motion Graphics',
+                    description: 'Combining animation with audio and text for dynamic visual effects.',
+                    links: []
+                },
+                {
+                    name: 'VFX (Visual Effects)',
+                    description: 'Creating special effects for film, video, and digital media.',
+                    links: []
+                },
+                {
+                    name: 'Photo Editing',
+                    description: 'Manipulating and enhancing photographs with digital tools.',
+                    links: []
+                },
+                {
+                    name: 'Digital Photography',
+                    description: 'Capturing and composing images using digital cameras.',
+                    links: []
+                },
+                {
+                    name: 'Web Design',
+                    description: 'Designing the visual layout and aesthetics of websites.',
+                    links: []
+                },
+                {
+                    name: 'Rapid Prototyping',
+                    description: 'Using 3D printers (FDM, resin, SLS) and digital fabrication for quick physical prototypes.',
+                    links: []
+                }
+            ],
+            design: [
+                {
+                    name: 'Typography',
+                    description: 'Art of arranging type to create visually appealing text designs.',
+                    links: []
+                },
+                {
+                    name: 'Calligraphy',
+                    description: 'Beautiful handwriting using special pens or brushes.',
+                    links: []
+                },
+                {
+                    name: 'Hand Lettering',
+                    description: 'Drawing letters by hand for decorative and artistic purposes.',
+                    links: []
+                },
+                {
+                    name: 'Color Theory',
+                    description: 'Understanding how colors interact and affect design and emotion.',
+                    links: []
+                },
+                {
+                    name: 'Composition',
+                    description: 'Arranging visual elements to create balanced and engaging designs.',
+                    links: []
+                },
+                {
+                    name: 'Design Principles',
+                    description: 'Fundamental concepts like balance, contrast, emphasis, and unity.',
+                    links: []
+                },
+                {
+                    name: 'Visual Hierarchy',
+                    description: 'Organizing elements to guide viewer attention through designs.',
+                    links: []
+                },
+                {
+                    name: 'Branding Design',
+                    description: 'Creating cohesive visual identity systems for organizations.',
+                    links: []
+                },
+                {
+                    name: 'Layout Design',
+                    description: 'Arranging text and images on a page or screen effectively.',
+                    links: []
+                },
+                {
+                    name: 'Packaging Design',
+                    description: 'Creating visual and functional designs for product packaging.',
+                    links: []
+                },
+                {
+                    name: 'Poster Design',
+                    description: 'Creating eye-catching visual communications for promotion.',
+                    links: []
+                },
+                {
+                    name: 'Illustration',
+                    description: 'Creating original artwork to accompany and enhance text.',
+                    links: []
+                },
+                {
+                    name: 'Fashion Design',
+                    description: 'Creating clothing designs from concept sketches through patterns and prototypes.',
+                    links: []
+                }
+            ]
+        };
+
+        function toggleEquipmentDropdown(button) {
+            const dropdown = button.nextElementSibling;
+            const icon = button.querySelector('.toggle-icon');
+            
+            dropdown.classList.toggle('open');
+            icon.classList.toggle('open');
+        }
+
+        function getTechniqueUrl(techniqueName) {
+            // Convert technique name to URL-friendly format
+            return 'design-techniques-pages/' + techniqueName
+                .toLowerCase()
+                .replace(/[()]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/&/g, 'and')
+                .replace(/\//g, '-') + '.html';
+        }
+
+        function renderTechniquesSection(sectionKey, gridId) {
+            const grid = document.getElementById(gridId);
+            grid.innerHTML = '';
+
+            techniques[sectionKey].forEach((technique, index) => {
+                const card = document.createElement('a');
+                card.className = 'technique-card';
+                card.href = getTechniqueUrl(technique.name);
+                card.style.textDecoration = 'none';
+                card.style.color = 'inherit';
+                card.style.display = 'block';
+                
+                let linksHTML = '';
+                if (technique.links && technique.links.length > 0) {
+                    linksHTML = '<div class="technique-links">' +
+                        technique.links.map(link => 
+                            `<a href="${link.url}" target="_blank" class="technique-link">${link.title}</a>`
+                        ).join('') +
+                        '</div>';
+                }
+
+                card.innerHTML = `
+                    <div class="technique-name">${technique.name}</div>
+                    <div class="technique-description">${technique.description}</div>
+                    ${linksHTML}
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Render all sections on page load
+        function initializePage() {
+            renderTechniquesSection('industrial', 'industrial-grid');
+            renderTechniquesSection('digital', 'digital-grid');
+            renderTechniquesSection('design', 'design-grid');
+            renderTechniquesSection('visual', 'visual-grid');
+            renderTechniquesSection('sculpting', 'sculpting-grid');
+            renderTechniquesSection('fibre', 'fibre-grid');
+            renderTechniquesSection('print', 'print-grid');
+            
+            // Add hover preview listeners to all technique cards
+            setupPreviewListeners();
+            setupCourseListeners();
+        }
+
+        let previewTimeout;
+        const previewPanel = document.getElementById('preview-panel');
+        const previewTitle = document.getElementById('preview-title');
+        const previewDescription = document.getElementById('preview-description');
+        const previewEquipment = document.getElementById('preview-equipment');
+        const previewSteps = document.getElementById('preview-steps');
+
+        function setupPreviewListeners() {
+            const cards = document.querySelectorAll('.technique-card');
+            cards.forEach((card) => {
+                const techniqueName = card.querySelector('.technique-name').textContent;
+                const techniqueDescription = card.querySelector('.technique-description').textContent;
+                const pageUrl = card.href;
+
+                card.addEventListener('mouseenter', () => {
+                    previewTimeout = setTimeout(async () => {
+                        previewTitle.textContent = techniqueName;
+                        previewDescription.textContent = techniqueDescription;
+                        
+                        // Fetch and parse the technique page
+                        try {
+                            const response = await fetch(pageUrl);
+                            const html = await response.text();
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            
+                            // Extract equipment items (first 4 essential items)
+                            const equipmentItems = doc.querySelectorAll('.equipment-list li');
+                            previewEquipment.innerHTML = '';
+                            for (let i = 0; i < Math.min(4, equipmentItems.length); i++) {
+                                const li = document.createElement('li');
+                                li.textContent = equipmentItems[i].textContent.replace(/\n/g, ' ').trim();
+                                previewEquipment.appendChild(li);
+                            }
+                            
+                            // Extract first 3 steps
+                            const stepItems = doc.querySelectorAll('.steps-list li');
+                            previewSteps.innerHTML = '';
+                            for (let i = 0; i < Math.min(3, stepItems.length); i++) {
+                                const li = document.createElement('li');
+                                li.textContent = stepItems[i].textContent.replace(/\n/g, ' ').trim();
+                                previewSteps.appendChild(li);
+                            }
+                            
+                            previewPanel.classList.add('visible');
+                        } catch (error) {
+                            console.error('Error loading preview:', error);
+                            previewPanel.classList.add('visible');
+                        }
+                    }, 500);
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    clearTimeout(previewTimeout);
+                    previewPanel.classList.remove('visible');
+                });
+            });
+        }
+
+        function setupCourseListeners() {
+            const courseItems = document.querySelectorAll('.course-item');
+            const courseAreas = document.getElementById('course-areas');
+            const courseName = document.getElementById('course-name');
+            const courseDisciplines = document.getElementById('course-disciplines');
+            let courseTimeout;
+
+            courseItems.forEach((item) => {
+                item.addEventListener('mouseenter', () => {
+                    courseTimeout = setTimeout(() => {
+                        courseName.textContent = item.textContent.trim();
+                        courseDisciplines.textContent = item.dataset.disciplines;
+                        courseAreas.classList.add('visible');
+                    }, 500);
+                });
+
+                item.addEventListener('mouseleave', () => {
+                    clearTimeout(courseTimeout);
+                    courseAreas.classList.remove('visible');
+                });
+            });
+        }
+
+        window.addEventListener('load', initializePage);
+    </script>
+</body>
+</html>

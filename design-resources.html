@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Design Resources</title>
+    <link rel="icon" type="image/png" href="../assets/icons/favicon.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;600;700&family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Sometype+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Space Mono', monospace;
+            background-color: #fffef7;
+            background-image: url('../assets/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        @keyframes softFloat {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            color: #333;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .design-section {
+            background-color: rgba(245, 240, 230, 0.3);
+            border-radius: 30px;
+            padding: 40px 30px;
+            margin-bottom: 60px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .section-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 40px;
+            text-align: left;
+            color: #333;
+        }
+        
+        /* Pinterest-style Gallery */
+        .pinterest-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            height: 250px;
+            animation: softFloat 3.5s ease-in-out infinite;
+        }
+        
+        .gallery-item:nth-child(1) {
+            animation-delay: 0s;
+        }
+        
+        .gallery-item:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        
+        .gallery-item:nth-child(3) {
+            animation-delay: 0.8s;
+        }
+        
+        .gallery-item:nth-child(4) {
+            animation-delay: 1.2s;
+        }
+        
+        .gallery-item:nth-child(5) {
+            animation-delay: 1.6s;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover {
+            animation: none;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        /* Three Column Section */
+        .three-column-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .column-left, .column-middle, .column-right {
+            margin-bottom: 0 !important;
+        }
+        
+        /* Principles List */
+        .principles-list, .build-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .principle-item, .build-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+            animation: softFloat 4s ease-in-out infinite;
+        }
+        
+        .principle-item:nth-child(1), .build-item:nth-child(1) { animation-delay: 0s; }
+        .principle-item:nth-child(2), .build-item:nth-child(2) { animation-delay: 0.2s; }
+        .principle-item:nth-child(3), .build-item:nth-child(3) { animation-delay: 0.4s; }
+        .principle-item:nth-child(4), .build-item:nth-child(4) { animation-delay: 0.6s; }
+        .principle-item:nth-child(5), .build-item:nth-child(5) { animation-delay: 0.8s; }
+        .principle-item:nth-child(n+6), .build-item:nth-child(n+6) { animation-delay: 0.2s; }
+        
+        .principle-item:hover, .build-item:hover {
+            transform: translateX(5px);
+            animation: none;
+        }
+        
+        .principle-item h3, .build-item h3 {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .principle-item a, .build-item a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+        
+        .principle-item a:hover, .build-item a:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+        
+        /* Books List */
+        .books-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .book-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            animation: softFloat 4.5s ease-in-out infinite;
+        }
+        
+        .book-item:nth-child(1) { animation-delay: 0s; }
+        .book-item:nth-child(2) { animation-delay: 0.33s; }
+        .book-item:nth-child(3) { animation-delay: 0.67s; }
+        .book-item:nth-child(n+4) { animation-delay: 0.33s; }
+        
+        .book-item:hover {
+            transform: translateY(-5px);
+            animation: none;
+        }
+        
+        .book-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .book-item p {
+            margin: 5px 0;
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .book-item strong {
+            display: block;
+            color: #333;
+            margin-top: 8px;
+        }
+        
+        /* Resources List */
+        .resources-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .resource-item {
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            animation: softFloat 5s ease-in-out infinite;
+        }
+        
+        .resource-item:nth-child(5n+1) { animation-delay: 0s; }
+        .resource-item:nth-child(5n+2) { animation-delay: 0.2s; }
+        .resource-item:nth-child(5n+3) { animation-delay: 0.4s; }
+        .resource-item:nth-child(5n+4) { animation-delay: 0.6s; }
+        .resource-item:nth-child(5n+5) { animation-delay: 0.8s; }
+        
+        .resource-item:hover {
+            transform: translateY(-5px);
+            animation: none;
+        }
+        
+        .resource-item h3 {
+            font-size: 1.1em;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .resource-item a {
+            color: #666;
+            text-decoration: none;
+            font-size: 0.9em;
+            transition: color 0.3s ease;
+        }
+        
+        .resource-item a:hover {
+            color: #333;
+            text-decoration: underline;
+        }
+        
+        nav {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        nav a {
+            margin: 0 20px;
+            text-decoration: none;
+            color: #333;
+            font-weight: 700;
+            font-size: 1.1em;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: #888;
+        }
+        
+        /* Section Header with Add Button */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        
+        .section-header .section-title {
+            margin-bottom: 0;
+            flex-grow: 1;
+        }
+        
+        .add-btn {
+            background-color: rgba(51, 51, 51, 0.1);
+            border: 2px solid #333;
+            color: #333;
+            padding: 8px 16px;
+            font-size: 0.9em;
+            font-weight: 700;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        .add-btn:hover {
+            background-color: #333;
+            color: #fffef7;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        
+        .modal-content {
+            background-color: #fffef7;
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #333;
+        }
+        
+        #modal-title {
+            font-family: 'Space Mono', monospace;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .modal-form label {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            color: #333;
+            margin-top: 10px;
+        }
+        
+        .modal-form input {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.95em;
+            transition: border-color 0.3s ease;
+        }
+        
+        .modal-form input:focus {
+            outline: none;
+            border-color: #333;
+        }
+        
+        .modal-form button {
+            background-color: #333;
+            color: #fffef7;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .modal-form button:hover {
+            background-color: #555;
+        }
+        
+        /* Delete Button */
+        .delete-btn {
+            background-color: rgba(255, 0, 0, 0.1);
+            border: none;
+            color: #cc0000;
+            padding: 4px 8px;
+            font-size: 0.8em;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .delete-btn:hover {
+            background-color: rgba(255, 0, 0, 0.3);
+            color: #990000;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="books.html">Books</a>
+        <a href="design-inspo.html">Design Inspiration</a>
+    </nav>
+    
+    <!-- Row 1: Title -->
+    <h1>Design Inspiration</h1>
+    
+    <div style="text-align: center; margin-bottom: 40px;">
+        <a href="design-techniques.html" style="display: inline-block; padding: 12px 24px; background-color: rgba(245, 240, 230, 0.4); border-radius: 20px; color: #333; text-decoration: none; font-weight: 700; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px);">Design Techniques Wiki →</a>
+    </div>
+    
+    <!-- Row 2: Pinterest-style Image Gallery -->
+    <div class="design-section">
+        <div class="section-header">
+            <div class="section-title" style="flex-grow: 1; margin-bottom: 0; text-align: left;">Image Gallery</div>
+            <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
+                <button class="add-btn" onclick="renderGallery()" style="padding: 8px 14px; font-size: 1.4em; border-radius: 8px; font-family: monospace; font-weight: 700;" title="Refresh images">↻</button>
+                <a href="design-inspo-gallery.html" class="add-btn" style="text-decoration: none; display: inline-block;">View Full Gallery →</a>
+            </div>
+        </div>
+        <div class="pinterest-gallery" id="gallery-container">
+
+        </div>
+    </div>
+    
+    <!-- Row 3: Three Columns -->
+    <div class="three-column-section">
+        <!-- Left Column: Design Principles -->
+        <div class="design-section column-left">
+            <div class="section-header">
+                <div class="section-title">Design Principles</div>
+                <button class="add-btn" onclick="openModal('principles')">+ Add Principle</button>
+            </div>
+            <div class="principles-list" id="principles-container">
+            </div>
+        </div>
+        
+        <!-- Middle Column: Design Build Inspiration -->
+        <div class="design-section column-middle">
+            <div class="section-header">
+                <div class="section-title">Design Build Inspiration</div>
+                <button class="add-btn" onclick="openModal('builds')">+ Add Build</button>
+            </div>
+            <div class="build-list" id="builds-container">
+            </div>
+        </div>
+        
+        <!-- Right Column: Books -->
+        <div class="design-section column-right">
+            <div class="section-header">
+                <div class="section-title">Design Books</div>
+                <button class="add-btn" onclick="openModal('books')">+ Add Book</button>
+            </div>
+            <div class="books-list" id="books-container">
+            </div>
+        </div>
+    </div>
+    
+    <!-- Row 4: Design Resources -->
+    <div class="design-section">
+        <div class="section-header">
+            <div class="section-title">Design Resources</div>
+            <div style="display: flex; gap: 10px;">
+                <button class="add-btn" onclick="openModal('resources')">+ Add Resource</button>
+                <button class="add-btn" onclick="openModal('import-bookmarks')" title="Import from Bookmarks.html">📥 Import Bookmarks</button>
+            </div>
+        </div>
+        <div class="resources-list" id="resources-container">
+        </div>
+    </div>
+    
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modal-title">Add Item</h2>
+            
+            <!-- Gallery Modal -->
+            <form id="gallery-form" class="modal-form" style="display:none;">
+                <label>Image URL:</label>
+                <input type="text" id="gallery-url" placeholder="https://example.com/image.jpg" required>
+                <button type="button" onclick="addGalleryItem()">Add Image</button>
+            </form>
+            
+            <!-- Zip Upload Modal -->
+            <form id="zip-upload-form" class="modal-form" style="display:none;">
+                <label>Upload ZIP file:</label>
+                <input type="file" id="zip-file-input" accept=".zip" required>
+                <p style="font-size: 0.85em; color: #666;">Supported: ZIP files with JPG images inside</p>
+                <button type="button" onclick="processZipFile()">Extract & Load</button>
+            </form>
+            
+            <!-- Principles Modal -->
+            <form id="principles-form" class="modal-form" style="display:none;">
+                <label>Principle Name:</label>
+                <input type="text" id="principles-name" placeholder="e.g., Balance" required>
+                <label>YouTube Link:</label>
+                <input type="text" id="principles-link" placeholder="https://youtube.com/..." required>
+                <button type="button" onclick="addPrinciple()">Add Principle</button>
+            </form>
+            
+            <!-- Builds Modal -->
+            <form id="builds-form" class="modal-form" style="display:none;">
+                <label>Build Name:</label>
+                <input type="text" id="builds-name" placeholder="e.g., Web Design Builds" required>
+                <label>YouTube Link:</label>
+                <input type="text" id="builds-link" placeholder="https://youtube.com/..." required>
+                <button type="button" onclick="addBuild()">Add Build</button>
+            </form>
+            
+            <!-- Books Modal -->
+            <form id="books-form" class="modal-form" style="display:none;">
+                <label>Book Title:</label>
+                <input type="text" id="books-title" placeholder="e.g., The Design of Everyday Things" required>
+                <label>Author:</label>
+                <input type="text" id="books-author" placeholder="e.g., Don Norman" required>
+                <label>Cover Image URL:</label>
+                <input type="text" id="books-cover" placeholder="https://example.com/cover.jpg" required>
+                <button type="button" onclick="addBook()">Add Book</button>
+            </form>
+            
+            <!-- Resources Modal -->
+            <form id="resources-form" class="modal-form" style="display:none;">
+                <label>Resource Name:</label>
+                <input type="text" id="resources-name" placeholder="e.g., Dribbble" required>
+                <label>Link:</label>
+                <input type="text" id="resources-link" placeholder="https://example.com" required>
+                <button type="button" onclick="addResource()">Add Resource</button>
+            </form>
+            
+            <!-- Import Bookmarks Modal -->
+            <form id="import-bookmarks-form" class="modal-form" style="display:none;">
+                <label>Import Bookmarks from File:</label>
+                <input type="file" id="bookmarks-file" accept=".html" required style="padding: 8px; cursor: pointer;">
+                <p style="font-size: 0.85em; color: #666;">Upload your Bookmarks.html file - will import "Design Inspiration" bookmarks</p>
+                <button type="button" onclick="importBookmarks()">Import Resources</button>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        // IndexedDB Setup
+        const DB_NAME = 'GalleryDB';
+        const STORE_NAME = 'gallery-items';
+        const BOARDS_STORE_NAME = 'boards';
+        let db = null;
+        
+        // Initialize IndexedDB
+        function initDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 1);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (e) => {
+                    const newDB = e.target.result;
+                    if (!newDB.objectStoreNames.contains(STORE_NAME)) {
+                        newDB.createObjectStore(STORE_NAME, { keyPath: 'id' });
+                    }
+                    if (!newDB.objectStoreNames.contains(BOARDS_STORE_NAME)) {
+                        newDB.createObjectStore(BOARDS_STORE_NAME, { keyPath: 'id' });
+                    }
+                };
+            });
+        }
+        
+        // Storage Functions using IndexedDB for gallery-items and boards
+        async function getItemsFromStorage(key) {
+            if (key === 'gallery-items' || key === 'boards') {
+                return new Promise((resolve) => {
+                    if (!db) {
+                        resolve([]);
+                        return;
+                    }
+                    
+                    const storeName = key === 'gallery-items' ? STORE_NAME : BOARDS_STORE_NAME;
+                    const transaction = db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    
+                    request.onsuccess = () => {
+                        resolve(request.result);
+                    };
+                    request.onerror = () => {
+                        resolve([]);
+                    };
+                });
+            } else {
+                // For other data types, use localStorage
+                const stored = localStorage.getItem(key);
+                return stored ? JSON.parse(stored) : [];
+            }
+        }
+        
+        async function saveItemsToStorage(key, items) {
+            if (key === 'gallery-items') {
+                return new Promise((resolve) => {
+                    if (!db) {
+                        resolve();
+                        return;
+                    }
+                    
+                    const transaction = db.transaction(STORE_NAME, 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    store.clear();
+                    items.forEach(item => {
+                        store.add(item);
+                    });
+                    
+                    transaction.oncomplete = () => {
+                        resolve();
+                    };
+                    transaction.onerror = () => {
+                        resolve();
+                    };
+                });
+            } else {
+                // For other data types, use localStorage
+                localStorage.setItem(key, JSON.stringify(items));
+                return Promise.resolve();
+            }
+        }
+        
+        // Initialize Service Worker for caching
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js').catch(err => {
+                console.log('Service Worker registration failed:', err);
+            });
+        }
+        
+        // Auto-load bookmarks from file if resources are empty
+        async function autoLoadBookmarks() {
+            try {
+                const items = await getItemsFromStorage('resources-items');
+                
+                // Only load if resources are empty
+                if (items.length === 0) {
+                    const response = await fetch('../../data/design-resources/design-bookmarks/Bookmarks.html');
+                    const html = await response.text();
+                    const bookmarks = parseBookmarksHTML(html);
+                    
+                    if (bookmarks.length > 0) {
+                        bookmarks.forEach(bookmark => {
+                            items.push({ name: bookmark.name, link: bookmark.link, id: Date.now() + Math.random() });
+                        });
+                        await saveItemsToStorage('resources-items', items);
+                        console.log(`Auto-loaded ${bookmarks.length} bookmarks from Bookmarks.html`);
+                    }
+                }
+            } catch (error) {
+                console.log('Could not auto-load bookmarks:', error);
+                // This is not a critical error, just log and continue
+            }
+        }
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                await initDB();
+                await autoLoadBookmarks();
+                await loadAllItems();
+            } catch (error) {
+                console.error('Error initializing page:', error);
+            }
+        });
+        
+        // Modal Functions
+        function openModal(type) {
+            document.getElementById('modal').style.display = 'block';
+            document.querySelectorAll('.modal-form').forEach(form => form.style.display = 'none');
+            document.getElementById(type + '-form').style.display = 'block';
+            
+            const titles = {
+                gallery: 'Add Gallery Image',
+                'zip-upload': 'Upload ZIP File',
+                principles: 'Add Design Principle',
+                builds: 'Add Design Build',
+                books: 'Add Design Book',
+                resources: 'Add Design Resource',
+                'import-bookmarks': 'Import Bookmarks'
+            };
+            document.getElementById('modal-title').textContent = titles[type];
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+            document.querySelectorAll('input').forEach(input => input.value = '');
+        }
+        
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+        
+        // Zip Processing Functions
+        async function loadPresetZip(zipFilename) {
+            try {
+                const response = await fetch(zipFilename);
+                const blob = await response.blob();
+                await extractAndAddImages(blob, zipFilename);
+            } catch (error) {
+                alert('Could not load ' + zipFilename + '. Make sure the file exists in the same directory.');
+                console.error('Error:', error);
+            }
+        }
+        
+        function processZipFile() {
+            const fileInput = document.getElementById('zip-file-input');
+            if (!fileInput.files.length) {
+                alert('Please select a zip file');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            extractAndAddImages(file, file.name);
+        }
+        
+        async function extractAndAddImages(zipBlob, zipName) {
+            try {
+                // Import JSZip library dynamically
+                if (!window.JSZip) {
+                    const script = document.createElement('script');
+                    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                    document.head.appendChild(script);
+                    
+                    await new Promise(resolve => {
+                        script.onload = resolve;
+                    });
+                }
+                
+                const zip = new JSZip();
+                const loadedZip = await zip.loadAsync(zipBlob);
+                const items = await getItemsFromStorage('gallery-items');
+                let addedCount = 0;
+                
+                for (const [filename, file] of Object.entries(loadedZip.files)) {
+                    // Check if it's an image file (JPG, PNG, etc.)
+                    if (/\.(jpg|jpeg|png|gif|webp)$/i.test(filename) && !file.dir) {
+                        try {
+                            const blob = await file.async('blob');
+                            const imageUrl = URL.createObjectURL(blob);
+                            
+                            // Check if image already exists
+                            if (!items.find(item => item.url === imageUrl)) {
+                                items.push({
+                                    url: imageUrl,
+                                    id: Date.now() + addedCount,
+                                    source: zipName
+                                });
+                                addedCount++;
+                            }
+                        } catch (e) {
+                            console.error('Error processing file:', filename, e);
+                        }
+                    }
+                }
+                
+                await saveItemsToStorage('gallery-items', items);
+                await renderGallery();
+                
+                alert('Added ' + addedCount + ' images from ' + zipName);
+                closeModal();
+            } catch (error) {
+                console.error('Error extracting zip:', error);
+                alert('Error extracting zip file. Make sure it contains image files.');
+            }
+        }
+        
+        // Gallery Functions
+        async function addGalleryItem() {
+            const url = document.getElementById('gallery-url').value;
+            if (!url) return;
+            
+            const items = await getItemsFromStorage('gallery-items');
+            items.push({ url: url, id: Date.now() });
+            await saveItemsToStorage('gallery-items', items);
+            
+            await renderGallery();
+            document.getElementById('gallery-url').value = '';
+            closeModal();
+        }
+        
+        async function renderGallery() {
+            const items = await getItemsFromStorage('gallery-items');
+            const boards = await getItemsFromStorage('boards');
+            const container = document.getElementById('gallery-container');
+            container.innerHTML = '';
+            
+            if (items.length === 0) {
+                container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #999;">No images in gallery yet. <a href="design-inspo-gallery.html">Upload some!</a></p>';
+                return;
+            }
+            
+            // Only use custom boards (exclude "All Images")
+            const boardsWithImages = boards.filter(board => board.images && board.images.length > 0);
+            
+            if (boardsWithImages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; grid-column: 1 / -1; color: #999;">Create a board and add images to display them here. <a href="design-inspo-gallery.html">Go to Gallery</a></p>';
+                return;
+            }
+            
+            // Randomly select one board
+            const selectedBoard = boardsWithImages[Math.floor(Math.random() * boardsWithImages.length)];
+            
+            // Get images from the selected board, up to 5
+            const boardImageIds = selectedBoard.images;
+            const displayItems = boardImageIds
+                .map(id => items.find(item => item.id === id))
+                .filter(Boolean)
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 5);
+            
+            displayItems.forEach(item => {
+                const link = document.createElement('a');
+                link.href = 'design-inspo-gallery.html';
+                link.className = 'gallery-item';
+                // Use base64 or blob URL
+                const imageUrl = item.base64 || (item.blob ? URL.createObjectURL(item.blob) : item.url);
+                link.innerHTML = `<img src="${imageUrl}" alt="Design inspiration" onerror="this.src='https://via.placeholder.com/200?text=Image+Not+Found'">`;
+                container.appendChild(link);
+            });
+        }
+        
+        // Helper function to extract YouTube video ID and return thumbnail URL
+        function getYouTubeThumbnail(url) {
+            let videoId = null;
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/,
+                /youtube\.com\/embed\/([^&\n?#]+)/
+            ];
+            
+            for (let pattern of patterns) {
+                const match = url.match(pattern);
+                if (match) {
+                    videoId = match[1];
+                    break;
+                }
+            }
+            
+            if (videoId) {
+                return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+            }
+            return url; // Return original URL if not a YouTube link
+        }
+        
+        async function addPrinciple() {
+            const name = document.getElementById('principles-name').value;
+            const link = document.getElementById('principles-link').value;
+            if (!name || !link) return;
+            
+            const thumbnail = getYouTubeThumbnail(link);
+            const items = await getItemsFromStorage('principles-items');
+            items.push({ name: name, link: link, thumbnail: thumbnail, id: Date.now() });
+            await saveItemsToStorage('principles-items', items);
+            
+            await renderPrinciples();
+            document.getElementById('principles-name').value = '';
+            document.getElementById('principles-link').value = '';
+            closeModal();
+        }
+        
+        async function renderPrinciples() {
+            const items = await getItemsFromStorage('principles-items');
+            const container = document.getElementById('principles-container');
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'principle-item';
+                div.style.position = 'relative';
+                const imageUrl = item.thumbnail || item.link;
+                div.innerHTML = `
+                    <a href="${item.link}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="${imageUrl}" alt="${item.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer;">
+                        <p style="margin: 10px 0 0 0; font-weight: bold;">${item.name}</p>
+                    </a>
+                    <button class="delete-btn" onclick="deleteItem(event, 'principles-items', ${item.id})" style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; padding: 0; font-size: 14px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;\">✕</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Builds Functions
+        async function addBuild() {
+            const name = document.getElementById('builds-name').value;
+            const link = document.getElementById('builds-link').value;
+            if (!name || !link) return;
+            
+            const thumbnail = getYouTubeThumbnail(link);
+            const items = await getItemsFromStorage('builds-items');
+            items.push({ name: name, link: link, thumbnail: thumbnail, id: Date.now() });
+            await saveItemsToStorage('builds-items', items);
+            
+            await renderBuilds();
+            document.getElementById('builds-name').value = '';
+            document.getElementById('builds-link').value = '';
+            closeModal();
+        }
+        
+        async function renderBuilds() {
+            const items = await getItemsFromStorage('builds-items');
+            const container = document.getElementById('builds-container');
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'build-item';
+                div.style.position = 'relative';
+                const imageUrl = item.thumbnail || item.link;
+                div.innerHTML = `
+                    <a href="${item.link}" target="_blank" style="text-decoration: none; color: inherit;">
+                        <img src="${imageUrl}" alt="${item.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px; cursor: pointer;">
+                        <p style="margin: 10px 0 0 0; font-weight: bold;">${item.name}</p>
+                    </a>
+                    <button class="delete-btn" onclick="deleteItem(event, 'builds-items', ${item.id})" style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; padding: 0; font-size: 14px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;">✕</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Books Functions
+        async function addBook() {
+            const title = document.getElementById('books-title').value;
+            const author = document.getElementById('books-author').value;
+            const cover = document.getElementById('books-cover').value;
+            if (!title || !author || !cover) return;
+            
+            const items = await getItemsFromStorage('books-items');
+            items.push({ title: title, author: author, cover: cover, id: Date.now() });
+            await saveItemsToStorage('books-items', items);
+            
+            await renderBooks();
+            document.getElementById('books-title').value = '';
+            document.getElementById('books-author').value = '';
+            document.getElementById('books-cover').value = '';
+            closeModal();
+        }
+        
+        async function renderBooks() {
+            const items = await getItemsFromStorage('books-items');
+            const container = document.getElementById('books-container');
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'book-item';
+                div.style.position = 'relative';
+                div.innerHTML = `
+                    <img src="${item.cover}" alt="${item.title}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 8px;">
+                    <p><strong>${item.title}</strong></p>
+                    <p>${item.author}</p>
+                    <button class="delete-btn" onclick="deleteItem(event, 'books-items', ${item.id})" style="position: absolute; top: 5px; right: 5px; width: 24px; height: 24px; padding: 0; font-size: 14px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s;">✕</button>
+                `;
+                container.appendChild(div);
+            });
+        }
+        
+        // Resources Functions
+        async function addResource() {
+            const name = document.getElementById('resources-name').value;
+            const link = document.getElementById('resources-link').value;
+            if (!name || !link) return;
+            
+            const items = await getItemsFromStorage('resources-items');
+            items.push({ name: name, link: link, id: Date.now() });
+            await saveItemsToStorage('resources-items', items);
+            
+            await renderResources();
+            document.getElementById('resources-name').value = '';
+            document.getElementById('resources-link').value = '';
+            closeModal();
+        }
+        
+        async function renderResources() {
+            const items = await getItemsFromStorage('resources-items');
+            const container = document.getElementById('resources-container');
+            container.innerHTML = '';
+            
+            items.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'resource-item';
+                div.style.position = 'relative';
+                div.style.display = 'flex';
+                div.style.alignItems = 'center';
+                div.style.gap = '15px';
+                div.style.padding = '12px';
+                div.style.borderRadius = '8px';
+                div.style.marginBottom = '10px';
+                div.style.backgroundColor = '#f9f9f9';
+                div.style.transition = 'background-color 0.2s';
+                div.style.minHeight = '64px';
+                
+                // Extract domain from URL
+                let domain = item.link;
+                try {
+                    domain = new URL(item.link).hostname.replace('www.', '');
+                } catch(e) {
+                    // If URL parsing fails, use the original link
+                }
+                
+                // Use Google's favicon service for the website preview
+                const faviconUrl = `https://www.google.com/s2/favicons?sz=64&domain=${domain}`;
+                
+                div.innerHTML = `
+                    <img src="${faviconUrl}" alt="${item.name}" style="width: 40px; height: 40px; flex-shrink: 0; border-radius: 4px;">
+                    <a href="${item.link}" target="_blank" style="text-decoration: none; color: inherit; flex-grow: 1; min-width: 0; overflow: hidden;">
+                        <div style="font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${item.name}</div>
+                        <div style="font-size: 0.85em; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${domain}</div>
+                    </a>
+                    <button class="delete-btn" onclick="deleteItem(event, 'resources-items', ${item.id})" style="position: relative; width: 24px; height: 24px; padding: 0; font-size: 14px; border-radius: 50%; background: rgba(255, 255, 255, 0.9); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0.7; transition: opacity 0.2s; flex-shrink: 0;\">✕</button>
+                `;
+                
+                div.addEventListener('mouseenter', () => {
+                    div.style.backgroundColor = '#f0f0f0';
+                });
+                div.addEventListener('mouseleave', () => {
+                    div.style.backgroundColor = '#f9f9f9';
+                });
+                
+                container.appendChild(div);
+            });
+        }
+        
+        // Import Bookmarks Function
+        async function importBookmarks() {
+            const fileInput = document.getElementById('bookmarks-file');
+            if (!fileInput.files.length) {
+                alert('Please select a bookmarks file');
+                return;
+            }
+            
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+            
+            reader.onload = async (e) => {
+                try {
+                    const html = e.target.result;
+                    const bookmarks = parseBookmarksHTML(html);
+                    
+                    if (bookmarks.length === 0) {
+                        alert('No Design Inspiration bookmarks found in the file');
+                        return;
+                    }
+                    
+                    // Add bookmarks to storage
+                    const items = await getItemsFromStorage('resources-items');
+                    bookmarks.forEach(bookmark => {
+                        items.push({ name: bookmark.name, link: bookmark.link, id: Date.now() + Math.random() });
+                    });
+                    await saveItemsToStorage('resources-items', items);
+                    
+                    await renderResources();
+                    closeModal();
+                    alert(`Successfully imported ${bookmarks.length} bookmarks!`);
+                } catch (error) {
+                    console.error('Error importing bookmarks:', error);
+                    alert('Error importing bookmarks. Please check the file format.');
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        // Parse Design Inspiration bookmarks from HTML
+        function parseBookmarksHTML(html) {
+            const bookmarks = [];
+            
+            // Find the Design Inspiration section
+            const designInspoMatch = html.match(/<H3>Design Inspiration<\/H3>[\s\S]*?<DL>[\s\S]*?<\/DL>/i);
+            if (!designInspoMatch) {
+                return bookmarks;
+            }
+            
+            const designInspoSection = designInspoMatch[0];
+            
+            // Extract all links within this section
+            const linkRegex = /<A HREF="([^"]+)">([^<]+)<\/A>/gi;
+            let match;
+            
+            while ((match = linkRegex.exec(designInspoSection)) !== null) {
+                const url = match[1];
+                const name = match[2];
+                
+                // Skip H3 titles and nested folders
+                if (url && name && !name.match(/^[A-Z\s]+$/)) {
+                    bookmarks.push({ name: name, link: url });
+                }
+            }
+            
+            return bookmarks;
+        }
+        
+        // Delete Function
+        async function deleteItem(event, storageKey, itemId) {
+            event.preventDefault();
+            event.stopPropagation();
+            
+            let items = await getItemsFromStorage(storageKey);
+            items = items.filter(item => item.id !== itemId);
+            await saveItemsToStorage(storageKey, items);
+            
+            if (storageKey === 'gallery-items') await renderGallery();
+            else if (storageKey === 'principles-items') await renderPrinciples();
+            else if (storageKey === 'builds-items') await renderBuilds();
+            else if (storageKey === 'books-items') await renderBooks();
+            else if (storageKey === 'resources-items') await renderResources();
+        }
+        
+        // Load all items on page load
+        async function loadAllItems() {
+            await renderGallery();
+            await renderPrinciples();
+            await renderBuilds();
+            await renderBooks();
+            await renderResources();
+        }
+
+    </script>
+</body>
+</html>

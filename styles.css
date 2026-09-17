@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;600;700&family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Sometype+Mono:wght@400;700&family=Fredoka+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;700&display=swap');
 
 /* --- PAGE LAYOUT --- */
 body {
@@ -27,9 +27,9 @@ body {
 .home-header-title {
   all: unset;           /* strips ALL default h1 styling */
   display: block;       /* restore block-level, since 'unset' makes it inline */
-  font-family: 'Space Mono', monospace;
+  font-family: 'Inter', sans-serif;
   font-size: 2.5rem;
-  font-weight: 400;
+  font-weight: 500;
   margin: 0 0 10px 0;
 }
 
@@ -90,8 +90,8 @@ body {
 */
 @keyframes floatBubble {
   0%   { transform: translate(0, 0); }
-  25%  { transform: translate(calc(var(--float-x) * 0.6), calc(var(--float-y) * 1)); }
-  50%  { transform: translate(calc(var(--float-x) * -0.4), calc(var(--float-y) * -0.4)); }
-  75%  { transform: translate(calc(var(--float-x) * -1), calc(var(--float-y) * 0.7)); }
+  25%  { transform: translate(calc(var(--float-x) * 0.2), calc(var(--float-y) * 1)); }
+  50%  { transform: translate(calc(var(--float-x) * -0.2), calc(var(--float-y) * -0.2)); }
+  75%  { transform: translate(calc(var(--float-x) * -1), calc(var(--float-y) * 0.2)); }
   100% { transform: translate(0, 0); }
 }

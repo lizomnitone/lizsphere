@@ -491,7 +491,7 @@
 <body>
     <nav>
         <a href="index.html">Home</a>
-        <a href="design-inspo.html">Design Dashboard</a>
+        <a href="design-resources.html">Design Resources</a>
         <a href="design-techniques.html">Design Techniques</a>
         <a href="setup.html">Setup</a>
     </nav>
@@ -514,7 +514,7 @@
             <div class="button-group">
                 <button class="add-btn" id="paint-swatches-toggle-btn" onclick="togglePaintSwatchesGlobal(this)" style="display: none;">Hide Paint Swatches</button>
                 <button class="add-btn" id="edit-categories-btn" onclick="toggleEditMode().then(() => {})" style="display: none;">Edit</button>
-                <button class="add-btn" id="grid-view-btn" onclick="toggleGridView()" style="display: none;">⊞ Grid View</button>
+                <button class="add-btn" id="grid-view-btn" onclick="toggleGridView()" style="display: none;">⊞ More Cards</button>
                 <button class="add-btn" id="add-image-btn" onclick="openModal('gallery')" style="display: none;">+ Add Image</button>
                 <button class="add-btn" id="upload-zip-btn" onclick="openModal('zip-upload')" style="display: none;">+ Upload Zip</button>
                 <button class="add-btn" id="export-categories-btn" onclick="exportCategoriesBackup()">↓ Export Backup</button>
@@ -1170,7 +1170,7 @@
                 container.classList.add('grid-view-mode');
                 btn.style.backgroundColor = '#333';
                 btn.style.color = '#fffef7';
-                btn.textContent = '≣ List View';
+                btn.textContent = '⊞ Less Cards';
             } else {
                 container.classList.remove('grid-view-mode');
                 btn.style.backgroundColor = '';
