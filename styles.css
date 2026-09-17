@@ -1,83 +1,95 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Caveat:wght@400;600;700&family=Indie+Flower&family=Patrick+Hand&family=Shadows+Into+Light&family=Permanent+Marker&family=Sometype+Mono:wght@400;700&family=Fredoka+One&display=swap');
-@import url('https://googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-@import url('https://googleapis.com/css2?family=Inter:wght@100;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;700&display=swap');
 
-/* --- 1. PAGE LAYOUT POSITIONING --- */
+/* --- PAGE LAYOUT --- */
 body {
-margin: 0;
-padding: 0;
-font-family: 'Space Mono', monospace;
-background-color: #f8fafc;
+  margin: 0;
+  padding: 0;
+  font-family: 'Space Mono', monospace;
+  background-color: #f8fafc;
 }
 
 .page-container {
-display: flex;
-flex-direction: column;
-min-height: 100vh;
-padding: 40px;
-box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 40px;
+  box-sizing: border-box;
 }
 
-.header-text {
-align-self: flex-start;
-}
-
-.header-text h1 {
-margin: 0 0 10px 0;
-font-family: 'Inter', sans-serif; 
-font-weight: 700;
-font-size: 2.5rem;
-}
-
-.home-header hh {
-margin: 10px 10px 10px 0;
-font-size: 2.5rem;
-font-family: 'Inter', sans-serif; 
-font-weight: 200;
-font-size: 2.5rem;
-}
-
-
-.header-text p {
-margin: 0;
-color: #64748b;
-}
-
-/* Layout alignment */
-
-
-.sphere-svg:hover {
-transform: scale(1.2);
-}
-
-.sphere-wrapper {
-  margin-top: 40px;
+/* --- HEADER --- */
+.home-header {
   align-self: flex-start;
-  animation: floatBubble 1s ease-in-out infinite;
+}
+
+.home-header-title {
+  all: unset;           /* strips ALL default h1 styling */
+  display: block;       /* restore block-level, since 'unset' makes it inline */
+  font-family: 'Space Mono', monospace;
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin: 0 0 10px 0;
+}
+
+.home-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+/* --- BUBBLES LAYOUT --- */
+.bubbles-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 30px;
+  justify-content: flex-end;
+  margin-top: 40px;
+}
+
+/* --- BUBBLE LINK / WRAPPER --- */
+.sphere-link {
+  display: inline-block;
+  text-decoration: none;
+}
+
+/*
+  --float-x, --float-y, --float-duration are set per-bubble as inline styles
+  from JS (see index.html). Fallback values here only apply if JS fails to run.
+*/
+.sphere-wrapper {
+  --float-x: 10px;
+  --float-y: -10px;
+  --float-duration: 6s;
+  animation: floatBubble var(--float-duration) ease-in-out infinite;
 }
 
 .sphere-svg {
+  display: block; /* removes SVG's default inline-element gap */
   cursor: pointer;
   transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: block; /* removes SVG's default inline-element gap */
 }
 
 .sphere-svg:hover {
   transform: scale(1.12);
 }
 
+/* --- TEXT INSIDE BUBBLE --- */
 .bubble-text {
-  font-family: 'Space Mono', monospaced;
-  font-size: 20px;
-  font-weight: 50;
+  font-family: 'Space Mono', monospace;
+  font-weight: 700;
   fill: #ffffff;
-  animation: driftInside 5s ease-in-out infinite;
 }
 
+/* --- ANIMATIONS --- */
+/*
+  Uses --float-x / --float-y so each wrapper drifts a different distance,
+  in a different direction, at a different speed -- all from one shared keyframe.
+*/
 @keyframes floatBubble {
   0%   { transform: translate(0, 0); }
-  25%  { transform: translate(8px, -14px); }
-  50%  { transform: translate(-6px, -8px); }
-  75%  { transform: translate(5px, 10px); }
-  100% { transform: translate(0px, 0); }
+  25%  { transform: translate(calc(var(--float-x) * 0.6), calc(var(--float-y) * 1)); }
+  50%  { transform: translate(calc(var(--float-x) * -0.4), calc(var(--float-y) * -0.4)); }
+  75%  { transform: translate(calc(var(--float-x) * -1), calc(var(--float-y) * 0.7)); }
+  100% { transform: translate(0, 0); }
 }
