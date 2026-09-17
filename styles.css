@@ -24,8 +24,19 @@ align-self: flex-start;
 
 .header-text h1 {
 margin: 0 0 10px 0;
+font-family: 'Inter', sans-serif; 
+font-weight: 700;
 font-size: 2.5rem;
 }
+
+.home-header hh {
+margin: 10px 10px 10px 0;
+font-size: 2.5rem;
+font-family: 'Inter', sans-serif; 
+font-weight: 200;
+font-size: 2.5rem;
+}
+
 
 .header-text p {
 margin: 0;
@@ -34,6 +45,9 @@ color: #64748b;
 
 /* Layout alignment */
 .sphere-svg {
-margin-top: 40px;
-align-self: flex-end;
+margin: 10px 10px 10px 0;
+
+align-self: flex-start;
 }
+
+
