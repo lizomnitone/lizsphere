@@ -423,63 +423,15 @@
 <body>
     <nav>
         <a href="index.html">Home</a>
-        <a href="books.html">Books</a>
-        <a href="design-inspo.html">Design Inspiration</a>
+        <a href="design-gallery.html">Design Gallery</a>
+        <a href="design-techniques.html">Design Techniques</a>
+
     </nav>
     
     <!-- Row 1: Title -->
-    <h1>Design Inspiration</h1>
+    <h1>Design Resources</h1>
     
-    <div style="text-align: center; margin-bottom: 40px;">
-        <a href="design-techniques.html" style="display: inline-block; padding: 12px 24px; background-color: rgba(245, 240, 230, 0.4); border-radius: 20px; color: #333; text-decoration: none; font-weight: 700; transition: all 0.3s ease; border: 1px solid rgba(255, 255, 255, 0.5); backdrop-filter: blur(10px);">Design Techniques Wiki →</a>
-    </div>
-    
-    <!-- Row 2: Pinterest-style Image Gallery -->
-    <div class="design-section">
-        <div class="section-header">
-            <div class="section-title" style="flex-grow: 1; margin-bottom: 0; text-align: left;">Image Gallery</div>
-            <div style="display: flex; gap: 10px; align-items: center; justify-content: flex-end;">
-                <button class="add-btn" onclick="renderGallery()" style="padding: 8px 14px; font-size: 1.4em; border-radius: 8px; font-family: monospace; font-weight: 700;" title="Refresh images">↻</button>
-                <a href="design-inspo-gallery.html" class="add-btn" style="text-decoration: none; display: inline-block;">View Full Gallery →</a>
-            </div>
-        </div>
-        <div class="pinterest-gallery" id="gallery-container">
 
-        </div>
-    </div>
-    
-    <!-- Row 3: Three Columns -->
-    <div class="three-column-section">
-        <!-- Left Column: Design Principles -->
-        <div class="design-section column-left">
-            <div class="section-header">
-                <div class="section-title">Design Principles</div>
-                <button class="add-btn" onclick="openModal('principles')">+ Add Principle</button>
-            </div>
-            <div class="principles-list" id="principles-container">
-            </div>
-        </div>
-        
-        <!-- Middle Column: Design Build Inspiration -->
-        <div class="design-section column-middle">
-            <div class="section-header">
-                <div class="section-title">Design Build Inspiration</div>
-                <button class="add-btn" onclick="openModal('builds')">+ Add Build</button>
-            </div>
-            <div class="build-list" id="builds-container">
-            </div>
-        </div>
-        
-        <!-- Right Column: Books -->
-        <div class="design-section column-right">
-            <div class="section-header">
-                <div class="section-title">Design Books</div>
-                <button class="add-btn" onclick="openModal('books')">+ Add Book</button>
-            </div>
-            <div class="books-list" id="books-container">
-            </div>
-        </div>
-    </div>
     
     <!-- Row 4: Design Resources -->
     <div class="design-section">
@@ -493,57 +445,6 @@
         <div class="resources-list" id="resources-container">
         </div>
     </div>
-    
-
-    <div id="modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modal-title">Add Item</h2>
-            
-            <!-- Gallery Modal -->
-            <form id="gallery-form" class="modal-form" style="display:none;">
-                <label>Image URL:</label>
-                <input type="text" id="gallery-url" placeholder="https://example.com/image.jpg" required>
-                <button type="button" onclick="addGalleryItem()">Add Image</button>
-            </form>
-            
-            <!-- Zip Upload Modal -->
-            <form id="zip-upload-form" class="modal-form" style="display:none;">
-                <label>Upload ZIP file:</label>
-                <input type="file" id="zip-file-input" accept=".zip" required>
-                <p style="font-size: 0.85em; color: #666;">Supported: ZIP files with JPG images inside</p>
-                <button type="button" onclick="processZipFile()">Extract & Load</button>
-            </form>
-            
-            <!-- Principles Modal -->
-            <form id="principles-form" class="modal-form" style="display:none;">
-                <label>Principle Name:</label>
-                <input type="text" id="principles-name" placeholder="e.g., Balance" required>
-                <label>YouTube Link:</label>
-                <input type="text" id="principles-link" placeholder="https://youtube.com/..." required>
-                <button type="button" onclick="addPrinciple()">Add Principle</button>
-            </form>
-            
-            <!-- Builds Modal -->
-            <form id="builds-form" class="modal-form" style="display:none;">
-                <label>Build Name:</label>
-                <input type="text" id="builds-name" placeholder="e.g., Web Design Builds" required>
-                <label>YouTube Link:</label>
-                <input type="text" id="builds-link" placeholder="https://youtube.com/..." required>
-                <button type="button" onclick="addBuild()">Add Build</button>
-            </form>
-            
-            <!-- Books Modal -->
-            <form id="books-form" class="modal-form" style="display:none;">
-                <label>Book Title:</label>
-                <input type="text" id="books-title" placeholder="e.g., The Design of Everyday Things" required>
-                <label>Author:</label>
-                <input type="text" id="books-author" placeholder="e.g., Don Norman" required>
-                <label>Cover Image URL:</label>
-                <input type="text" id="books-cover" placeholder="https://example.com/cover.jpg" required>
-                <button type="button" onclick="addBook()">Add Book</button>
-            </form>
-            
             <!-- Resources Modal -->
             <form id="resources-form" class="modal-form" style="display:none;">
                 <label>Resource Name:</label>
@@ -552,111 +453,10 @@
                 <input type="text" id="resources-link" placeholder="https://example.com" required>
                 <button type="button" onclick="addResource()">Add Resource</button>
             </form>
-            
-            <!-- Import Bookmarks Modal -->
-            <form id="import-bookmarks-form" class="modal-form" style="display:none;">
-                <label>Import Bookmarks from File:</label>
-                <input type="file" id="bookmarks-file" accept=".html" required style="padding: 8px; cursor: pointer;">
-                <p style="font-size: 0.85em; color: #666;">Upload your Bookmarks.html file - will import "Design Inspiration" bookmarks</p>
-                <button type="button" onclick="importBookmarks()">Import Resources</button>
-            </form>
         </div>
-    </div>
+</div>
     
     <script>
-        // IndexedDB Setup
-        const DB_NAME = 'GalleryDB';
-        const STORE_NAME = 'gallery-items';
-        const BOARDS_STORE_NAME = 'boards';
-        let db = null;
-        
-        // Initialize IndexedDB
-        function initDB() {
-            return new Promise((resolve, reject) => {
-                const request = indexedDB.open(DB_NAME, 1);
-                
-                request.onerror = () => reject(request.error);
-                request.onsuccess = () => {
-                    db = request.result;
-                    resolve(db);
-                };
-                
-                request.onupgradeneeded = (e) => {
-                    const newDB = e.target.result;
-                    if (!newDB.objectStoreNames.contains(STORE_NAME)) {
-                        newDB.createObjectStore(STORE_NAME, { keyPath: 'id' });
-                    }
-                    if (!newDB.objectStoreNames.contains(BOARDS_STORE_NAME)) {
-                        newDB.createObjectStore(BOARDS_STORE_NAME, { keyPath: 'id' });
-                    }
-                };
-            });
-        }
-        
-        // Storage Functions using IndexedDB for gallery-items and boards
-        async function getItemsFromStorage(key) {
-            if (key === 'gallery-items' || key === 'boards') {
-                return new Promise((resolve) => {
-                    if (!db) {
-                        resolve([]);
-                        return;
-                    }
-                    
-                    const storeName = key === 'gallery-items' ? STORE_NAME : BOARDS_STORE_NAME;
-                    const transaction = db.transaction(storeName, 'readonly');
-                    const store = transaction.objectStore(storeName);
-                    const request = store.getAll();
-                    
-                    request.onsuccess = () => {
-                        resolve(request.result);
-                    };
-                    request.onerror = () => {
-                        resolve([]);
-                    };
-                });
-            } else {
-                // For other data types, use localStorage
-                const stored = localStorage.getItem(key);
-                return stored ? JSON.parse(stored) : [];
-            }
-        }
-        
-        async function saveItemsToStorage(key, items) {
-            if (key === 'gallery-items') {
-                return new Promise((resolve) => {
-                    if (!db) {
-                        resolve();
-                        return;
-                    }
-                    
-                    const transaction = db.transaction(STORE_NAME, 'readwrite');
-                    const store = transaction.objectStore(STORE_NAME);
-                    
-                    store.clear();
-                    items.forEach(item => {
-                        store.add(item);
-                    });
-                    
-                    transaction.oncomplete = () => {
-                        resolve();
-                    };
-                    transaction.onerror = () => {
-                        resolve();
-                    };
-                });
-            } else {
-                // For other data types, use localStorage
-                localStorage.setItem(key, JSON.stringify(items));
-                return Promise.resolve();
-            }
-        }
-        
-        // Initialize Service Worker for caching
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js').catch(err => {
-                console.log('Service Worker registration failed:', err);
-            });
-        }
         
         // Auto-load bookmarks from file if resources are empty
         async function autoLoadBookmarks() {
@@ -665,7 +465,7 @@
                 
                 // Only load if resources are empty
                 if (items.length === 0) {
-                    const response = await fetch('../../data/design-resources/design-bookmarks/Bookmarks.html');
+                    const response = await fetch('Bookmarks.html');
                     const html = await response.text();
                     const bookmarks = parseBookmarksHTML(html);
                     

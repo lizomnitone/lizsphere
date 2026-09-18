@@ -493,11 +493,9 @@
         <a href="index.html">Home</a>
         <a href="design-resources.html">Design Resources</a>
         <a href="design-techniques.html">Design Techniques</a>
-        <a href="setup.html">Setup</a>
     </nav>
     
     <h1>Design Gallery</h1>
-    
     <!-- Boards Section -->
     <div class="boards-section">
         <div class="section-header">
@@ -607,7 +605,7 @@
             <form id="zip-upload-form" class="modal-form" style="display:none;">
                 <label>Upload ZIP file:</label>
                 <input type="file" id="zip-file-input" accept=".zip" required>
-                <p style="font-size: 0.85em; color: #666;">Supported: ZIP files with JPG images inside</p>
+                <p style="font-size: 0.85em; color: #000000;">Supported: ZIP files with JPG images inside</p>
                 <label style="margin-top: 20px;">Add to Boards (optional):</label>
                 <div id="zip-boards-checkboxes" style="display: flex; flex-direction: column; gap: 10px; max-height: 200px; overflow-y: auto;"></div>
                 <button type="button" onclick="processZipFile().then(() => {})">Extract & Load</button>
@@ -1175,7 +1173,7 @@
                 container.classList.remove('grid-view-mode');
                 btn.style.backgroundColor = '';
                 btn.style.color = '';
-                btn.textContent = '⊞ Grid View';
+                btn.textContent = '⊞ More Cards';
             }
         }
 
@@ -1897,7 +1895,7 @@
             if (gridViewMode) {
                 gridViewMode = false;
                 document.getElementById('gallery-container').classList.remove('grid-view-mode');
-                document.getElementById('grid-view-btn').textContent = '⊞ Grid View';
+                document.getElementById('grid-view-btn').textContent = '⊞ More Cards';
                 document.getElementById('grid-view-btn').style.backgroundColor = '';
                 document.getElementById('grid-view-btn').style.color = '';
             }
