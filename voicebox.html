@@ -8,22 +8,18 @@
 </head>
 <body>
 
-<div class="page-container">
+<!-- Added voicebox-page scope class here -->
+<div class="page-container voicebox-page">
+
 <div class="home-header">
 <h1 class="home-header-title">The Voicebox</h1>
 <p>Work in progress...</p>
 </div>
 
+<!-- Cleaned up duplicate/broken bubble markup -->
+<div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
 
-  <!-- All your Voicebox content -->
-  <div class="bubbles-container" id="bubbles-container">
-  <div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div
-  </div>
-  
-
-
-
-<!-- LEFT: updates / RIGHT: 2x youtube videos -->
+<!-- LEFT: updates & progress / RIGHT: 2x youtube videos -->
 <div class="content-grid">
 
   <div class="updates-column">
@@ -42,7 +38,6 @@
   <div class="videos-column" id="videos-column"></div>
 
 </div>
-
 
 <!-- BELOW: Tiled Gallery Grid -->
 <div class="gallery-section">
@@ -79,19 +74,19 @@ const bubbles = [
     href: "/index.html",
     label: "Back to Home",
     colors: ["#ff0055", "#7a00ff", "#7a00ff", "#ff0055"],
-    fontSize: 40,
-    size: 140,
+    size: 85,
+    minFontSize: 14, // Enforces readable minimum font size
     pinned: true,
-    floatDistance: 10,
+    floatDistance: 5,
   }, 
   {
     href: "/synthesizers.html",
     label: "Synthesizers",
-    colors: ["#ff0055", "#7a00ff", "#7a00ff", "#ff0055"],
-    fontSize: 40,
-    size: 140,
+    colors: ["#FFB639", "#8178FF", "#FF009B", "#FFB639"],
+    size: 85,
+    minFontSize: 14,
     pinned: true,
-    floatDistance: 10,
+    floatDistance: 5,
   }
 ];
 
@@ -120,6 +115,11 @@ function fillDefaults(bubble) {
   };
 }
 
+// ============================================================
+// BACK-TO-HOME BUBBLE
+// ============================================================
+
+
 function createBubbleSVG(rawBubble, index) {
   const uid = `bubble-${index}`;
   const b = fillDefaults(rawBubble);
@@ -128,7 +128,12 @@ function createBubbleSVG(rawBubble, index) {
   const floatY = (b.floatDistance * Math.sin(angleRad)).toFixed(1);
   const [c1, c2, c3, c4] = b.colors;
   const wrapperStyle = `--float-x: ${floatX}px; --float-y: ${floatY}px; --float-duration: ${b.floatDuration}s;`;
-  const textFontSize = Math.round((b.size / 130) * 22);
+  
+  // Enforces a minimum text size so small bubbles stay legible
+  const calculatedFont = Math.round((b.size / 130) * 26);
+  const minFont = rawBubble.minFontSize || 14;
+  const textFontSize = Math.max(calculatedFont, minFont);
+
   const pinnedClass = b.pinned ? ' sphere-wrapper--pinned' : '';
 
   return `
@@ -174,7 +179,6 @@ function createBubbleSVG(rawBubble, index) {
     </a>
   `;
 }
-
 document.getElementById('bubbles-container').innerHTML =
   bubbles.map((b, i) => createBubbleSVG(b, i)).join('');
 
@@ -200,37 +204,37 @@ const progressData = [
   { 
     label: "Industrial Design", 
     percent: 65, 
-    color: "#ff4e50", // Sunset Pink/Red
-    status: "In Progress", 
-    nextTask: "Finalize enclosure CAD models" 
+    color: "#ff4e50", 
+    status: "Paused", 
+    nextTask: "CNC the front panel for buttons and knobs!" 
   },
   { 
     label: "Electronics", 
-    percent: 40, 
-    color: "#f9d423", // Sunset Gold/Yellow
-    status: "In Progress", 
-    nextTask: "Solder PCB revision 2" 
+    percent: 5, 
+    color: "#f9d423", 
+    status: "Paused", 
+    nextTask: "Create block diagram from selected components" 
   },
   { 
     label: "Code", 
-    percent: 80, 
-    color: "#ff7e5f", // Sunset Coral/Orange
+    percent: 15, 
+    color: "#ff7e5f", 
     status: "In Progress", 
-    nextTask: "Implement audio processing buffers" 
+    nextTask: "Read + do exercises from ch2 of audio programming" 
   },
   { 
     label: "Mechanical Design", 
     percent: 0, 
-    color: "#feb47b", // Soft Peach/Orange
+    color: "#feb47b", 
     status: "Not started", 
-    nextTask: "Dowel pin clearance testing" 
+    nextTask: "CAD in Fusion" 
   },
   { 
     label: "Videos", 
     percent: 25, 
-    color: "#6dd5ed", // Soft Sunset Blue
+    color: "#6dd5ed", 
     status: "In Progress", 
-    nextTask: "Edit Voicebox Part 3 footage" 
+    nextTask: "Twidling my thumbs to edit part 3" 
   }
 ];
 
@@ -254,7 +258,6 @@ function renderProgressBars() {
   `).join('');
 }
 renderProgressBars();
-
 
 // ============================================================
 // UPDATES
@@ -351,7 +354,7 @@ function closeImageModal() {
 
 
 // ============================================================
-// SHARED MODAL BEHAVIOR: Escape key + click-outside-to-close
+// SHARED MODAL BEHAVIOR
 // ============================================================
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
