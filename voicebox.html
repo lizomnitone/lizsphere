@@ -221,7 +221,7 @@ const progressData = [
     percent: 15, 
     color: "#ff7e5f", 
     status: "In Progress", 
-    nextTask: "Read + do exercises from ch2 of audio programming" 
+    nextTask: "Get audio io working on PC" 
   },
   { 
     label: "Mechanical Design", 
@@ -264,16 +264,11 @@ renderProgressBars();
 // UPDATES
 // ============================================================
 // Accessing the newest post (index 0) from voicebox-updates
-const mostRecentPost = allUpdates[0];
 
-const updates = [
-  {
-    date: mostRecentPost.date,
-    title: mostRecentPost.title,
-    // Strips HTML tags from content to extract a clean text excerpt
-    excerpt: mostRecentPost.content.replace(/<[^>]*>/g, '').trim().slice(0, 150) + '...'
-  }
-];
+
+
+
+
 function renderUpdates() {
   const list = document.getElementById('updates-list');
   if (!list) return;
@@ -378,4 +373,66 @@ document.querySelectorAll('.modal-overlay').forEach(overlay => {
 </script>
 
 </body>
+
+<script>
+  async function loadMostRecentUpdate() {
+    try {
+      // 1. Fetch the raw HTML content from voicebox-updates.html
+      const response = await fetch('voicebox-updates.html');
+      const htmlText = await response.text();
+
+      // 2. Parse the HTML to extract the text inside the <script> block
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(htmlText, 'text/html');
+      
+      // Select the script containing allUpdates
+      const scripts = doc.querySelectorAll('script');
+      let scriptContent = '';
+      
+      scripts.forEach(s => {
+        if (s.textContent.includes('allUpdates')) {
+          scriptContent = s.textContent;
+        }
+      });
+
+      if (!scriptContent) {
+        // If voicebox-updates.html is just raw JS without <script> tags:
+        scriptContent = htmlText;
+      }
+
+      // 3. Execute the script safely to define allUpdates in memory
+      const executeScript = new Function(scriptContent + '; return allUpdates;');
+      const allUpdates = executeScript();
+
+      // 4. Extract the latest post
+      const mostRecentPost = allUpdates[0];
+
+      const updates = [
+        {
+          date: mostRecentPost.date,
+          title: mostRecentPost.title,
+          excerpt: mostRecentPost.content.replace(/<[^>]*>/g, '').trim().slice(0, 150) + '...'
+        }
+      ];
+
+      // 5. Render to DOM
+      const list = document.getElementById('updates-list');
+      if (list) {
+        list.innerHTML = updates.map(u => `
+          <div class="update-card">
+            <div class="update-date">${u.date}</div>
+            <h3>${u.title}</h3>
+            <p>${u.excerpt}</p>
+          </div>
+        `).join('');
+      }
+
+    } catch (err) {
+      console.error('Failed to load blog updates:', err);
+    }
+  }
+
+  loadMostRecentUpdate();
+</script>
 </html>
+
