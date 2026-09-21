@@ -266,23 +266,6 @@ renderProgressBars();
 // Accessing the newest post (index 0) from voicebox-updates
 
 
-
-
-
-function renderUpdates() {
-  const list = document.getElementById('updates-list');
-  if (!list) return;
-  list.innerHTML = updates.map(u => `
-    <div class="update-card">
-      <div class="update-date">${u.date}</div>
-      <h3>${u.title}</h3>
-      <p>${u.excerpt}</p>
-    </div>
-  `).join('');
-}
-renderUpdates();
-
-
 // ============================================================
 // VIDEOS
 // ============================================================
