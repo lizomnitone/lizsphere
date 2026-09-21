@@ -263,14 +263,17 @@ renderProgressBars();
 // ============================================================
 // UPDATES
 // ============================================================
+// Accessing the newest post (index 0) from voicebox-updates
+const mostRecentPost = allUpdates[0];
+
 const updates = [
   {
-    date: "Sept 18, 2026",
-    title: "Well, at least I found the right book.",
-    excerpt: "The good news is, Audio Programming by Victor Lazzarini and Richard Boulanger is certainly the right book to help me with this project...",
-  },
+    date: mostRecentPost.date,
+    title: mostRecentPost.title,
+    // Strips HTML tags from content to extract a clean text excerpt
+    excerpt: mostRecentPost.content.replace(/<[^>]*>/g, '').trim().slice(0, 150) + '...'
+  }
 ];
-
 function renderUpdates() {
   const list = document.getElementById('updates-list');
   if (!list) return;
