@@ -182,6 +182,35 @@ requestAnimationFrame(animateAllGradients);
 // ALL BLOG POSTS DATA
 // ============================================================
 const allUpdates = [
+   {
+      /* Add future blog updates here */
+    id: "post-3",
+    date: "Sept 21, 2026",
+    title: "Moooonday, port audio time",
+    content: `
+      <p>Yesterday I got a few port  audio examples to work, but not all of them. This is good, much better than futzing around with CoreAudio, Mac OS' intense API for audio. 
+        Thank goodness. Im going to continue to investigate and make sure the functionality works in entirity in the examples, otherwise I will have no source of truth when I 
+        frankenstein something of my own. Wish me luck, internet void!  
+
+        Update: did not have microphone permissions set. doi. Looks like port audio examples are working properly now.
+        Time to start building the port Audio functionality into usable files for the voicebox. I think I shall begin with recording in to a fixed length buffer, and doing playback of that same buffer. 
+        Once I get that to work reliably, I may attempt to start an FFT algorithm and convert to synthesized waves. 
+      </p>
+      `
+  },
+   {
+    id: "post-2",
+    date: "Sept 20, 2026",
+    title: "Happy sunday, this is my strategy for not being overwhelmed.",
+    content: `
+      <p>Starting a short session for voicebox at Timmies. I convinced myself the strategy to not feeling overwhelmed this week 
+        is to do a little tiny smidgen of work today, Sunday, so I feel more confident. I think I should start very small... 
+        Review what I have so far, look over my coding notes, make a small manageable plan. I think front-loading a lot of studying 
+        is spooking me in an unhelpful way. Let's take the approach of getting *something* working rather than *doing it right*? 
+        Maybe I will re-evaluate that plan once I get farther in. Sigh... 
+      </p>
+      `
+  },
   {
     id: "post-1",
     date: "Sept 18, 2026",
@@ -197,33 +226,9 @@ const allUpdates = [
       </p>
       `
     },
-  {
-    id: "post-2",
-    date: "Sept 20, 2026",
-    title: "Happy sunday, this is my strategy for not being overwhelmed on monday.",
-    content: `
-      <p>Starting a short session for voicebox at Timmies. I convinced myself the strategy to not feeling overwhelmed this week 
-        is to do a little tiny smidgen of work today, Sunday, so I feel more confident. I think I should start very small... 
-        Review what I have so far, look over my coding notes, make a small manageable plan. I think front-loading a lot of studying 
-        is spooking me in an unhelpful way. Let's take the approach of getting *something* working rather than *doing it right*? 
-        Maybe I will re-evaluate that plan once I get farther in. Sigh... 
-      </p>
-      `
-  }
-  {
-    id: "post-3",
-    date: "Sept 21, 2026",
-    title: "Moooonday, port audio time",
-    content: `
-      <p>Yesterday I got a few port  audio examples to work, but not all of them. This is good, much better than futzing around with CoreAudio, Mac OS' intense API for audio. 
-        Thank goodness. Im going to continue to investigate and make sure the functionality works in entirity in the examples, otherwise I will have no source of truth when I 
-        frankenstein something of my own. Wish me luck, internet void! 
-      </p>
-      `
-  }
+ 
 
 
-  /* Add future blog updates here */
 ];
 
 function renderFullFeed() {
