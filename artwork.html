@@ -11,8 +11,8 @@
 
 <div class="page-container">
 <div class="home-header">
-<h1 class="home-header-title">Hi, I'm Liz</h1>
-<p>Welcome to my digital sphere(s)</p>
+<h1 class="home-header-title">Artworks</h1>
+<p>Here is some of my art!</p>
 </div>
 
 <div class="bubbles-container" id="bubbles-container"></div>
@@ -22,28 +22,19 @@
 // --- 1. Define your bubbles here. Any field you omit gets randomized. ---
 const bubbles = [
   {
-    href: "synthesizers.html",
-    label: "Synthesizers",
-    size: 260,
-    colors: ["#ff0055", "#00daff", "#7a00ff", "#ff0055"],
-    floatDistance: 40,
-    floatAngle: 20,
-    floatDuration: 6,
-    rotateDuration: 4000,
+    href: "index.html",
+    label: "Back to Home",
+    colors: ["#FF4400", "#FFB300", "#FCD06A", "#FF4400"],
+    size: 180,
+    rotateDuration: 3000, 
+    floatAngle: 350,
+    floatDuration: 15,
+    // size, colors, float*, rotateDuration all omitted on purpose -> randomized below
   },
-
-  {
-    href: "design-gallery.html",
-    label: "Design Gallery",
-    size: 200,
-    colors: ["#ffb703", "#fb8500", "#ff006e", "#ffb703"],
-  },
-  {
-    href: "artwork.html",
-    label: "Artwork",
-    size: 230,
-  },
+  
 ];
+
+
 
 // --- 2. Randomization helpers + fallback ranges ---
 function randomBetween(min, max) {
