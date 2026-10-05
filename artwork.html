@@ -16,6 +16,10 @@
 
 <div class="bubbles-container" id="bubbles-container"></div>
 <div class="gallery" id="gallery"></div>
+<div class="home-header">
+  <h1 class="home-header-title">Photos</h1>
+</div>
+<div class="gallery" id="photos-gallery"></div>
 </div>
 
 <script>
@@ -197,6 +201,55 @@ const artworks = [
 
 const gallery = document.getElementById('gallery');
 
+
+// --- Photos: list your files here ---
+const photos = [
+  { src: "photos/photo-1.jpg", alt: "Description of photo 1" },
+  { src: "photos/photo-2.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-3.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-4.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-5.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-6.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-7.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-8.jpeg", alt: "Description of photo 2" },
+  { src: "photos/photo-9.jpeg", alt: "Description of photo 2" },
+
+];
+
+function renderGallery(containerId, items, { showCaptions = true } = {}) {
+  const container = document.getElementById(containerId);
+
+  items.forEach(item => {
+    const fig = document.createElement('figure');
+    fig.className = 'artwork';
+
+    const img = document.createElement('img');
+    img.src = item.src;
+    img.alt = item.alt ?? item.title ?? '';
+    img.loading = 'lazy';
+    fig.append(img);
+
+    if (showCaptions) {
+      const title = document.createElement('p');
+      title.className = 'artwork-title';
+      title.textContent = item.title ?? '';
+      fig.append(title);
+
+      if (item.text) {
+        const text = document.createElement('p');
+        text.className = 'artwork-text';
+        text.textContent = item.text;
+        fig.append(text);
+      }
+    }
+
+    container.append(fig);
+  });
+}
+
+renderGallery('gallery', artworks);
+renderGallery('photos-gallery', photos, { showCaptions: false });
+
 artworks.forEach(a => {
   const fig = document.createElement('figure');
   fig.className = 'artwork';
@@ -218,6 +271,8 @@ artworks.forEach(a => {
   if (a.text) fig.append(text);
   gallery.append(fig);
 });
+
+
 </script>
 
 </body>
