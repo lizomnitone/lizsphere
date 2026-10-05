@@ -378,3 +378,44 @@ body {
   cursor: pointer;
   line-height: 1;
 }
+
+.gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: center; /* centers a partly filled last row; use flex-start to left-align */
+  margin: 2rem 0;
+}
+
+.artwork {
+  margin: 0;
+  /* 3 per row: (100% minus two 24px gaps) / 3 */
+  flex: 0 0 calc((100% - 48px) / 3);
+}
+
+.artwork img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain; /* shows the whole piece; "cover" fills the box but crops */
+}
+
+.artwork-title {
+  margin: 0.6rem 0 0.2rem;
+  font-weight: bold;
+}
+
+.artwork-text {
+  margin: 0;
+  font-size: 0.9em;
+}
+
+/* Tablet: 2 per row */
+@media (max-width: 900px) {
+  .artwork { flex-basis: calc((100% - 24px) / 2); }
+}
+
+/* Phone: 1 per row */
+@media (max-width: 560px) {
+  .artwork { flex-basis: 100%; }
+}

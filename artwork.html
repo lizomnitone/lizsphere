@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<base href="/lizsphere/">
+
 <link rel="stylesheet" href="styles.css">
 <title>Home</title>
 </head>
@@ -12,10 +12,10 @@
 <div class="page-container">
 <div class="home-header">
 <h1 class="home-header-title">Artworks</h1>
-<p>Here is some of my art!</p>
 </div>
 
 <div class="bubbles-container" id="bubbles-container"></div>
+<div class="gallery" id="gallery"></div>
 </div>
 
 <script>
@@ -163,6 +163,53 @@ function animateAllGradients(timestamp) {
 }
 
 requestAnimationFrame(animateAllGradients);
+
+// --- Gallery: list your artworks here ---
+const artworks = [
+  { src: "artwork/piece-1.jpg", title: "Abstract #1", text: "Acrylic on canvas, 2022" },
+  { src: "artwork/plants-1.jpg", title: "Plants #1", text: "Acrylic on canvas, 2023" },
+  { src: "artwork/beach-boardwalk.png", title: "Beach Boardwalk", text: "TY Card, 2024" },
+  { src: "artwork/conundrum.png", title: "Sailor", text: "Watercolour, 2024" },
+  { src: "artwork/curtains.png", title: "Curtains", text: "Cotton/Sewing, 2026" },
+  { src: "artwork/elm-cafe.png", title: "The Elm Cafe", text: "TY Card, 2024" },
+  { src: "artwork/galaxie-diner.png", title: "The Galaxie Diner", text: "Acrylic + Ink, 2026" },
+  { src: "artwork/ferry.jpeg", title: "Wolfe Island Ferry", text: "TY Card, 2024" },
+  { src: "artwork/japan-1.png", title: "Japan #1", text: "TY Card, 2024" },
+  { src: "artwork/lotus-lamp.jpeg", title: "Lotus Lamp", text: "PLA, acrylic, electronics, stained glass, 2025" },
+  { src: "artwork/neon.jpeg", title: "Neon", text: "Acrylic, 2022" },
+  { src: "artwork/niece.jpeg", title: "Violette", text: "Acrylic, 2023" },
+  { src: "artwork/pink-and-blue.png", title: "Pink & Blue", text: "Acrylic, 2022" },
+  { src: "artwork/pink-light.jpeg", title: "Pink Light", text: "Walnut, Holographic Vinyl, Electronics, Brass, Braided Cable, Glass" },
+  { src: "artwork/run.jpeg", title: "Mati", text: "Acrylic, 2023" },
+  { src: "artwork/spanish-flea.png", title: "Spanish Flea", text: "Acrylic, 2023" },
+  { src: "artwork/studio.jpeg", title: "Synth Studio", text: "Watercolour + Ink, 2024" },
+  { src: "artwork/tristan.jpeg", title: "Tristan", text: "Watercolour + Ink, 2024" },
+  // add more...
+];
+
+const gallery = document.getElementById('gallery');
+
+artworks.forEach(a => {
+  const fig = document.createElement('figure');
+  fig.className = 'artwork';
+
+  const img = document.createElement('img');
+  img.src = a.src;
+  img.alt = a.alt ?? a.title ?? '';
+  img.loading = 'lazy';
+
+  const title = document.createElement('p');
+  title.className = 'artwork-title';
+  title.textContent = a.title ?? '';
+
+  const text = document.createElement('p');
+  text.className = 'artwork-text';
+  text.textContent = a.text ?? '';
+
+  fig.append(img, title);
+  if (a.text) fig.append(text);
+  gallery.append(fig);
+});
 </script>
 
 </body>
