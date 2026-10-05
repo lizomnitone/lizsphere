@@ -250,27 +250,6 @@ function renderGallery(containerId, items, { showCaptions = true } = {}) {
 renderGallery('gallery', artworks);
 renderGallery('photos-gallery', photos, { showCaptions: false });
 
-artworks.forEach(a => {
-  const fig = document.createElement('figure');
-  fig.className = 'artwork';
-
-  const img = document.createElement('img');
-  img.src = a.src;
-  img.alt = a.alt ?? a.title ?? '';
-  img.loading = 'lazy';
-
-  const title = document.createElement('p');
-  title.className = 'artwork-title';
-  title.textContent = a.title ?? '';
-
-  const text = document.createElement('p');
-  text.className = 'artwork-text';
-  text.textContent = a.text ?? '';
-
-  fig.append(img, title);
-  if (a.text) fig.append(text);
-  gallery.append(fig);
-});
 
 
 </script>
