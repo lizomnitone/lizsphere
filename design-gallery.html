@@ -698,7 +698,7 @@
 
             if (items.length === 0) {
                 try {
-                    const res = await fetch('/data/design-gallery-images/' + encodeURIComponent('Design Inspo Images') + '/manifest.json');
+                    const res = await fetch('data/design-gallery-images/' + encodeURIComponent('Design Inspo Images') + '/manifest.json');
                     const manifest = await res.json();
                     const basePath = 'data/design-gallery-images/Design Inspo Images/';
 
@@ -1431,7 +1431,7 @@
                     for (const board of boards) {
                         const boardName = board.name;
                         const safeName = boardName.replace(/ /g, '_').replace(/[^a-zA-Z0-9_-]/g, '_');
-                        const url = `/data/design-gallery-images/${encodeURIComponent('Design Inspo Images')}/categorizations/${safeName}.json`;
+                        const url = `data/design-gallery-images/${encodeURIComponent('Design Inspo Images')}/categorizations/${safeName}.json`;
 
                         try {
                             const res = await fetch(url);
@@ -1524,7 +1524,7 @@
 
         async function loadBoardCategories() {
             try {
-                const res = await fetch('/data/design-gallery-images/' + encodeURIComponent('Design Inspo Images') + '/board-categories.json');
+                const res = await fetch('data/design-gallery-images/' + encodeURIComponent('Design Inspo Images') + '/board-categories.json');
                 if (!res.ok) return;
                 const data = await res.json();
                 Object.assign(BOARD_CATEGORIES, data);
