@@ -14,35 +14,60 @@
 <h1 class="home-header-title">Satellite</h1>
 <p>Protobrew'd Satellite Payload Project</p>
 </div>
+<!DOCTYPE html>
 
-<div class="bubbles-container" id="bubbles-container"></div>
+
+<div class="page-container voicebox-page">
+
+  <!-- HEADER -->
+  <div class="home-header">
+    <p>Satellite Progress Updates</p>
+  </div>
+
+  <!-- PINNED TOP-RIGHT BUBBLES -->
+  <div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
+
+  <!-- MAIN BLOG FEED GRID -->
+  <div class="updates-feed-layout">
+    
+    <!-- Feed Column -->
+    <div class="updates-feed" id="updates-feed">
+      <!-- Dynamic updates populate here -->
+    </div>
+
+  </div>
+
+</div>
+
+<!-- IMAGE LIGHTBOX MODAL (For inline post images) -->
+<div class="modal-overlay hidden" id="image-modal">
+  <div class="modal-content image-modal-content">
+    <button class="modal-close" onclick="closeImageModal()" aria-label="Close image">&times;</button>
+    <img id="lightbox-image" src="" alt="">
+  </div>
 </div>
 
 <script>
-// --- 1. Define your bubbles here. Any field you omit gets randomized. ---
+// ============================================================
+// TOP-RIGHT NAVIGATION BUBBLES
+// ============================================================
 const bubbles = [
   {
     href: "index.html",
     label: "Back to Home",
-    colors: ["#FF4400", "#FFB300", "#FCD06A", "#FF4400"],
-    size: 180,
-    rotateDuration: 3000, 
-    floatAngle: 350,
-    floatDuration: 15,
-    // size, colors, float*, rotateDuration all omitted on purpose -> randomized below
-  },
-  
+    colors: ["#ff0055", "#7a00ff", "#7a00ff", "#ff0055"],
+    size: 85,
+    minFontSize: 14,
+    pinned: true,
+    floatDistance: 5,
+  }, 
 ];
 
-
-
-// --- 2. Randomization helpers + fallback ranges ---
 function randomBetween(min, max) {
   return Math.random() * (max - min) + min;
 }
 
 function randomColorSet() {
-  // random hue-rotated 4-stop palette, evenly spaced, first/last matched to loop cleanly
   const hue = Math.floor(randomBetween(0, 360));
   const c1 = `hsl(${hue}, 85%, 55%)`;
   const c2 = `hsl(${(hue + 90) % 360}, 85%, 55%)`;
@@ -63,30 +88,24 @@ function fillDefaults(bubble) {
   };
 }
 
-// --- 3. Template: builds one bubble's markup with unique IDs + per-bubble CSS variables ---
 function createBubbleSVG(rawBubble, index) {
   const uid = `bubble-${index}`;
   const b = fillDefaults(rawBubble);
-
-  // Convert angle+distance into an x/y drift offset (px)
   const angleRad = (b.floatAngle * Math.PI) / 180;
   const floatX = (b.floatDistance * Math.cos(angleRad)).toFixed(1);
   const floatY = (b.floatDistance * Math.sin(angleRad)).toFixed(1);
-
   const [c1, c2, c3, c4] = b.colors;
+  const wrapperStyle = `--float-x: ${floatX}px; --float-y: ${floatY}px; --float-duration: ${b.floatDuration}s;`;
+  
+  const calculatedFont = Math.round((b.size / 130) * 26);
+  const minFont = rawBubble.minFontSize || 14;
+  const textFontSize = Math.max(calculatedFont, minFont);
 
-  // CSS custom properties, set inline so each bubble can differ without a separate stylesheet rule
-  const wrapperStyle = `
-    --float-x: ${floatX}px;
-    --float-y: ${floatY}px;
-    --float-duration: ${b.floatDuration}s;
-  `.replace(/\s+/g, ' ');
-
-  const textFontSize = Math.round((b.size / 270) * 22); // scales text proportionally to bubble size
+  const pinnedClass = b.pinned ? ' sphere-wrapper--pinned' : '';
 
   return `
-    <a href="${b.href}" class="sphere-link">
-      <div class="sphere-wrapper" style="${wrapperStyle}">
+    <a href="${b.href}" class="sphere-link${b.pinned ? ' sphere-link--pinned' : ''}">
+      <div class="sphere-wrapper${pinnedClass}" style="${wrapperStyle}">
         <svg class="sphere-svg" data-gradient-id="grad-${uid}" data-rotate-duration="${b.rotateDuration}"
              viewBox="0 0 250 250" width="${b.size}" height="${b.size}">
           <defs>
@@ -94,78 +113,115 @@ function createBubbleSVG(rawBubble, index) {
               <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
               <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" xChannelSelector="R" yChannelSelector="G" />
             </filter>
-
-            <clipPath id="clip-${uid}">
-              <circle cx="125" cy="125" r="120" />
-            </clipPath>
-
+            <clipPath id="clip-${uid}"><circle cx="125" cy="125" r="120" /></clipPath>
             <linearGradient id="grad-${uid}" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="repeat">
               <stop offset="0%" stop-color="${c1}" />
               <stop offset="33.3%" stop-color="${c2}" />
               <stop offset="66.6%" stop-color="${c3}" />
               <stop offset="100%" stop-color="${c4}" />
             </linearGradient>
-
             <radialGradient id="shading-${uid}" cx="40%" cy="35%" r="75%">
               <stop offset="0%" stop-color="#000000" stop-opacity="0" />
               <stop offset="65%" stop-color="#000000" stop-opacity="0" />
               <stop offset="100%" stop-color="#000000" stop-opacity="0.55" />
             </radialGradient>
-
             <radialGradient id="highlight-${uid}" cx="32%" cy="28%" r="30%">
               <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
               <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
             </radialGradient>
-
             <filter id="shadow-${uid}" x="-50%" y="-50%" width="200%" height="200%">
               <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#000000" flood-opacity="0.25" />
             </filter>
           </defs>
-
           <circle cx="125" cy="125" r="120" fill="#000000" opacity="0" filter="url(#shadow-${uid})" />
-
           <g clip-path="url(#clip-${uid})">
             <rect x="-20" y="-50" width="300" height="350" fill="url(#grad-${uid})" filter="url(#warp-${uid})" />
             <circle cx="125" cy="125" r="120" fill="url(#shading-${uid})" />
             <circle cx="125" cy="125" r="120" fill="url(#highlight-${uid})" />
           </g>
-
           <text class="bubble-text" x="125" y="125" text-anchor="middle" dominant-baseline="middle"
-                style="font-size: ${textFontSize}px;">
-            ${b.label}
-          </text>
+                style="font-size: ${textFontSize}px;">${b.label}</text>
         </svg>
       </div>
     </a>
   `;
 }
 
-// --- 4. Render all bubbles into the container ---
-const container = document.getElementById('bubbles-container');
-container.innerHTML = bubbles.map((b, i) => createBubbleSVG(b, i)).join('');
+document.getElementById('bubbles-container').innerHTML =
+  bubbles.map((b, i) => createBubbleSVG(b, i)).join('');
 
-// --- 5. One animation loop drives ALL gradients, each at its own rotateDuration ---
-let startTime = null;
-
+let bubbleStartTime = null;
 function animateAllGradients(timestamp) {
-  if (!startTime) startTime = timestamp;
-  const elapsed = timestamp - startTime;
-
+  if (!bubbleStartTime) bubbleStartTime = timestamp;
+  const elapsed = timestamp - bubbleStartTime;
   document.querySelectorAll('[data-gradient-id]').forEach(svg => {
-    const gradId = svg.dataset.gradientId;
     const duration = Number(svg.dataset.rotateDuration) || 4000;
     const progress = (elapsed % duration) / duration;
-    const gradEl = document.getElementById(gradId);
+    const gradEl = document.getElementById(svg.dataset.gradientId);
     if (gradEl) gradEl.setAttribute('gradientTransform', `translate(${-progress} 0)`);
   });
-
   requestAnimationFrame(animateAllGradients);
 }
-
 requestAnimationFrame(animateAllGradients);
 
 
+// ============================================================
+// ALL BLOG POSTS DATA
+// ============================================================
+const allUpdates = [
+  {
+    id: "post-1",
+    date: "Sept 18, 2026",
+    title: "First Meeting",
+    content: `
+      <p> We had our first meeting, we went over the grant application criteria and previous recipients examples. We decided to follow the same general format as previous winners. 
+        Matthew created a general template for us to follow, and we discussed each section and made notes for how we want to approach the project.
+      </p>
+      `
+    },
+ 
 
+
+];
+
+function renderFullFeed() {
+  const container = document.getElementById('updates-feed');
+  if (!container) return;
+  container.innerHTML = allUpdates.map(post => `
+    <article class="update-card full-post" id="${post.id}">
+      <div class="update-date">${post.date}</div>
+      <h2>${post.title}</h2>
+      <div class="post-body">${post.content}</div>
+    </article>
+  `).join('');
+}
+renderFullFeed();
+
+
+// ============================================================
+// LIGHTBOX / MODAL LOGIC
+// ============================================================
+function openImageModal(src, alt) {
+  const img = document.getElementById('lightbox-image');
+  img.src = src;
+  img.alt = alt;
+  document.getElementById('image-modal').classList.remove('hidden');
+}
+
+function closeImageModal() {
+  document.getElementById('image-modal').classList.add('hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeImageModal();
+});
+
+const imageModal = document.getElementById('image-modal');
+if (imageModal) {
+  imageModal.addEventListener('click', (e) => {
+    if (e.target === imageModal) closeImageModal();
+  });
+}
 </script>
 
 </body>
