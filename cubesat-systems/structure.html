@@ -51,27 +51,6 @@
     margin-bottom: 4px;
   }
 
-  .search-wrapper {
-    margin-bottom: 24px;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 8px;
-    background: var(--card-bg);
-    border: 1px solid var(--card-border);
-    color: var(--text-color);
-    font-family: monospace;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s ease;
-  }
-
-  .search-input:focus {
-    border-color: var(--accent-color);
-  }
-
   .wiki-media-caption {
     font-size: 0.75rem;
     opacity: 0.7;
@@ -93,12 +72,6 @@
 
   <!-- PINNED TOP-RIGHT BUBBLES -->
   <div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
-
-  <!-- SEARCH BAR -->
-  <div class="search-wrapper">
-    <input type="text" id="wiki-search" class="search-input" placeholder="Search structural notes, form factors, or specifications..." oninput="filterWiki()">
-  </div>
-
   <!-- MAIN CONTENT GRID -->
   <div class="content-grid" id="wiki-feed">
     <!-- Dynamic wiki entries populate here -->
@@ -277,21 +250,33 @@ const wikiEntries = [
     `
   },
   {
-    id: "comms-harnessing",
-    category: "Comms & RF",
-    title: "Remote Antenna Mounting & RF Coax Harnesses",
-    date: "Design Tip",
-    image: "",
-    imageCaption: "",
+    id: "aluminum-frame-mounting",
+    category: "Structure",
+    title: "Aluminum Frame Alloys & Mounting Strategies",
+    date: "Reference Note",
+    image: "cubesat-systems/cubesat-u.jpeg",
+    imageCaption: "Standard anodized aluminum chassis frame & rails",
     content: `
-      <p>Comms boards and deployable antennas are frequently mounted on separate ends of the 3U structure:</p>
-      <ul style="padding-left: 18px; margin-top: 8px;">
-        <li><b>RF Connection:</b> Use thin micro-coaxial cable (U.FL / IPEX / SMA) rather than standard hookup wire to prevent signal loss & EMI.</li>
-        <li><b>Cable Routing:</b> Secure cable along inner structural rails using Kapton tape or zip-tie anchors to prevent vibration snagging during launch.</li>
-        <li><b>Placement:</b> Keep RF coax runs away from noisy switching regulators on the EPS board and high-current battery heaters.</li>
-      </ul>
+      <div class="wiki-columns-inner">
+        <div>
+          <strong style="font-family: monospace;">Material Selection</strong>
+          <ul>
+            <li><b>Alloy Choice:</b> <b>Aluminum 6061-T6</b> or <b>7075-T6</b> is mandatory to match the CTE (Coefficient of Thermal Expansion) of launcher pod rails.</li>
+            <li><b>Anodization Rule:</b> Outer rails touch dispenser walls and MUST be Hard Anodized (Type III) to prevent cold welding/galling under launch vibrations.</li>
+            <li><b>Manufacturing:</b> Monolithic CNC-machined frames offer maximum stiffness; skeleton frame builds allow modular panel integration.</li>
+          </ul>
+        </div>
+        <div>
+          <strong style="font-family: monospace;">Chassis Mounting Rules</strong>
+          <ul>
+            <li><b>Threaded Fasteners:</b> Never tap directly into raw aluminum. Use stainless steel Helicoils to prevent thread stripping.</li>
+            <li><b>Thread Locking:</b> Standard vibration retention requires NASA-approved threadlockers (Loctite 242/222) or epoxy staking on screw heads.</li>
+            <li><b>Off-Stack Payloads:</b> Heavy payloads or components like cameras or thrusters should be directly mounted to structural frame</li>
+          </ul>
+        </div>
+      </div>
     `
-  },
+  }
   {
     id: "pc104-bus",
     category: "Bus & Connectors",
@@ -302,12 +287,10 @@ const wikiEntries = [
     content: `
       <p><b>Is PC/104 standard across all boards?</b></p>
       <ul style="padding-left: 18px; margin-top: 8px;">
-        <li><b>Standard Bus Boards:</b> OBC, EPS, and Comms boards stack directly via 104-pin pass-through headers carrying power rails (3.3V, 5V, 12V) and data lines (CAN, I²C, SPI, UART).</li>
-        <li><b>Optical / Large Payloads:</b> Cameras or optical telescopes taking up 1U+ volume are mounted off-stack directly to the chassis frame and interface with the PC/104 bus through a wire harness.</li>
-      </ul>
+        <li><b>Standard Bus Boards:</b> OBC, EPS, and Comms boards stack directly via 104-pin pass-through headers carrying power rails (3.3V, 5V, 12V) and data lines (CAN, I²C, SPI, UART).</li> </p>
     `
   }
-];
+];  
 
 function renderWikiEntries(entries) {
   const container = document.getElementById('wiki-feed');
