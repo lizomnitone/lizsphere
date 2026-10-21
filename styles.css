@@ -217,6 +217,10 @@ body {
   backdrop-filter: blur(10px);
 }
 
+h2 {
+  font: monospace; 
+  font-size: 1.15rem;
+}
 .voicebox-page .updates-column .status-box h2 {
   margin: 0 0 12px 0;
   font-size: 1.15rem;
