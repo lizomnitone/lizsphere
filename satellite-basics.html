@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <base href="/lizsphere/">
 <link rel="stylesheet" href="styles.css">
-<title>Cube Sat Basics</title>
+<title>CubeSat Basics</title>
 
 <!-- Only styles for the NEW pieces (system cards, diagram, lists). Everything else comes from your styles.css.
      You can move this block into styles.css later. -->
@@ -15,6 +15,7 @@
     display: block; padding: 1rem 1.1rem; color: inherit; text-decoration: none;
     border: 1px solid rgb(255, 0, 119, 1); border-left: 4px solid rgba(255, 0, 119, 1);
     border-radius: 8px; background: rgba(255, 0, 119, 0.2);
+    font: monospace; 
   }
   .system-card:hover, .system-card:focus-visible { border-color: #ff2fea; }
   .system-card h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
@@ -31,7 +32,7 @@
 <div class="page-container voicebox-page">
 
 <div class="home-header">
-<h1 class="home-header-title">Cube Sat Basics!</h1>
+<h1 class="home-header-title">CubeSat Basics!</h1>
 <p></p>
 </div>
 
@@ -63,9 +64,10 @@
     </div>
 
     <div>
+        <div class="system-cards">
         <!-- Major systems. Each card links to its own page (create the pages by copying this file's structure). -->
         <h2>Major Systems<br></h2>
-        <div class="system-cards">
+        
             <a class="system-card" href="cubesat-systems/structure.html">
                 <h3>Structure</h3>
                 <p>classes of satellite, materials, thermals, design rules </p>

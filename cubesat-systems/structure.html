@@ -7,112 +7,77 @@
 <link rel="stylesheet" href="styles.css">
 <title>CubeSat Structure</title>
 <style>
-
-  /* 2-Column Grid Layout */
-  .wiki-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  @media (max-width: 850px) {
-    .wiki-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Wiki Card Styles */
+  /* Local adjustments that rely strictly on your existing CSS variables */
   .wiki-card {
-    background: rgba(255, 154, 169, 0.549);
-    border: 1px solid rgba(255, 154, 169, 0.657);
-    border-radius: 16px;
-    padding: 1.5rem;
-    backdrop-filter: blur(12px);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    height: 100%;
   }
 
-  .wiki-card:hover {
-    border-color: rgba(255, 27, 164, 0.863);
-    transform: translateY(-2px);
+  .wiki-card-body {
+    flex-grow: 1;
   }
 
-  .wiki-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
+  .wiki-card-footer {
+    margin-top: 16px;
+    padding-top: 8px;
+    border-top: 1px solid var(--card-border);
+    font-size: 0.8rem;
+    opacity: 0.6;
+    font-family: monospace;
   }
 
-  .wiki-title {
-    margin: 0;
-    font-size: 1.3rem;
-    color: #fff;
-  }
-  .wiki-media {
-    margin: 1rem 0;
-    border-radius: 10px;
-    overflow: hidden;
-    cursor: pointer;
-    border: 1px solid rgba(255, 139, 153, 0.15);
-    position: relative;
-  }
-
-  .wiki-media img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-  }
-
-  .wiki-media:hover img {
-    transform: scale(1.03);
-  }
-
-  .wiki-media-caption {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.6);
-    text-align: center;
-    margin-top: 0.3rem;
-    font-style: italic;
-  }
-
-  /* Internal Multi-column layout helper for entries */
   .wiki-columns-inner {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1rem;
+    gap: 16px;
+    margin-top: 8px;
   }
 
-  @media (max-width: 500px) {
+  @media (max-width: 600px) {
     .wiki-columns-inner {
       grid-template-columns: 1fr;
     }
   }
 
-  .wiki-body {
-    color: rgba(255, 255, 255, 0.85);
+  .wiki-columns-inner ul {
+    padding-left: 18px;
+    margin-top: 6px;
+  }
+
+  .wiki-columns-inner li {
+    font-size: 0.88rem;
+    margin-bottom: 4px;
+  }
+
+  .search-wrapper {
+    margin-bottom: 24px;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    color: var(--text-color);
+    font-family: monospace;
     font-size: 0.95rem;
-    line-height: 1.5;
+    outline: none;
+    transition: border-color 0.2s ease;
   }
 
-  .wiki-body ul {
-    padding-left: 1.2rem;
-    margin: 0.5rem 0;
+  .search-input:focus {
+    border-color: var(--accent-color);
   }
 
-  .wiki-footer-date {
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.4);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    padding-top: 0.75rem;
+  .wiki-media-caption {
+    font-size: 0.75rem;
+    opacity: 0.7;
+    text-align: center;
+    margin-top: 6px;
+    font-family: monospace;
   }
 </style>
 </head>
@@ -121,23 +86,24 @@
 <div class="page-container voicebox-page">
 
   <!-- HEADER -->
-  <div class="home-header">
+  <header class="home-header">
     <h1 class="home-header-title">CubeSat Structure</h1>
-   
-  </div>
+    <p>Structural frameworks, launcher rail mechanics & form factors</p>
+  </header>
 
   <!-- PINNED TOP-RIGHT BUBBLES -->
   <div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
 
   <!-- SEARCH BAR -->
-  <div class="wiki-search-bar">
-    <input type="text" id="wiki-search" class="wiki-search-input" placeholder="Search wiki notes, components, or form factors..." oninput="filterWiki()">
+  <div class="search-wrapper">
+    <input type="text" id="wiki-search" class="search-input" placeholder="Search structural notes, form factors, or specifications..." oninput="filterWiki()">
   </div>
 
-  <!-- MAIN 2-COLUMN WIKI GRID -->
-  <div class="wiki-grid" id="wiki-feed">
+  <!-- MAIN CONTENT GRID -->
+  <div class="content-grid" id="wiki-feed">
     <!-- Dynamic wiki entries populate here -->
   </div>
+
 </div>
 
 <!-- IMAGE LIGHTBOX MODAL -->
@@ -276,7 +242,7 @@ requestAnimationFrame(animateAllGradients);
 
 
 // ============================================================
-// FREE-FORM WIKI DATABASE
+// WIKI DATABASE
 // ============================================================
 const wikiEntries = [
   {
@@ -284,27 +250,27 @@ const wikiEntries = [
     category: "Structure",
     title: "CubeSat Form Factors & Mass Classes",
     date: "Reference Note",
-    image: "cubesat-u.jpeg",
+    image: "cubesat-systems/cubesat-u.jpeg",
     imageCaption: "Standard aluminum chassis frame & rails",
     content: `
       <div class="wiki-columns-inner">
         <div>
-          <b>Standard 'U' Formats</b>
+          <strong style="font-family: monospace;">Standard 'U' Formats</strong>
           <ul>
-            <li><b>1U:</b> 10×10×11.35 cm (1.35cm accounts for deployer standoffs). Mass: ~1.3 - 2.0 kg.</li>
+            <li><b>1U:</b> 10×10×11.35 cm</li>
             <li><b>2U:</b> 10×10×22.7 cm</li>
             <li><b>3U:</b> 10×10×34.0 cm</li>
             <li><b>6U:</b> 10×20×34.0 cm</li>
-            <li><b>12U:</b> 20×20×34.0 cm (or 10×20×68 cm)</li>
+            <li><b>12U:</b> 20×20×34.0 cm</li>
           </ul>
         </div>
         <div>
-          <b>Broader Weight Classes</b>
+          <strong style="font-family: monospace;">Broader Weight Classes</strong>
           <ul>
-            <li><b>Femtosat:</b> &lt;100g (e.g., ChipSats)</li>
-            <li><b>Picosat:</b> 0.1kg - 1kg (1PQ = 5×5×5 cm)</li>
-            <li><b>Nanosat:</b> 1kg - 10kg (1U–6U CubeSats)</li>
-            <li><b>Microsat:</b> 10kg - 100kg (Custom platforms / 12U+)</li>
+            <li><b>Femtosat:</b> &lt;100g</li>
+            <li><b>Picosat:</b> 0.1kg - 1kg</li>
+            <li><b>Nanosat:</b> 1kg - 10kg</li>
+            <li><b>Microsat:</b> 10kg - 100kg</li>
           </ul>
         </div>
       </div>
@@ -319,7 +285,7 @@ const wikiEntries = [
     imageCaption: "",
     content: `
       <p>Comms boards and deployable antennas are frequently mounted on separate ends of the 3U structure:</p>
-      <ul>
+      <ul style="padding-left: 18px; margin-top: 8px;">
         <li><b>RF Connection:</b> Use thin micro-coaxial cable (U.FL / IPEX / SMA) rather than standard hookup wire to prevent signal loss & EMI.</li>
         <li><b>Cable Routing:</b> Secure cable along inner structural rails using Kapton tape or zip-tie anchors to prevent vibration snagging during launch.</li>
         <li><b>Placement:</b> Keep RF coax runs away from noisy switching regulators on the EPS board and high-current battery heaters.</li>
@@ -335,7 +301,7 @@ const wikiEntries = [
     imageCaption: "",
     content: `
       <p><b>Is PC/104 standard across all boards?</b></p>
-      <ul>
+      <ul style="padding-left: 18px; margin-top: 8px;">
         <li><b>Standard Bus Boards:</b> OBC, EPS, and Comms boards stack directly via 104-pin pass-through headers carrying power rails (3.3V, 5V, 12V) and data lines (CAN, I²C, SPI, UART).</li>
         <li><b>Optical / Large Payloads:</b> Cameras or optical telescopes taking up 1U+ volume are mounted off-stack directly to the chassis frame and interface with the PC/104 bus through a wire harness.</li>
       </ul>
@@ -348,31 +314,29 @@ function renderWikiEntries(entries) {
   if (!container) return;
 
   if (entries.length === 0) {
-    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6;">No matching notes found.</p>`;
+    container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; opacity: 0.6; font-family: monospace;">No matching notes found.</p>`;
     return;
   }
 
   container.innerHTML = entries.map(item => `
-    <article class="wiki-card" id="${item.id}">
-      <div>
-        <div class="wiki-header">
-          <h2 class="wiki-title">${item.title}</h2>
-          ${item.category ? `<span class="wiki-tag">${item.category}</span>` : ''}
-        </div>
+    <article class="update-card wiki-card" id="${item.id}">
+      <div class="wiki-card-body">
+        <div class="update-date">${item.category ? item.category.toUpperCase() : ''}</div>
+        <h3>${item.title}</h3>
 
         ${item.image ? `
-          <div class="wiki-media" onclick="openImageModal('${item.image}', '${item.title}')">
+          <div class="video-thumb" style="margin: 12px 0;" onclick="openImageModal('${item.image}', '${item.title}')">
             <img src="${item.image}" alt="${item.title}">
           </div>
           ${item.imageCaption ? `<div class="wiki-media-caption">${item.imageCaption}</div>` : ''}
         ` : ''}
 
-        <div class="wiki-body">
+        <div>
           ${item.content}
         </div>
       </div>
 
-      <div class="wiki-footer-date">
+      <div class="wiki-card-footer">
         ${item.date}
       </div>
     </article>
