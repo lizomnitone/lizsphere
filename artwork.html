@@ -7,6 +7,75 @@
 
 <link rel="stylesheet" href="styles.css">
 <title>Home</title>
+
+<style>
+/* ---------- Lightbox ---------- */
+.artwork { cursor: zoom-in; }
+
+.lightbox {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.9);
+}
+/* Needed because display:flex above would otherwise override the hidden attribute */
+.lightbox[hidden] { display: none; }
+
+.lightbox-figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.lightbox-img {
+  display: block;
+  max-width: 90vw;
+  max-height: 78vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+.lightbox-caption {
+  color: #fff;
+  text-align: center;
+  max-width: 70ch;
+  padding: 0 16px;
+}
+.lightbox-caption p { margin: 0; }
+.lightbox-caption .lb-sub { font-size: 0.9rem; opacity: 0.75; margin-top: 4px; }
+
+.lightbox-btn {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 28px;
+  line-height: 48px;
+  text-align: center;
+  cursor: pointer;
+}
+.lightbox-btn:hover,
+.lightbox-btn:focus-visible { background: rgba(255, 255, 255, 0.3); }
+.lightbox-btn[hidden] { display: none; }
+.lightbox-close { top: 16px; right: 16px; }
+.lightbox-prev  { left: 16px;  top: 50%; margin-top: -24px; }
+.lightbox-next  { right: 16px; top: 50%; margin-top: -24px; }
+
+@media (max-width: 600px) {
+  .lightbox-prev, .lightbox-next { top: auto; bottom: 16px; margin-top: 0; }
+}
+</style>
 </head>
 <body>
 
@@ -23,6 +92,17 @@
 <div class="gallery" id="photos-gallery"></div>
 </div>
 
+<!-- Lightbox markup -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" hidden>
+  <button type="button" class="lightbox-btn lightbox-close" id="lb-close" aria-label="Close">&times;</button>
+  <button type="button" class="lightbox-btn lightbox-prev" id="lb-prev" aria-label="Previous image">&#8249;</button>
+  <figure class="lightbox-figure">
+    <img class="lightbox-img" id="lb-img" alt="">
+    <figcaption class="lightbox-caption" id="lb-caption"></figcaption>
+  </figure>
+  <button type="button" class="lightbox-btn lightbox-next" id="lb-next" aria-label="Next image">&#8250;</button>
+</div>
+
 <script>
 // --- 1. Define your bubbles here. Any field you omit gets randomized. ---
 const bubbles = [
@@ -31,12 +111,12 @@ const bubbles = [
     label: "Back to Home",
     colors: ["#FF4400", "#FFB300", "#FCD06A", "#FF4400"],
     size: 180,
-    rotateDuration: 3000, 
+    rotateDuration: 3000,
     floatAngle: 350,
     floatDuration: 15,
     // size, colors, float*, rotateDuration all omitted on purpose -> randomized below
   },
-  
+
 ];
 
 
@@ -178,7 +258,10 @@ const artworks = [
   { src: "artwork/curtains.png", title: "Curtains", text: "Cotton/Sewing, 2026" },
   { src: "artwork/elm-cafe.png", title: "The Elm Cafe", text: "TY Card, 2024" },
   { src: "artwork/galaxie-diner.png", title: "The Galaxie Diner", text: "Acrylic + Ink, 2026" },
+  { src: "artwork/fused-glass-bowl.png", title: "Fused Glass Bowl", text: "Glass, 2025" },
   { src: "artwork/ferry.jpeg", title: "Wolfe Island Ferry", text: "TY Card, 2024" },
+  { src: "artwork/tech-art-1.png", title: "Interactive Sculpture", text: "Mixed Media, 2022" },
+  { src: "artwork/collage-house.png", title: "House", text: "Paper, 2024" },
   { src: "artwork/japan-1.png", title: "Japan #1", text: "TY Card, 2024" },
   { src: "artwork/lotus-lamp.jpeg", title: "Lotus Lamp", text: "PLA, acrylic, electronics, stained glass, 2025" },
   { src: "artwork/neon.jpeg", title: "Neon", text: "Acrylic, 2022" },
@@ -188,6 +271,7 @@ const artworks = [
   { src: "artwork/run.jpeg", title: "Mati", text: "Acrylic, 2023" },
   { src: "artwork/spanish-flea.png", title: "Spanish Flea", text: "Acrylic, 2023" },
   { src: "artwork/studio.jpeg", title: "Synth Studio", text: "Watercolour + Ink, 2024" },
+  { src: "artwork/fused-glass-sailboat.png", title: "Fused Glass Sailboat", text: "Glass, 2025" },
   { src: "artwork/tristan.jpeg", title: "Tristan", text: "Watercolour + Ink, 2024" },
   { src: "artwork/trip.png", title: "Trip", text: "Acrylic, 2023" },
   { src: "artwork/wedding-website.png", title: "Wedding Website", text: "Digital, 2026" },
@@ -200,29 +284,125 @@ const artworks = [
   // add more...
 ];
 
-const gallery = document.getElementById('gallery');
-
 
 // --- Photos: list your files here ---
 const photos = [
   { src: "photos/photo-1.jpg", alt: "Description of photo 1" },
   { src: "photos/photo-2.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-3.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-4.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-5.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-6.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-7.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-8.jpeg", alt: "Description of photo 2" },
-  { src: "photos/photo-9.jpeg", alt: "Description of photo 2" },
-
+  { src: "photos/photo-3.jpeg", alt: "Description of photo 3" },
+  { src: "photos/photo-4.jpeg", alt: "Description of photo 4" },
+  { src: "photos/photo-5.jpeg", alt: "Description of photo 5" },
+  { src: "photos/photo-6.jpeg", alt: "Description of photo 6" },
+  { src: "photos/photo-7.jpeg", alt: "Description of photo 7" },
+  { src: "photos/photo-8.jpeg", alt: "Description of photo 8" },
+  { src: "photos/photo-9.jpeg", alt: "Description of photo 9" },
 ];
 
-function renderGallery(containerId, items, { showCaptions = true } = {}) {
-  const container = document.getElementById(containerId);
 
-  items.forEach(item => {
+// ======================= Lightbox =======================
+const lightboxEl = document.getElementById('lightbox');
+const lbImg      = document.getElementById('lb-img');
+const lbCaption  = document.getElementById('lb-caption');
+const lbPrev     = document.getElementById('lb-prev');
+const lbNext     = document.getElementById('lb-next');
+const lbClose    = document.getElementById('lb-close');
+
+let lbItems = [];          // the items of whichever gallery was clicked
+let lbIndex = 0;
+let lbShowCaptions = true;
+let lbLastFocused = null;
+
+function lbShow(index) {
+  const n = lbItems.length;
+  lbIndex = ((index % n) + n) % n; // wraps in both directions
+  const item = lbItems[lbIndex];
+
+  lbImg.src = item.src;
+  lbImg.alt = item.alt ?? item.title ?? '';
+
+  lbCaption.textContent = '';
+  if (lbShowCaptions) {
+    if (item.title) {
+      const t = document.createElement('p');
+      t.textContent = item.title;
+      lbCaption.append(t);
+    }
+    if (item.text) {
+      const s = document.createElement('p');
+      s.className = 'lb-sub';
+      s.textContent = item.text;
+      lbCaption.append(s);
+    }
+  }
+
+  // Preload neighbours so arrow navigation feels instant
+  if (n > 1) {
+    [lbIndex - 1, lbIndex + 1].forEach(i => {
+      new Image().src = lbItems[((i % n) + n) % n].src;
+    });
+  }
+}
+
+function lbOpen(items, index, showCaptions) {
+  lbItems = items;
+  lbShowCaptions = showCaptions;
+  lbLastFocused = document.activeElement;
+
+  const multiple = items.length > 1;
+  lbPrev.hidden = !multiple;
+  lbNext.hidden = !multiple;
+
+  lbShow(index);
+  lightboxEl.hidden = false;
+  document.body.style.overflow = 'hidden';
+  lbClose.focus();
+}
+
+function lbCloseFn() {
+  lightboxEl.hidden = true;
+  lbImg.removeAttribute('src');
+  document.body.style.overflow = '';
+  if (lbLastFocused && lbLastFocused.focus) lbLastFocused.focus();
+}
+
+lbPrev.addEventListener('click', () => lbShow(lbIndex - 1));
+lbNext.addEventListener('click', () => lbShow(lbIndex + 1));
+lbClose.addEventListener('click', lbCloseFn);
+
+// Clicking the dark backdrop (not the image or buttons) closes
+lightboxEl.addEventListener('click', e => {
+  if (e.target === lightboxEl) lbCloseFn();
+});
+
+document.addEventListener('keydown', e => {
+  if (lightboxEl.hidden) return;
+  if (e.key === 'Escape') lbCloseFn();
+  else if (e.key === 'ArrowLeft'  && lbItems.length > 1) lbShow(lbIndex - 1);
+  else if (e.key === 'ArrowRight' && lbItems.length > 1) lbShow(lbIndex + 1);
+});
+
+// Touch swipe (horizontal, 50px threshold)
+let lbTouchX = null;
+lightboxEl.addEventListener('touchstart', e => { lbTouchX = e.touches[0].clientX; }, { passive: true });
+lightboxEl.addEventListener('touchend', e => {
+  if (lbTouchX === null || lbItems.length < 2) return;
+  const dx = e.changedTouches[0].clientX - lbTouchX;
+  lbTouchX = null;
+  if (Math.abs(dx) > 50) lbShow(lbIndex + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+
+// ======================= Gallery rendering =======================
+// Same markup as before; each figure now also opens the lightbox when clicked.
+function renderGallery(containerId, items, { showCaptions = true } = {}) {
+  const galleryEl = document.getElementById(containerId);
+
+  items.forEach((item, index) => {
     const fig = document.createElement('figure');
     fig.className = 'artwork';
+    fig.tabIndex = 0;
+    fig.setAttribute('role', 'button');
+    fig.setAttribute('aria-label', `View ${item.title ?? item.alt ?? 'image'} larger`);
 
     const img = document.createElement('img');
     img.src = item.src;
@@ -244,15 +424,18 @@ function renderGallery(containerId, items, { showCaptions = true } = {}) {
       }
     }
 
-    container.append(fig);
+    const open = () => lbOpen(items, index, showCaptions);
+    fig.addEventListener('click', open);
+    fig.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+    });
+
+    galleryEl.append(fig);
   });
 }
 
 renderGallery('gallery', artworks);
 renderGallery('photos-gallery', photos, { showCaptions: false });
-
-
-
 </script>
 
 </body>
