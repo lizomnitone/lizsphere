@@ -6,8 +6,22 @@
 <base href="/lizsphere/">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
 <title>Home</title>
+
+<!-- Extra styles needed by the drag/physics. Self-contained so styles.css needs no changes. -->
+<style>
+  .drag-layer {
+    display: inline-block;
+    position: relative;
+    touch-action: none;          /* touch-drags don't scroll the page */
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grab;
+  }
+  .drag-layer.dragging { cursor: grabbing; }
+  .sphere-link { -webkit-user-drag: none; }
+  .sphere-svg { display: block; } /* removes the small baseline gap under inline SVGs */
+</style>
 </head>
 <body>
 
@@ -34,7 +48,6 @@ const bubbles = [
     size: 260,
     colors: ["#ff0055", "#00daff", "#7a00ff", "#ff0055"],
   },
-
   {
     href: "design-gallery.html",
     label: "Design Gallery",
@@ -57,7 +70,6 @@ const bubbles = [
     size: 180,
     colors: ["#ffb703", "#fb8500", "#ff006e", "#ffb703"],
   },
-  
 ];
 
 // --- 2. Randomization helpers + fallback ranges ---
@@ -66,7 +78,6 @@ function randomBetween(min, max) {
 }
 
 function randomColorSet() {
-  // random hue-rotated 4-stop palette, evenly spaced, first/last matched to loop cleanly
   const hue = Math.floor(randomBetween(0, 360));
   const c1 = `hsl(${hue}, 85%, 55%)`;
   const c2 = `hsl(${(hue + 90) % 360}, 85%, 55%)`;
@@ -87,31 +98,27 @@ function fillDefaults(bubble) {
   };
 }
 
-// --- 3. Template: builds one bubble's markup with unique IDs + per-bubble CSS variables ---
+// --- 3. Template: builds one bubble's markup (now wrapped in a .drag-layer) ---
 function createBubbleSVG(rawBubble, index) {
   const uid = `bubble-${index}`;
   const b = fillDefaults(rawBubble);
 
-  // Convert angle+distance into an x/y drift offset (px)
   const angleRad = (b.floatAngle * Math.PI) / 180;
   const floatX = (b.floatDistance * Math.cos(angleRad)).toFixed(1);
   const floatY = (b.floatDistance * Math.sin(angleRad)).toFixed(1);
 
   const [c1, c2, c3, c4] = b.colors;
 
-  // CSS custom properties, set inline so each bubble can differ without a separate stylesheet rule
   const wrapperStyle = `
     --float-x: ${floatX}px;
     --float-y: ${floatY}px;
     --float-duration: ${b.floatDuration}s;
   `.replace(/\s+/g, ' ');
 
-  const textFontSize = Math.round((b.size / 270) * 22); // scales text proportionally to bubble size
+  const textFontSize = Math.round((b.size / 270) * 22);
 
   return `
-  <div class="drag-layer">
-    <a href="${b.href}" class="sphere-link">
-  
+    <div class="drag-layer">
     <a href="${b.href}" class="sphere-link">
       <div class="sphere-wrapper" style="${wrapperStyle}">
         <svg class="sphere-svg" data-gradient-id="grad-${uid}" data-rotate-duration="${b.rotateDuration}"
@@ -164,8 +171,7 @@ function createBubbleSVG(rawBubble, index) {
         </svg>
       </div>
     </a>
-    </a>
-  </div>
+    </div>
   `;
 }
 
@@ -193,70 +199,164 @@ function animateAllGradients(timestamp) {
 
 requestAnimationFrame(animateAllGradients);
 
-// --- 6. Drag interaction ---
-// --- 6. Bubble-physics drag ---
+// --- 6. Bubble physics: drag + bouncing + squish ---
+// All the tuning numbers live here. These are starting guesses; adjust by feel.
 const CFG = {
-  dragThreshold: 5,        // px before a press counts as a drag
-  stiffness: 20,           // lower = more lag/resistance
-  damping: 10,              // higher = less wobble (critical damping ≈ 2·√stiffness ≈ 12.6)
-  friction: 1.6,           // per-second decay after release; higher = stops sooner
-  maxSpeed: 1500,          // px/s cap so a flick can't launch it across the screen
-  stretchPerSpeed: 0.0001, // squash/stretch amount per px/s
-  maxStretch: 0.18,        // 0.18 = up to 18% elongation
-  homePull: 0,             // >0 gently drifts bubbles back to their start (try 0.3)
-  restSpeed: 2             // px/s below which the animation loop stops
+  dragThreshold: 5,          // px of movement before a press counts as a drag
+  stiffness: 30,             // drag spring: lower = more lag/resistance
+  damping: 10,                // drag spring: higher = less wobble
+  friction: 0.8,             // per-second slowdown after release; higher = stops sooner
+  maxSpeed: 1200,            // px/s cap
+  stretchPerSpeed: 0.0001,   // stretch along direction of motion, per px/s
+  maxStretch: 0.18,
+  homePull: 0,               // >0 slowly drifts bubbles back to their start spots (try 0.3)
+  restSpeed: 2,              // px/s below which the loop sleeps
+  bubbleRestitution: 0.55,   // bounciness off other bubbles (1 = perfectly elastic)
+  wallRestitution: 0.5,      // bounciness off walls
+  contactSoftness: 0.6,      // fraction of overlap fixed per pass; 1 = rigid, lower = squishier
+  hitRadiusRatio: 0.48,      // collision radius = 0.48 x svg size (circle r=120 in a 250 viewBox)
+  collisionPasses: 2,
+  squishKick: 0.004,         // squish added per px/s of impact speed
+  squishMinSpeed: 30,        // px/s; ignores gentle resting contact
+  squishStiffness: 250,      // higher = snappier return to round
+  squishDamping: 10,         // lower = more jiggle
+  maxSquish: 0.25            // 0.25 = up to 25% compression
 };
+
+// Respect reduced-motion: no stretch/squish, and bubbles settle quickly.
+if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  CFG.stretchPerSpeed = 0;
+  CFG.squishKick = 0;
+  CFG.friction = 6;
+}
 
 let zCounter = 1;
 const states = [];
 let rafId = null;
 let lastTs = 0;
+const bounds = { minX: 0, maxX: 0, minY: 0, maxY: 0 };
+
+// Walls = the visible window on all four sides (bottom of window is the floor).
+function updateBounds() {
+  bounds.minX = 0;
+  bounds.maxX = document.documentElement.clientWidth;
+  bounds.minY = 0;
+  bounds.maxY = window.innerHeight;
+}
+
+// offsetLeft/Top ignore transforms, so these are each bubble's pre-drag layout spot.
+function updateNaturalPositions() {
+  for (const s of states) {
+    s.nx = s.layer.offsetLeft + s.size / 2;
+    s.ny = s.layer.offsetTop + s.size / 2;
+  }
+}
+
+function kick(s, speed, ang) {
+  if (speed < CFG.squishMinSpeed) return;
+  s.sqAng = ang;
+  s.sqv += speed * CFG.squishKick;
+}
 
 function render(s) {
   const speed = Math.hypot(s.vx, s.vy);
   const k = Math.min(speed * CFG.stretchPerSpeed, CFG.maxStretch);
   const ang = Math.atan2(s.vy, s.vx);
+  const q = s.sq;
   s.layer.style.transform =
-    `translate3d(${s.x}px, ${s.y}px, 0) rotate(${ang}rad) ` +
-    `scale(${1 + k}, ${1 / (1 + k)}) rotate(${-ang}rad)`;
+    `translate3d(${s.x}px, ${s.y}px, 0) ` +
+    `rotate(${ang}rad) scale(${1 + k}, ${1 / (1 + k)}) rotate(${-ang}rad) ` +
+    `rotate(${s.sqAng}rad) scale(${1 - q}, ${1 / (1 - q)}) rotate(${-s.sqAng}rad)`;
+}
+
+function collideBubbles() {
+  for (let i = 0; i < states.length; i++) {
+    for (let j = i + 1; j < states.length; j++) {
+      const a = states[i], b = states[j];
+      const dx = (b.nx + b.x) - (a.nx + a.x);
+      const dy = (b.ny + b.y) - (a.ny + a.y);
+      const minD = a.r + b.r;
+      if (dx * dx + dy * dy >= minD * minD) continue;
+
+      const dist = Math.hypot(dx, dy) || 0.0001;
+      const nx = dx / dist, ny = dy / dist;
+      const ia = a.held ? 0 : 1 / a.m;   // held bubble acts as immovable
+      const ib = b.held ? 0 : 1 / b.m;
+      const sum = ia + ib;
+      if (sum === 0) continue;
+
+      const overlap = (minD - dist) * CFG.contactSoftness;
+      a.x -= nx * overlap * ia / sum;  a.y -= ny * overlap * ia / sum;
+      b.x += nx * overlap * ib / sum;  b.y += ny * overlap * ib / sum;
+
+      const rel = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+      if (rel < 0) {
+        const imp = -(1 + CFG.bubbleRestitution) * rel / sum;
+        a.vx -= imp * ia * nx;  a.vy -= imp * ia * ny;
+        b.vx += imp * ib * nx;  b.vy += imp * ib * ny;
+        const axis = Math.atan2(ny, nx);
+        kick(a, -rel, axis);
+        kick(b, -rel, axis);
+      }
+    }
+  }
+}
+
+function collideWalls(s) {
+  const cx = s.nx + s.x, cy = s.ny + s.y;
+  const lo = bounds.minX + s.r, hi = bounds.maxX - s.r;
+  const top = bounds.minY + s.r, bot = bounds.maxY - s.r;
+  if (cx < lo)       { s.x += lo - cx;  if (s.vx < 0) { kick(s, -s.vx, 0);           s.vx = -s.vx * CFG.wallRestitution; } }
+  else if (cx > hi)  { s.x += hi - cx;  if (s.vx > 0) { kick(s, s.vx, 0);            s.vx = -s.vx * CFG.wallRestitution; } }
+  if (cy < top)      { s.y += top - cy; if (s.vy < 0) { kick(s, -s.vy, Math.PI / 2); s.vy = -s.vy * CFG.wallRestitution; } }
+  else if (cy > bot) { s.y += bot - cy; if (s.vy > 0) { kick(s, s.vy, Math.PI / 2);  s.vy = -s.vy * CFG.wallRestitution; } }
 }
 
 function step(ts) {
   const dt = Math.min((ts - lastTs) / 1000, 0.05); // clamp so tab-switches don't explode the sim
   lastTs = ts;
-  let active = false;
 
+  // 1. integrate motion + squish spring
   for (const s of states) {
-    if (s.pressed && s.dragged) {
-      // damped spring toward the pointer-defined target
+    s.held = s.pressed && s.dragged;
+    if (s.held) {
       s.vx += (CFG.stiffness * (s.tx - s.x) - CFG.damping * s.vx) * dt;
       s.vy += (CFG.stiffness * (s.ty - s.y) - CFG.damping * s.vy) * dt;
     } else {
-      // free motion: exponential friction (frame-rate independent) + optional home pull
       const f = Math.exp(-CFG.friction * dt);
-      s.vx *= f;
-      s.vy *= f;
+      s.vx *= f; s.vy *= f;
       if (CFG.homePull) {
         s.vx -= CFG.homePull * s.x * dt;
         s.vy -= CFG.homePull * s.y * dt;
       }
     }
-
-    const speed = Math.hypot(s.vx, s.vy);
-    if (speed > CFG.maxSpeed) {
-      s.vx *= CFG.maxSpeed / speed;
-      s.vy *= CFG.maxSpeed / speed;
-    }
-
+    const sp = Math.hypot(s.vx, s.vy);
+    if (sp > CFG.maxSpeed) { s.vx *= CFG.maxSpeed / sp; s.vy *= CFG.maxSpeed / sp; }
     s.x += s.vx * dt;
     s.y += s.vy * dt;
-    render(s);
 
-    const homeDist = CFG.homePull ? Math.hypot(s.x, s.y) : 0;
-    if (s.pressed || speed > CFG.restSpeed || homeDist > 0.5) active = true;
-    else { s.vx = s.vy = 0; render(s); } // settle: remove residual stretch
+    const sa = -CFG.squishStiffness * s.sq - CFG.squishDamping * s.sqv;
+    s.sqv += sa * dt;
+    s.sq  += s.sqv * dt;
+    s.sq = Math.max(-0.12, Math.min(CFG.maxSquish, s.sq));
   }
 
+  // 2. resolve collisions (walls last so nothing ends up outside the frame)
+  for (let p = 0; p < CFG.collisionPasses; p++) {
+    collideBubbles();
+    for (const s of states) collideWalls(s);
+  }
+
+  // 3. draw + decide whether to keep looping
+  let active = false;
+  for (const s of states) {
+    const speed = Math.hypot(s.vx, s.vy);
+    render(s);
+    const homeDist = CFG.homePull ? Math.hypot(s.x, s.y) : 0;
+    const wobbling = Math.abs(s.sq) > 0.002 || Math.abs(s.sqv) > 0.02;
+    if (s.pressed || speed > CFG.restSpeed || homeDist > 0.5 || wobbling) active = true;
+    else { s.vx = s.vy = 0; s.sq = s.sqv = 0; render(s); }
+  }
   rafId = active ? requestAnimationFrame(step) : null;
 }
 
@@ -268,13 +368,17 @@ function wake() {
 }
 
 container.querySelectorAll('.drag-layer').forEach(layer => {
+  const size = Number(layer.querySelector('svg').getAttribute('width'));
+  const r = size * CFG.hitRadiusRatio;
   const s = {
-    layer,
+    layer, size, r, m: r * r,
     wrapper: layer.querySelector('.sphere-wrapper'),
-    x: 0, y: 0, vx: 0, vy: 0,   // current position/velocity (offset from natural layout spot)
-    tx: 0, ty: 0,               // spring target while dragging
+    nx: 0, ny: 0,                 // natural (layout) center
+    x: 0, y: 0, vx: 0, vy: 0,     // offset from natural spot, and velocity
+    tx: 0, ty: 0,                 // spring target while dragging
+    sq: 0, sqv: 0, sqAng: 0,      // impact squish amount, its velocity, its axis
     startX: 0, startY: 0, baseX: 0, baseY: 0,
-    pressed: false, dragged: false
+    pressed: false, dragged: false, held: false
   };
   states.push(s);
 
@@ -318,9 +422,18 @@ container.querySelectorAll('.drag-layer').forEach(layer => {
   layer.addEventListener('pointerup', endPress);
   layer.addEventListener('pointercancel', endPress);
 
+  // Swallow the click that follows a drag so it doesn't navigate
   layer.addEventListener('click', e => {
     if (s.dragged) { e.preventDefault(); e.stopPropagation(); }
   }, true);
+});
+
+updateBounds();
+updateNaturalPositions();
+window.addEventListener('resize', () => {
+  updateBounds();
+  updateNaturalPositions();
+  wake();
 });
 </script>
 
