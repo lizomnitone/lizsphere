@@ -197,9 +197,9 @@ requestAnimationFrame(animateAllGradients);
 // --- 6. Bubble-physics drag ---
 const CFG = {
   dragThreshold: 5,        // px before a press counts as a drag
-  stiffness: 40,           // lower = more lag/resistance
-  damping: 9,              // higher = less wobble (critical damping ≈ 2·√stiffness ≈ 12.6)
-  friction: 1.2,           // per-second decay after release; higher = stops sooner
+  stiffness: 20,           // lower = more lag/resistance
+  damping: 10,              // higher = less wobble (critical damping ≈ 2·√stiffness ≈ 12.6)
+  friction: 1.6,           // per-second decay after release; higher = stops sooner
   maxSpeed: 1500,          // px/s cap so a flick can't launch it across the screen
   stretchPerSpeed: 0.0001, // squash/stretch amount per px/s
   maxStretch: 0.18,        // 0.18 = up to 18% elongation
