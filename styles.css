@@ -105,6 +105,18 @@ body {
   pointer-events: none;
 }
 
+
+.sphere-link {
+  display: inline-block;   /* transforms/translate don't apply to plain inline elements */
+  position: relative;      /* so z-index works when raising the dragged bubble */
+  touch-action: none;      /* stops touch-drags from scrolling the page */
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: grab;
+}
+.sphere-link.dragging {
+  cursor: grabbing;
+}
 /* ============================================================
    CONTENT GRID (2 Columns: Updates/Progress Left, Videos Right)
    ============================================================ */
@@ -202,7 +214,6 @@ body {
   font-size: 0.95rem;
   font-weight: 500;
   font-family: monospace;
-  color: 
 }
 
 /* ============================================================
