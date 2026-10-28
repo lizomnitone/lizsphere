@@ -109,6 +109,9 @@ function createBubbleSVG(rawBubble, index) {
   const textFontSize = Math.round((b.size / 270) * 22); // scales text proportionally to bubble size
 
   return `
+  <div class="drag-layer">
+    <a href="${b.href}" class="sphere-link">
+  
     <a href="${b.href}" class="sphere-link">
       <div class="sphere-wrapper" style="${wrapperStyle}">
         <svg class="sphere-svg" data-gradient-id="grad-${uid}" data-rotate-duration="${b.rotateDuration}"
@@ -161,6 +164,8 @@ function createBubbleSVG(rawBubble, index) {
         </svg>
       </div>
     </a>
+    </a>
+  </div>
   `;
 }
 
@@ -188,135 +193,59 @@ function animateAllGradients(timestamp) {
 
 requestAnimationFrame(animateAllGradients);
 
-// --- 6. Bubble-physics drag ---
-const CFG = {
-  dragThreshold: 5,        // px before a press counts as a drag
-  stiffness: 40,           // lower = more lag/resistance
-  damping: 9,              // higher = less wobble (critical damping ≈ 2·√stiffness ≈ 12.6)
-  friction: 1.2,           // per-second decay after release; higher = stops sooner
-  maxSpeed: 1500,          // px/s cap so a flick can't launch it across the screen
-  stretchPerSpeed: 0.0001, // squash/stretch amount per px/s
-  maxStretch: 0.18,        // 0.18 = up to 18% elongation
-  homePull: 0,             // >0 gently drifts bubbles back to their start (try 0.3)
-  restSpeed: 2             // px/s below which the animation loop stops
-};
-
+// --- 6. Drag interaction ---
+const DRAG_THRESHOLD = 5;
 let zCounter = 1;
-const states = [];
-let rafId = null;
-let lastTs = 0;
 
-function render(s) {
-  const speed = Math.hypot(s.vx, s.vy);
-  const k = Math.min(speed * CFG.stretchPerSpeed, CFG.maxStretch);
-  const ang = Math.atan2(s.vy, s.vx);
-  s.layer.style.transform =
-    `translate3d(${s.x}px, ${s.y}px, 0) rotate(${ang}rad) ` +
-    `scale(${1 + k}, ${1 / (1 + k)}) rotate(${-ang}rad)`;
-}
-
-function step(ts) {
-  const dt = Math.min((ts - lastTs) / 1000, 0.05); // clamp so tab-switches don't explode the sim
-  lastTs = ts;
-  let active = false;
-
-  for (const s of states) {
-    if (s.pressed && s.dragged) {
-      // damped spring toward the pointer-defined target
-      s.vx += (CFG.stiffness * (s.tx - s.x) - CFG.damping * s.vx) * dt;
-      s.vy += (CFG.stiffness * (s.ty - s.y) - CFG.damping * s.vy) * dt;
-    } else {
-      // free motion: exponential friction (frame-rate independent) + optional home pull
-      const f = Math.exp(-CFG.friction * dt);
-      s.vx *= f;
-      s.vy *= f;
-      if (CFG.homePull) {
-        s.vx -= CFG.homePull * s.x * dt;
-        s.vy -= CFG.homePull * s.y * dt;
-      }
-    }
-
-    const speed = Math.hypot(s.vx, s.vy);
-    if (speed > CFG.maxSpeed) {
-      s.vx *= CFG.maxSpeed / speed;
-      s.vy *= CFG.maxSpeed / speed;
-    }
-
-    s.x += s.vx * dt;
-    s.y += s.vy * dt;
-    render(s);
-
-    const homeDist = CFG.homePull ? Math.hypot(s.x, s.y) : 0;
-    if (s.pressed || speed > CFG.restSpeed || homeDist > 0.5) active = true;
-    else { s.vx = s.vy = 0; render(s); } // settle: remove residual stretch
-  }
-
-  rafId = active ? requestAnimationFrame(step) : null;
-}
-
-function wake() {
-  if (rafId === null) {
-    lastTs = performance.now();
-    rafId = requestAnimationFrame(step);
-  }
-}
-
-container.querySelectorAll('.drag-layer').forEach(layer => {
-  const s = {
-    layer,
-    wrapper: layer.querySelector('.sphere-wrapper'),
-    x: 0, y: 0, vx: 0, vy: 0,   // current position/velocity (offset from natural layout spot)
-    tx: 0, ty: 0,               // spring target while dragging
-    startX: 0, startY: 0, baseX: 0, baseY: 0,
-    pressed: false, dragged: false
-  };
-  states.push(s);
+container.querySelectorAll('.drag-layer').forEach((layer, i) => {
+  const wrapper = layer.querySelector('.sphere-wrapper');
+  let startX = 0, startY = 0, baseX = 0, baseY = 0, offsetX = 0, offsetY = 0;
+  let pressed = false, dragged = false;
 
   layer.addEventListener('dragstart', e => e.preventDefault());
 
   layer.addEventListener('pointerdown', e => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
-    e.preventDefault();
-    s.pressed = true;
-    s.dragged = false;
-    s.startX = e.clientX; s.startY = e.clientY;
-    s.baseX = s.x;        s.baseY = s.y;
-    s.tx = s.x;           s.ty = s.y;
+    console.log('pointerdown on bubble', i); // remove once working
+    e.preventDefault(); // blocks native link-drag in most browsers
+    pressed = true;
+    dragged = false;
+    startX = e.clientX; startY = e.clientY;
+    baseX = offsetX;    baseY = offsetY;
     layer.setPointerCapture(e.pointerId);
-    wake();
   });
 
   layer.addEventListener('pointermove', e => {
-    if (!s.pressed) return;
-    const dx = e.clientX - s.startX;
-    const dy = e.clientY - s.startY;
-    if (!s.dragged) {
-      if (Math.hypot(dx, dy) < CFG.dragThreshold) return;
-      s.dragged = true;
+    if (!pressed) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    if (!dragged) {
+      if (Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+      dragged = true;
       layer.classList.add('dragging');
       layer.style.zIndex = ++zCounter;
-      s.wrapper.style.animationPlayState = 'paused';
+      wrapper.style.animationPlayState = 'paused';
     }
-    s.tx = s.baseX + dx;
-    s.ty = s.baseY + dy;
+    offsetX = baseX + dx;
+    offsetY = baseY + dy;
+    layer.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
   });
 
   const endPress = () => {
-    if (!s.pressed) return;
-    s.pressed = false;
+    if (!pressed) return;
+    pressed = false;
     layer.classList.remove('dragging');
-    s.wrapper.style.animationPlayState = '';
-    setTimeout(() => { s.dragged = false; }, 0); // lets the trailing click be suppressed
-    wake();
+    wrapper.style.animationPlayState = '';
+    setTimeout(() => { dragged = false; }, 0);
   };
   layer.addEventListener('pointerup', endPress);
   layer.addEventListener('pointercancel', endPress);
 
+  // Capture phase so we cancel the link's navigation after a drag
   layer.addEventListener('click', e => {
-    if (s.dragged) { e.preventDefault(); e.stopPropagation(); }
+    if (dragged) { e.preventDefault(); e.stopPropagation(); }
   }, true);
 });
-
 </script>
 
 </body>
