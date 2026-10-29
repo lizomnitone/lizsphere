@@ -174,6 +174,54 @@ requestAnimationFrame(animateAllGradients);
 const allUpdates = [
   {
       /* Add future blog updates here */
+    id: "post-20",
+    date: "Oct 29, 2026",
+    title: "Selected Microcontroller",
+    content: `
+      <p>
+        Discussed w/ tanner, he mentioned the process he used was selecting the most capable micro/dev board that seemed to suit peripheral needs, developed on that, and then 
+        downgraded memory etc. within the same chip line based on need. He also mentioned that he devs in vim, then compiles gcc arm...there is an stm zip file that has all drivers
+        needed for the specific chip. 
+
+        So far my best candidate is an stm32f7 line, because it's been proven well for audio applications. It appears the dev board is quite good as well, as it comes with a 
+        parallel screen interface, microphone inputs, audio outputs.  There are also free software libraries huzzah! 
+
+        Took a quick look at price of OLED  screens. Unless I'm getting from Alibaba it's prohibitively expensive, and even expensive otherwise... looking at >180$/screen, or ~$40-$50 for a screen from 
+        overseas. hmm... maybe it's not in the cards? That is a huge cost undertaking. Though it would be really nice. I'll mull on it. I should probably get some samples down the line
+        for different screens to see what I actually like, test reliability... maybe I can design a backlight driver that doesn't minimize to 'still obnoxiously bright', or perhaps 
+        I'm misunderstanding how these screens actually work.  LCD screens are much cheaper and more accessible. Perhaps they could fit the vibe if the screen is a little more lo-fi rather than
+        hi-fi amazing graphics... Will have to do some testing for this. But pricing wise makes me alot happier. Tanner showed me E-paper display could be an option. 
+
+        Different screen communication schemes: 
+        QSPI (quad serial peripheral interface) 16+ wires?
+        MIPI (unfamiliar but common standard for working with screens...) 4-10 wires? 
+        Parallel? -- I think this is what QPSI is. 
+        SPI -- 4 wire.
+        HDMI - 19-20 wire. wow! 
+
+        A dedicated image processing unit in the chip may be beneficial for us rendering the screen! Probably would make development smoother. 
+
+        desired interfaces: 
+        - oled screen would be so sick. 
+        - microphone input
+        - multi-audio output or codecs? 
+        - peripherals for knobs and encoders 
+        - high performance (multi core?)
+
+        dev board options: 
+        STM32H7S78-DK
+        STM32H7B3I-DK 
+        STM32H745I-DISCO
+
+        - STM32f4 line 
+        - STM32f7 line (higher performance version of f4) single core. 
+        - STM32h7 line - daisy seeed uses this - even higher performance than stm32h7! Super high speed, more emi mitigation work? I'm a goober and that scares me. dual core. However the daisy seed 
+        - ADSP-BF524 - teenage eng uses this for op-1
+      </p>
+      `
+    },
+  {
+      /* Add future blog updates here */
     id: "post-19",
     date: "Oct 27, 2026",
     title: "Started the schematic",
