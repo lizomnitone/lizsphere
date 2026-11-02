@@ -173,58 +173,91 @@ requestAnimationFrame(animateAllGradients);
 // ============================================================
 const allUpdates = [
     {
-      /* Add future blog updates here */
-    id: "post-20",
-    date: "Nov 2, 2026",
-    title: "Let's get specifical",
-    content: `
-      <p>
-      After taking a look at the STM32 options the other day (was very difficult to lock in that day lol), I've sat on what I learned for a few days and feel pretty good about focusing my search to the STM32H7 line. It is time to look at what 
-      all the peripherals are and potentially add them all up so for schematic design I know what I am dealing with (how many GPIO do I have? How many UART? Watchdog timers???(because apparently I can use those for encoders? would that be wise? idk.) 
-      \n 
-      480MHz clock. Intimidating baheh. \n
-      DSP Instructions (good for effects + synthesis)\n
-      DTCM ram for time critical appl. \n
-      Dual Quad SPI\n
-      Up to 168 IO\n
-      1.6V-3.6V\n
-      4x DMA controllers \n
+  /* Add future blog updates here */
+  id: "post-20",
+  date: "Nov 2, 2026",
+  title: "Let's get specifical",
+  content: `
+    <p>
+      After taking a look at the STM32 options the other day (was very difficult to lock in that day lol),
+      I've sat on what I learned for a few days and feel pretty good about focusing my search on the STM32H7 line.
+      It is time to look at what all the peripherals are and add them up so that for schematic design I know
+      what I am dealing with: how many GPIO do I have? How many UART? Watchdog timers??? (apparently I can use
+      those for encoders? would that be wise? idk.)
+    </p>
 
-      Liquid Crystal Display - Thin Film Transistor. 8 registers per R,G,B...24 lines + clock, vertical and horizontal sync, enable... 28 lines. phew! \n
-      Apparently, we shouldn't worry about being limited by display size too much, as it can handle high-res (4k)\n
-      LTDC (LCD-TFT Display Controller) reads from a framebuffer in memory and drives the parallel interface. This happens at the same time as CPU and DMA2D write to it so there is some \n
-      fun memory stuff happening there.... \n
-      DMA2D (CHROM-ART Accelerator): operates on 2d pixel rectangles. Different operations available to modify the rectangles.. this one is hard to wrap my head around T_T \n
-      CPU writes pixels into memory, and the LTDC independently and continuously reads the memory and drives it to the display. CPU->DMA2D (not required)->Framebuffer (RAM)-> LTDC -> pins -> display\n
+    <h3>STM32H7 highlights</h3>
+    <ul>
+      <li>480MHz clock. Intimidating baheh.</li>
+      <li>DSP instructions (good for effects + synthesis)</li>
+      <li>DTCM RAM for time-critical applications</li>
+      <li>Dual Quad SPI</li>
+      <li>Up to 168 IO</li>
+      <li>1.6V-3.6V</li>
+      <li>4x DMA controllers</li>
+    </ul>
 
-      I2S - SPI1-3 can be configured to I2S mode. cool cool cool cool. \n
-      DB_stm32h750b-dk.pdf - $230CAD - 4.3" display, 1 mems microphone, audio and stereo headset jack, sai audio codec... not seeing a sd card input. \n
-      DB_stm32h7b3i-dk.pdf - $275CAD - audio codec - stereo hedset jack, audio jack for speakers, one analog mic input. microSD card. 4.3" TFT colour display, audio daughterboard expansion connector. \n
-      DB_stm32h757i-eval.pdf - $800CAD - RIP - doesn't have a lot of audio stuff on it anyways...\n
-      STM32H735G-DK\n
-      https://www.analog.com/en/lp/001/blackfin-architecture.html \n 
-      \n
-      putting together a few display options...oled is still prohibitively expensive, and desired aspect ratio is hard to find.\n
-      https://www.seeedstudio.com/reTerminal-E1002-p-6533.html \n
-      https://www.amazon.ca/GeeekPi-Raspberry-1024x600-Display-Portable/dp/B0CHRD7CQ3/ref=sr_1_2_sspa?crid=Q1VZHPWO456U&dib=eyJ2IjoiMSJ9.tOInD8UW9b7bAG6gJSEcmTZN1yJYU0k30hZOlZgaC9797tRrgR_l2-GTTa9bg-L_gTgAF0wkZPGxtd5WslztgQKqkU6321IqQHxQAVCrsJhoOppW9Bi5SMhJdxFk-qQwry9XSbhWUD8R_E3Cgv4eYJU_72sHdELNJMC5bxTR-ZEzXyi6E5qCF7JT2R6NWa3C6drxg98qIMtKEt-2Dct2LkGyo4OBu04wC_hZsNu3Su1X-k5lCKHsrvCogv25TSythYN3K3q_4QrksqjSAJhZ6z6i4B1fHwwyqUyurY7a2cI.qeRnuqV0xC97hhtA-fu9caeBMKdIcqRcGjvpHPXYsxU&dib_tag=se&keywords=lcd+screen+6%22&qid=1793644308&sprefix=lcd+screen+6%2Caps%2C228&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1 \n
-      https://www.amazon.ca/Touchscreen-Raspberry-1024x600-Portable-Raspbian/dp/B0B2QW89DR/ref=sr_1_2_sspa?crid=LUU0L3AGH7RS&dib=eyJ2IjoiMSJ9.tOInD8UW9b7bAG6gJSEcmTZN1yJYU0k30hZOlZgaC9797tRrgR_l2-GTTa9bg-L_gTgAF0wkZPGxtd5WslztgQKqkU6321IqQHxQAVCrsJhoOppW9Bi5SMhJdxFk-qQwry9XSbhWUD8R_E3Cgv4eYJU_72sHdELNJMC5bxTR-ZEzXyi6E5qCF7JT2R6NWa3C6drxg98qIMtKEt-2Dct2LkGyo4OBu04wC_hZsNu3Su1X-k5lCKHsrvCogv25TSythYN3K3q_4QrksqjSAJhZ6z6i4B1fHwwyqUyurY7a2cI.qeRnuqV0xC97hhtA-fu9caeBMKdIcqRcGjvpHPXYsxU&dib_tag=se&keywords=lcd+screen+6%22&qid=1793644518&sprefix=lcd+screen+6%2Caps%2C243&sr=8-2-spons&sp_csd=d2lkZ2V0TmFtZT1zcF9hdGY&psc=1 \n
-      https://www.aliexpress.com/item/32864661234.html?src=google&src=google&albch=shopping&acnt=631-313-3945&isdl=y&slnk=&plac=&mtctp=&albbt=Google_7_shopping&aff_platform=google&aff_short_key=UneMJZVf&gclsrc=aw.ds&albagn=888888&ds_e_adid=&ds_e_matchtype=&ds_e_device=c&ds_e_network=x&ds_e_product_group_id=&ds_e_product_id=en32864661234&ds_e_product_merchant_id=5851714237&ds_e_product_country=CA&ds_e_product_language=en&ds_e_product_channel=online&ds_e_product_store_id=&ds_url_v=2&albcp=19215273764&albag=&isSmbAutoCall=false&needSmbHouyi=false&gad_source=1&gad_campaignid=17178707511&gbraid=0AAAAACbpRInhw6nbwNW058u9kKAdk9uC7&gclid=CjwKCAiAhqHXBhAXEiwATbksUyQ6BTZhYgITz8H3FET6tittOPoiT01lP6mlD3LK11oxpxKJScfozBoCHb0QAvD_BwE \n
-      https://www.aliexpress.com/item/1005007887810237.html?src=google&src=google&albch=shopping&acnt=631-313-3945&isdl=y&slnk=&plac=&mtctp=&albbt=Google_7_shopping&aff_platform=google&aff_short_key=UneMJZVf&gclsrc=aw.ds&albagn=888888&ds_e_adid=&ds_e_matchtype=&ds_e_device=c&ds_e_network=x&ds_e_product_group_id=&ds_e_product_id=en1005007887810237&ds_e_product_merchant_id=5851714237&ds_e_product_country=CA&ds_e_product_language=en&ds_e_product_channel=online&ds_e_product_store_id=&ds_url_v=2&albcp=19215273764&albag=&isSmbAutoCall=false&needSmbHouyi=false&gad_source=4&gad_campaignid=17178707511&gbraid=0AAAAACbpRInUbuFcqAyTagqYIAvZd23XI&gclid=CjwKCAiAhqHXBhAXEiwATbksU0gJe4NGpciYgv0ul6xaXiP_6kXXh2YwtJz5TVHHQrE8joYSI5SAGRoCV18QAvD_BwE \n
-      https://www.waveshare.com/wiki/6inch_HDMI_AMOLED?srsltid=AfmBOoplOztM_OWdBCjkhIHFW7TK5amNgK1UuvBnKsYSZMjk8olkpeCW \n 
-      https://www.waveshare.com/product/displays/lcd-oled/lcd-oled-1.htm \n 
-      https://www.waveshare.com/product/displays/oled/oled-1/5.5inch-hdmi-amoled.htm \n 
+    <h3>Display: LCD-TFT</h3>
+    <p>
+      8 bits per R, G, B = 24 data lines, plus clock, vertical sync, horizontal sync, and enable = 28 lines. Phew!
+      Apparently we shouldn't worry too much about display size, as it can handle high-res (4K).
+    </p>
+    <ul>
+      <li><strong>LTDC</strong> (LCD-TFT Display Controller): reads from a framebuffer in memory and drives the parallel interface. This happens at the same time as the CPU and DMA2D write to it, so there is some fun memory stuff happening there...</li>
+      <li><strong>DMA2D</strong> (Chrom-ART Accelerator): operates on 2D pixel rectangles, with different operations available to modify them. This one is hard to wrap my head around T_T</li>
+    </ul>
+    <p>
+      CPU writes pixels into memory, and the LTDC independently and continuously reads that memory and drives
+      the display. <br>
+      <code>CPU → DMA2D (optional) → Framebuffer (RAM) → LTDC → pins → display</code>
+    </p>
 
-      not loving these options but at least they are in the right ballpark of size... \n
-      \n
-      Audio codec options: \n 
-      https://www.mouser.ca/en/new/texas-instruments/ti-tac5212-high-performance-stereo-audio-codec/\n
-      https://www.ti.com/lit/ds/symlink/lm4549b.pdf?ts=1793644952807 \n
-      PCM4104 and PCM4204 \n 
+    <h3>Audio</h3>
+    <p>I2S: SPI1-3 can be configured to I2S mode. cool cool cool cool.</p>
 
-      well...i created a nice pile of work for myself lol.\n
-      </p>
-      `
-    },
+    <h3>Dev boards</h3>
+    <table>
+      <thead>
+        <tr><th>Board</th><th>Price</th><th>Notes</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>DB_stm32h750b-dk</td><td>$230 CAD</td><td>4.3" display, 1 MEMS mic, audio + stereo headset jack, SAI audio codec. Not seeing an SD card input.</td></tr>
+        <tr><td>DB_stm32h7b3i-dk</td><td>$275 CAD</td><td>Audio codec, stereo headset jack, audio jack for speakers, one analog mic input, microSD, 4.3" TFT colour display, audio daughterboard expansion connector.</td></tr>
+        <tr><td>DB_stm32h757i-eval</td><td>$800 CAD</td><td>RIP. Doesn't have a lot of audio stuff on it anyways...</td></tr>
+        <tr><td>STM32H735G-DK</td><td>-</td><td>-</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Also looking at:
+      <a href="https://www.analog.com/en/lp/001/blackfin-architecture.html" target="_blank" rel="noopener noreferrer">Blackfin architecture (Analog Devices)</a>
+    </p>
+
+    <h3>Display options</h3>
+    <p>
+      Putting together a few options... OLED is still prohibitively expensive, and the desired aspect ratio is hard to find.
+    </p>
+    <ul>
+      <li><a href="https://www.seeedstudio.com/reTerminal-E1002-p-6533.html" target="_blank" rel="noopener noreferrer">Seeed reTerminal E1002</a></li>
+      <li><a href="https://www.amazon.ca/dp/B0CHRD7CQ3" target="_blank" rel="noopener noreferrer">GeeekPi 1024x600 display (Amazon.ca)</a></li>
+      <li><a href="https://www.amazon.ca/dp/B0B2QW89DR" target="_blank" rel="noopener noreferrer">1024x600 touchscreen (Amazon.ca)</a></li>
+      <li><a href="https://www.aliexpress.com/item/32864661234.html" target="_blank" rel="noopener noreferrer">AliExpress option 1</a></li>
+      <li><a href="https://www.aliexpress.com/item/1005007887810237.html" target="_blank" rel="noopener noreferrer">AliExpress option 2</a></li>
+      <li><a href="https://www.waveshare.com/wiki/6inch_HDMI_AMOLED" target="_blank" rel="noopener noreferrer">Waveshare 6" HDMI AMOLED</a></li>
+      <li><a href="https://www.waveshare.com/product/displays/lcd-oled/lcd-oled-1.htm" target="_blank" rel="noopener noreferrer">Waveshare LCD/OLED listing</a></li>
+      <li><a href="https://www.waveshare.com/product/displays/oled/oled-1/5.5inch-hdmi-amoled.htm" target="_blank" rel="noopener noreferrer">Waveshare 5.5" HDMI AMOLED</a></li>
+    </ul>
+    <p>Not loving these options, but at least they are in the right ballpark of size...</p>
+
+    <h3>Audio codec options</h3>
+    <ul>
+      <li><a href="https://www.mouser.ca/en/new/texas-instruments/ti-tac5212-high-performance-stereo-audio-codec/" target="_blank" rel="noopener noreferrer">TI TAC5212 (Mouser)</a></li>
+      <li><a href="https://www.ti.com/lit/ds/symlink/lm4549b.pdf" target="_blank" rel="noopener noreferrer">LM4549B datasheet</a></li>
+      <li>PCM4104 and PCM4204</li>
+    </ul>
+
+    <p>Well... I created a nice pile of work for myself lol.</p>
+  `
+},
   {
       /* Add future blog updates here */
     id: "post-20",
