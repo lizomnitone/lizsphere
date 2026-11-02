@@ -62,11 +62,7 @@
 <!-- LEFT: overview / RIGHT: spec cards -->
 <div class="content-grid">
 
-    <div>
-        <figure class="Meshtastic Radio">
             
-         
-
 <h4>Where to look</h4>
 <ul class="link-list">
   <li>
@@ -83,7 +79,7 @@
   </li>
 
    <p>Meshtastic radios use a Semtech SX1262 or SX1268 chip. Microcontrollers are often ESP32 or nRF52840. You can buy off-the-shelf complete 
-   devices from a variety of providers. <br> Disclaimer: This pages content was generated with AI.</p>
+   devices from a variety of providers. <br>Disclaimer: This pages content was generated with AI. </p>
 </ul>
 
 <h4>Popular Brands:</h4>
@@ -93,18 +89,14 @@
   <li>Heltec</li>
   <li>RAKwireless</li>
 </ul>
-        </figure>
-
         <!-- NEW: plain-language background -->
-        <div class="hw-section">
-            <h2>What are LoRa and Meshtastic?</h2>
-            <p><strong>LoRa</strong> is a radio modulation (a "chirp spread spectrum" scheme, owned by Semtech) that trades data rate for range and weak-signal sensitivity. It is the physical layer only: it defines how bits become radio waves, not how devices find each other or route messages.</p>
-            <p><strong>Meshtastic</strong> is open-source firmware that runs on LoRa hardware. It adds its own mesh networking, encryption and a phone-app interface on top of LoRa, so nodes can relay text messages and position data without cell service or Wi-Fi. It is <em>not</em> LoRaWAN, which is a different, gateway-based protocol from the LoRa Alliance. Hardware that works for one does not automatically run the other.</p>
-            <p>Throughput is low (roughly 1 kbps or less at the default long-range preset), which is why it suits short text and telemetry, not photos or voice.</p>
-        </div>
-       
+    <div class="hw-section">
+      <h2>What are LoRa and Meshtastic?</h2>
+      <p><strong>LoRa</strong> is a radio modulation (a "chirp spread spectrum" scheme, owned by Semtech) that trades data rate for range and weak-signal sensitivity. It is the physical layer only: it defines how bits become radio waves, not how devices find each other or route messages.</p>
+      <p><strong>Meshtastic</strong> is open-source firmware that runs on LoRa hardware. It adds its own mesh networking, encryption and a phone-app interface on top of LoRa, so nodes can relay text messages and position data without cell service or Wi-Fi. It is <em>not</em> LoRaWAN, which is a different, gateway-based protocol from the LoRa Alliance. Hardware that works for one does not automatically run the other.</p>
+      <p>Throughput is low (roughly 1 kbps or less at the default long-range preset), which is why it suits short text and telemetry, not photos or voice.</p>
     </div>
-
+  
 </div>
 
 <!-- NEW: full-width supplementary sections -->
@@ -123,7 +115,7 @@
         <line x1="410" y1="43" x2="450" y2="43"/><line x1="560" y1="43" x2="600" y2="43"/>
         <text x="418" y="36" style="font-size:10px">SPI</text>
         <rect x="10" y="130" width="200" height="50" rx="6"/><text x="20" y="152">Battery, charger,</text><text x="20" y="168">3.3 V regulator</text>
-        <rect x="290" y="130" width="130" height="50" rx="6"/><text x="300" y="152">Crystal / TCXO</text><text x="300" y="168">(freq. reference)</text>
+        <rect x="290" y="130" width="150" height="50" rx="6"/><text x="300" y="152">Crystal / TCXO</text><text x="300" y="168">(freq. reference)</text>
         <rect x="480" y="130" width="230" height="50" rx="6"/><text x="490" y="152">Optional: GPS (UART),</text><text x="490" y="168">display/sensors (I2C)</text>
         <path d="M505 130 V66"/><path d="M350 130 V66"/>
         <path d="M110 130 V100 H505"/>
@@ -203,12 +195,7 @@
         <li>The firmware needs to know which pins connect to which radio signals. Arbitrary pinouts generally mean building custom firmware; a few generic "DIY" hardware definitions exist, so check the project docs first.</li>
         <li>The Adafruit Feather M0 design linked above is a useful open example of how a LoRa board is laid out, but see the compatibility caveat below.</li>
     </ul>
-    <div class="hw-note"><strong>Compatibility caveat:</strong> as far as I know, the Feather M0 with RFM95 uses an SX1276-class radio and a SAMD21 microcontroller. That differs from the SX1262 + nRF52840/ESP32 combination Meshtastic mainly targets, so it is a good hardware reference but probably not a ready-to-run Meshtastic node. Verify against the current supported-device list.</div>
-    <div class="hw-note"><strong>"Open source" varies:</strong> Meshtastic firmware is open source, but not every commercial board publishes its schematics or PCB files. If open hardware matters to you, check each vendor’s repository and licence.</div>
 </div>
-
-<p style="font-size:0.85rem; opacity:0.8">Figures on this page are approximate and summarized from manufacturer and project documentation; always confirm against the current datasheets and the Meshtastic docs before buying or building.</p>
-
 </div>
 
 
