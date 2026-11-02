@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/lizsphere/">
+<!-- Standard SVG / PNG Favicon -->
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+
+<!-- Apple Touch Icon (iOS Home Screen) -->
+<link rel="apple-touch-icon" sizes="16x16" href="favicon.png">
+<link rel="stylesheet" href="styles.css">
+<title>Meshtastic Hardware</title>
+
+
+<!-- Only styles for the NEW pieces (system cards, diagram, lists, tables). Everything else comes from your styles.css.
+     You can move this block into styles.css later. -->
+<style>
+  .system-cards { display: grid; gap: 0.9rem; }
+  .system-card {
+    display: block; padding: 1rem 1.1rem; color: inherit; text-decoration: none;
+    border: 1px solid rgb(255, 0, 119, 1); border-left: 4px solid rgba(255, 0, 119, 1);
+    border-radius: 8px; background: rgba(255, 0, 119, 0.2);
+    font: monospace; 
+  }
+  .system-card:hover, .system-card:focus-visible { border-color: #ff2fea; }
+  .system-card h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+  .system-card p { margin: 0; font-size: 0.92rem; line-height: 1.45; }
+  .cubesat-diagram { margin: 0 0 1.5rem; }
+  .cubesat-diagram img { display: block; width: 100%; height: auto; border-radius: 10px; }
+  .cubesat-list { padding-left: 1.25rem; line-height: 1.55; }
+  .cubesat-list li { margin-bottom: 0.5rem; }
+
+  /* ---- new: supplementary sections ---- */
+  .hw-section { margin: 2rem 0; line-height: 1.55; }
+  .hw-section h2 { margin-bottom: 0.4rem; }
+  .hw-section h3 { margin: 1.2rem 0 0.3rem; }
+  .hw-section li { margin-bottom: 0.4rem; }
+  .table-wrap { overflow-x: auto; margin: 0.8rem 0; }
+  .hw-table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.92rem; }
+  .hw-table th, .hw-table td { border: 1px solid rgba(255, 0, 119, 0.6); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+  .hw-table th { background: rgba(255, 0, 119, 0.2); }
+  .hw-note { border-left: 4px solid rgba(255, 0, 119, 1); background: rgba(255, 0, 119, 0.12); padding: 0.7rem 1rem; border-radius: 6px; font-size: 0.92rem; margin: 1rem 0; }
+  .block-diagram { width: 100%; height: auto; margin: 0.8rem 0; color: inherit; }
+  .block-diagram text { fill: currentColor; font-family: monospace; font-size: 13px; }
+  .block-diagram rect { fill: rgba(255, 0, 119, 0.15); stroke: rgb(255, 0, 119); stroke-width: 1.5; }
+  .block-diagram line, .block-diagram path { stroke: currentColor; stroke-width: 1.5; fill: none; }
+</style>
+</head>
+<body>
+
+<!-- Added voicebox-page scope class here -->
+<div class="page-container voicebox-page">
+
+<div class="home-header">
+<h1 class="home-header-title">Meshtastic</h1>
+<p></p>
+</div>
+
+<div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
+
+<!-- LEFT: overview / RIGHT: spec cards -->
+<div class="content-grid">
+
+    <div>
+        <figure class="Meshtastic Radio">
+            
+         
+
+<h4>Where to look</h4>
+<ul class="link-list">
+  <li>
+    <span class="link-label">For a complete list of devices supported, go here:</span>
+    <a href="https://meshtastic.org/docs/hardware/devices/" target="_blank" rel="noopener noreferrer">https://meshtastic.org/docs/hardware/devices/</a>
+  </li>
+  <li>
+    <span class="link-label">For open source LoRa radio projects, check out this link:</span>
+    <a href="https://www.protoflow.ai/community/references/topic/lora" target="_blank" rel="noopener noreferrer">https://www.protoflow.ai/community/references/topic/lora</a>
+  </li>
+  <li>
+    <span class="link-label">Here is a link to an open source project with PCB files:</span>
+    <a href="https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/downloads" target="_blank" rel="noopener noreferrer">https://learn.adafruit.com/adafruit-feather-m0-radio-with-lora-radio-module/downloads</a>
+  </li>
+
+   <p>Meshtastic radios use a Semtech SX1262 or SX1268 chip. Microcontrollers are often ESP32 or nRF52840. You can buy off-the-shelf complete 
+   devices from a variety of providers. <br> Disclaimer: This pages content was generated with AI.</p>
+</ul>
+
+<h4>Popular Brands:</h4>
+<ul class="brand-pills">
+  <li>Elecrow</li>
+  <li>LILYGO</li>
+  <li>Heltec</li>
+  <li>RAKwireless</li>
+</ul>
+        </figure>
+
+        <!-- NEW: plain-language background -->
+        <div class="hw-section">
+            <h2>What are LoRa and Meshtastic?</h2>
+            <p><strong>LoRa</strong> is a radio modulation (a "chirp spread spectrum" scheme, owned by Semtech) that trades data rate for range and weak-signal sensitivity. It is the physical layer only: it defines how bits become radio waves, not how devices find each other or route messages.</p>
+            <p><strong>Meshtastic</strong> is open-source firmware that runs on LoRa hardware. It adds its own mesh networking, encryption and a phone-app interface on top of LoRa, so nodes can relay text messages and position data without cell service or Wi-Fi. It is <em>not</em> LoRaWAN, which is a different, gateway-based protocol from the LoRa Alliance. Hardware that works for one does not automatically run the other.</p>
+            <p>Throughput is low (roughly 1 kbps or less at the default long-range preset), which is why it suits short text and telemetry, not photos or voice.</p>
+        </div>
+       
+    </div>
+
+</div>
+
+<!-- NEW: full-width supplementary sections -->
+
+<div class="hw-section" id="how-it-works">
+    <h2>How a LoRa radio node works (high level)</h2>
+    <p>Almost every Meshtastic device is the same handful of blocks. Only the packaging changes.</p>
+
+    <svg class="block-diagram" viewBox="0 0 720 230" role="img" aria-label="Block diagram: antenna, RF front end, LoRa transceiver, microcontroller, phone link, with power and optional peripherals">
+        <rect x="10" y="20" width="90" height="46" rx="6"/><text x="30" y="48">Antenna</text>
+        <rect x="140" y="20" width="110" height="46" rx="6"/><text x="150" y="40">RF switch +</text><text x="150" y="56">match/filter</text>
+        <rect x="290" y="20" width="120" height="46" rx="6"/><text x="300" y="40">LoRa radio</text><text x="300" y="56">(SX1262/68)</text>
+        <rect x="450" y="20" width="110" height="46" rx="6"/><text x="460" y="40">Microcontr.</text><text x="460" y="56">(nRF52/ESP32)</text>
+        <rect x="600" y="20" width="110" height="46" rx="6"/><text x="610" y="40">Phone link</text><text x="610" y="56">BLE/USB/WiFi</text>
+        <line x1="100" y1="43" x2="140" y2="43"/><line x1="250" y1="43" x2="290" y2="43"/>
+        <line x1="410" y1="43" x2="450" y2="43"/><line x1="560" y1="43" x2="600" y2="43"/>
+        <text x="418" y="36" style="font-size:10px">SPI</text>
+        <rect x="10" y="130" width="200" height="50" rx="6"/><text x="20" y="152">Battery, charger,</text><text x="20" y="168">3.3 V regulator</text>
+        <rect x="290" y="130" width="130" height="50" rx="6"/><text x="300" y="152">Crystal / TCXO</text><text x="300" y="168">(freq. reference)</text>
+        <rect x="480" y="130" width="230" height="50" rx="6"/><text x="490" y="152">Optional: GPS (UART),</text><text x="490" y="168">display/sensors (I2C)</text>
+        <path d="M505 130 V66"/><path d="M350 130 V66"/>
+        <path d="M110 130 V100 H505"/>
+    </svg>
+
+    <ol>
+        <li><strong>Antenna.</strong> Sets a large share of real-world range. A quarter-wave whip is roughly 8.2 cm at 915 MHz or 8.6 cm at 868 MHz in free space (real antennas are trimmed somewhat shorter). The antenna must match the band of the radio.</li>
+        <li><strong>RF front end.</strong> An impedance-matching network, filters to suppress harmonics, and an RF switch that connects the antenna to either the transmit or receive path. Some modules add an external power amplifier and/or low-noise amplifier.</li>
+        <li><strong>LoRa transceiver (SX1262/SX1268).</strong> Does the modulation and demodulation. It is controlled over <strong>SPI</strong>, plus a few extra lines: chip select, reset, a BUSY line, and an interrupt line (DIO1) that tells the microcontroller a packet arrived or finished sending.</li>
+        <li><strong>Frequency reference.</strong> LoRa needs a stable clock. Many modules use a temperature-compensated crystal oscillator (TCXO), which the SX126x can power through one of its pins.</li>
+        <li><strong>Microcontroller.</strong> Runs the firmware, mesh routing, encryption and phone interface (details below).</li>
+        <li><strong>Power.</strong> Usually a single-cell LiPo/Li-ion (about 3.0 to 4.2 V), a charger chip and a 3.3 V regulator. Receiving draws a few mA, but transmitting at high power draws on the order of 100 mA or more in short bursts, so a weak supply can cause brownouts or resets.</li>
+        <li><strong>Optional extras.</strong> GPS for position sharing, a small OLED or e-ink display, buttons, environmental sensors, a solar input.</li>
+    </ol>
+
+    <div class="hw-note"><strong>Edge case:</strong> transmitting with no antenna (or a mismatched one) can damage the radio’s power amplifier on many modules. Attach the antenna before powering up.</div>
+</div>
+
+<div class="hw-section" id="microcontrollers">
+    <h2>Microcontrollers: what does it need to do?</h2>
+    <ul>
+        <li><strong>Talk to the radio over SPI</strong> and handle its interrupt/BUSY lines.</li>
+        <li><strong>Run the Meshtastic firmware</strong>: packet routing (flood-based relaying), a database of known nodes, and encryption. That needs a reasonable amount of flash and RAM.</li>
+        <li><strong>Connect to a phone or computer</strong> via Bluetooth LE, USB serial or Wi-Fi, depending on the chip.</li>
+        <li><strong>Provide extra interfaces</strong>: UART (GPS), I2C (display, sensors), spare GPIO (buttons, LEDs).</li>
+        <li><strong>Sleep efficiently</strong> if it will run on a battery for days.</li>
+        <li><strong>Support firmware updates</strong> (USB and/or over-the-air).</li>
+    </ul>
+
+    <div class="table-wrap">
+    <table class="hw-table">
+        <thead><tr><th>MCU family</th><th>Key traits</th><th>Typical trade-off</th><th>Example devices</th></tr></thead>
+        <tbody>
+            <tr><td>nRF52840 (Nordic)</td><td>Arm Cortex-M4F at 64 MHz, 1 MB flash, 256 KB RAM, Bluetooth LE 5, no Wi-Fi</td><td>Generally better battery life; no Wi-Fi</td><td>RAKwireless RAK4631, LILYGO T-Echo</td></tr>
+            <tr><td>ESP32 family (Espressif)</td><td>Wi-Fi + Bluetooth, more RAM/flash, fast clocks, many variants (ESP32, S3, C3)</td><td>Wi-Fi and more features, but generally higher power draw</td><td>Heltec WiFi LoRa 32 V3, LILYGO T-Beam, T-Deck</td></tr>
+            <tr><td>RP2040 (Raspberry Pi)</td><td>Dual Cortex-M0+ at 133 MHz, no built-in radio</td><td>Cheap and flexible; Meshtastic support is more limited</td><td>RAK11310 (verify current status)</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p style="font-size:0.88rem">Example devices pair these MCUs with an SX126x radio, but exact variants and revisions change often. Check the device list linked above.</p>
+</div>
+
+<div class="hw-section" id="chips">
+    <h2>The radio chips</h2>
+    <div class="table-wrap">
+    <table class="hw-table">
+        <thead><tr><th>Chip</th><th>Frequency range</th><th>Max TX power</th><th>Notes</th></tr></thead>
+        <tbody>
+            <tr><td>SX1262</td><td>150 to 960 MHz</td><td>up to +22 dBm</td><td>Covers 433, 868 and 915 MHz regions. Newer generation, lower receive current than SX127x.</td></tr>
+            <tr><td>SX1268</td><td>410 to 810 MHz</td><td>up to +22 dBm</td><td>Same family, but does <em>not</em> cover 868/915 MHz. Aimed at 433 MHz and Chinese bands.</td></tr>
+            <tr><td>SX1276 (older)</td><td>137 to 1020 MHz</td><td>up to about +20 dBm</td><td>Older generation, found in many older boards and in the Adafruit RFM95 radios.</td></tr>
+        </tbody>
+    </table>
+    </div>
+    <p>Note: SX1262 and SX1268 are not drop-in equivalents. The chip, the board’s matching network and the antenna all need to suit the frequency band you will actually use.</p>
+</div>
+
+<div class="hw-section" id="bands">
+    <h2>Frequency bands and regulations</h2>
+    <p>Meshtastic is set to a regional band in firmware. Common examples are 902 to 928 MHz in the US and Canada (ISM), 863 to 870 MHz in much of Europe (EU868), and 433 MHz in some regions. Many boards are sold in band-specific variants (for example 433 / 868 / 915 MHz).</p>
+    <div class="hw-note"><strong>Check before transmitting:</strong> allowed bands, power limits and duty-cycle limits differ by country, and EU868 in particular has duty-cycle restrictions. Setting the wrong region, or using a board built for a different band, can be inefficient and in some places illegal. Rules change, so confirm with your local regulator.</div>
+</div>
+
+<div class="hw-section" id="range-settings">
+    <h2>Range vs. speed</h2>
+    <p>LoRa lets you trade data rate for sensitivity using the <em>spreading factor</em> (SF) and <em>bandwidth</em>. Higher SF and narrower bandwidth give longer range but slower, longer-airtime transmissions. Meshtastic bundles these into presets (for example LongFast, which I believe uses SF11 with 250 kHz bandwidth, and LongSlow, which is slower and longer range). All nodes on a channel need to use the same preset to hear each other.</p>
+    <p>Real range depends mostly on line of sight, antenna height and quality, and terrain, far more than on the radio chip. Treat any single range number as a best case, not a guarantee.</p>
+</div>
+
+<div class="hw-section" id="buy-vs-build">
+    <h2>Off-the-shelf vs. DIY</h2>
+    <h3>Buy a complete device</h3>
+    <p>Easiest path: flash from the Meshtastic web flasher, pair with the phone app. Brands listed above make boards at several price and feature levels (bare boards, GPS trackers, e-ink handhelds, units with keyboards, solar nodes). Pick a device from the official supported list so the firmware has a matching hardware definition.</p>
+    <h3>Build your own</h3>
+    <ul>
+        <li>Combine a supported MCU board with an SX126x module. Confirm the module’s band, voltage and pin requirements.</li>
+        <li>The firmware needs to know which pins connect to which radio signals. Arbitrary pinouts generally mean building custom firmware; a few generic "DIY" hardware definitions exist, so check the project docs first.</li>
+        <li>The Adafruit Feather M0 design linked above is a useful open example of how a LoRa board is laid out, but see the compatibility caveat below.</li>
+    </ul>
+    <div class="hw-note"><strong>Compatibility caveat:</strong> as far as I know, the Feather M0 with RFM95 uses an SX1276-class radio and a SAMD21 microcontroller. That differs from the SX1262 + nRF52840/ESP32 combination Meshtastic mainly targets, so it is a good hardware reference but probably not a ready-to-run Meshtastic node. Verify against the current supported-device list.</div>
+    <div class="hw-note"><strong>"Open source" varies:</strong> Meshtastic firmware is open source, but not every commercial board publishes its schematics or PCB files. If open hardware matters to you, check each vendor’s repository and licence.</div>
+</div>
+
+<p style="font-size:0.85rem; opacity:0.8">Figures on this page are approximate and summarized from manufacturer and project documentation; always confirm against the current datasheets and the Meshtastic docs before buying or building.</p>
+
+</div>
+
+
+<script>
+// ============================================================
+// BUBBLES
+// ============================================================
+const bubbles = [
+  {
+    href: "index.html",
+    label: "Back to Home",
+    colors: ["#ff0055", "#7a00ff", "#7a00ff", "#ff0055"],
+    size: 85,
+    minFontSize: 14,
+    pinned: true,
+    floatDistance: 5,
+  },
+  {
+    href: "satellite-home.html",
+    label: "Satellite Home",
+    colors: ["#FFB639", "#8178FF", "#FF009B", "#FFB639"],
+    size: 85,
+    minFontSize: 14,
+    pinned: true,
+    floatDistance: 5,
+  }
+];
+
+function randomBetween(min, max) {
+  return Math.random() * (max - min) + min;
+}
+
+function randomColorSet() {
+  const hue = Math.floor(randomBetween(0, 360));
+  const c1 = `hsl(${hue}, 85%, 55%)`;
+  const c2 = `hsl(${(hue + 90) % 360}, 85%, 55%)`;
+  const c3 = `hsl(${(hue + 200) % 360}, 85%, 55%)`;
+  return [c1, c2, c3, c1];
+}
+
+function fillDefaults(bubble) {
+  return {
+    href: bubble.href,
+    label: bubble.label,
+    pinned: bubble.pinned,
+    size: bubble.size ?? Math.round(randomBetween(160, 280)),
+    colors: bubble.colors ?? randomColorSet(),
+    floatDistance: bubble.floatDistance ?? Math.round(randomBetween(15, 50)),
+    floatAngle: bubble.floatAngle ?? Math.round(randomBetween(0, 360)),
+    floatDuration: bubble.floatDuration ?? +randomBetween(4, 9).toFixed(1),
+    rotateDuration: bubble.rotateDuration ?? Math.round(randomBetween(3000, 6000)),
+  };
+}
+
+function createBubbleSVG(rawBubble, index) {
+  const uid = `bubble-${index}`;
+  const b = fillDefaults(rawBubble);
+  const angleRad = (b.floatAngle * Math.PI) / 180;
+  const floatX = (b.floatDistance * Math.cos(angleRad)).toFixed(1);
+  const floatY = (b.floatDistance * Math.sin(angleRad)).toFixed(1);
+  const [c1, c2, c3, c4] = b.colors;
+  const wrapperStyle = `--float-x: ${floatX}px; --float-y: ${floatY}px; --float-duration: ${b.floatDuration}s;`;
+
+  // Enforces a minimum text size so small bubbles stay legible
+  const calculatedFont = Math.round((b.size / 130) * 26);
+  const minFont = rawBubble.minFontSize || 14;
+  const textFontSize = Math.max(calculatedFont, minFont);
+
+  const pinnedClass = b.pinned ? ' sphere-wrapper--pinned' : '';
+
+  return `
+    <a href="${b.href}" class="sphere-link${b.pinned ? ' sphere-link--pinned' : ''}">
+      <div class="sphere-wrapper${pinnedClass}" style="${wrapperStyle}">
+        <svg class="sphere-svg" data-gradient-id="grad-${uid}" data-rotate-duration="${b.rotateDuration}"
+             viewBox="0 0 250 250" width="${b.size}" height="${b.size}">
+          <defs>
+            <filter id="warp-${uid}" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <clipPath id="clip-${uid}"><circle cx="125" cy="125" r="120" /></clipPath>
+            <linearGradient id="grad-${uid}" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="repeat">
+              <stop offset="0%" stop-color="${c1}" />
+              <stop offset="33.3%" stop-color="${c2}" />
+              <stop offset="66.6%" stop-color="${c3}" />
+              <stop offset="100%" stop-color="${c4}" />
+            </linearGradient>
+            <radialGradient id="shading-${uid}" cx="40%" cy="35%" r="75%">
+              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+              <stop offset="65%" stop-color="#000000" stop-opacity="0" />
+              <stop offset="100%" stop-color="#000000" stop-opacity="0.55" />
+            </radialGradient>
+            <radialGradient id="highlight-${uid}" cx="32%" cy="28%" r="30%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <g clip-path="url(#clip-${uid})">
+            <rect x="-20" y="-50" width="300" height="350" fill="url(#grad-${uid})" filter="url(#warp-${uid})" />
+            <circle cx="125" cy="125" r="120" fill="url(#shading-${uid})" />
+            <circle cx="125" cy="125" r="120" fill="url(#highlight-${uid})" />
+          </g>
+          <text class="bubble-text" x="125" y="125" text-anchor="middle" dominant-baseline="middle"
+                style="font-size: ${textFontSize}px;">${b.label}</text>
+        </svg>
+      </div>
+    </a>
+  `;
+}
+document.getElementById('bubbles-container').innerHTML =
+  bubbles.map((b, i) => createBubbleSVG(b, i)).join('');
+
+let bubbleStartTime = null;
+function animateAllGradients(timestamp) {
+  if (!bubbleStartTime) bubbleStartTime = timestamp;
+  const elapsed = timestamp - bubbleStartTime;
+  document.querySelectorAll('[data-gradient-id]').forEach(svg => {
+    const duration = Number(svg.dataset.rotateDuration) || 4000;
+    const progress = (elapsed % duration) / duration;
+    const gradEl = document.getElementById(svg.dataset.gradientId);
+    if (gradEl) gradEl.setAttribute('gradientTransform', `translate(${-progress} 0)`);
+  });
+  requestAnimationFrame(animateAllGradients);
+}
+requestAnimationFrame(animateAllGradients);
+
+
+// ============================================================
+// TILED GALLERY GRID
+// ============================================================
+// INSERT: your images, e.g. { src: "cubesat-images/flatsat.png", alt: "FlatSat on a bench" }
+const galleryImages = [];
+
+function renderGalleryGrid() {
+  const grid = document.getElementById('gallery-grid');
+  if (!grid) return;
+  grid.innerHTML = galleryImages.map(img => `
+    <div class="gallery-tile" onclick="openImageModal('${img.src}', '${img.alt}')">
+      <img src="${img.src}" alt="${img.alt}" loading="lazy">
+      <div class="gallery-tile-overlay">
+        <span>${img.alt}</span>
+      </div>
+    </div>
+  `).join('');
+}
+renderGalleryGrid();
+
+function openImageModal(src, alt) {
+  const img = document.getElementById('lightbox-image');
+  const modal = document.getElementById('image-modal');
+  if (!img || !modal) return;
+  img.src = src;
+  img.alt = alt;
+  modal.classList.remove('hidden');
+}
+
+function closeImageModal() {
+  const modal = document.getElementById('image-modal');
+  if (modal) modal.classList.add('hidden');
+}
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeImageModal();
+});
+
+// Guarded: this page has no #image-modal element, and an unguarded
+// addEventListener on null would throw an error.
+const imageModalEl = document.getElementById('image-modal');
+if (imageModalEl) {
+  imageModalEl.addEventListener('click', (e) => {
+    if (e.target.id === 'image-modal') closeImageModal();
+  });
+}
+</script>
+
+</body>
+</html>
