@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/lizsphere/">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<link rel="apple-touch-icon" sizes="16x16" href="favicon.png">
+<link rel="stylesheet" href="styles.css">
+<title>Hardware Design</title>
+
+<style>
+  :root {
+    --hw-panel: #f7d9eb;
+    --hw-border: #f57ab5;
+    --hw-strong: #fc99bf;
+    --hw-soft: #fbbcd6;
+  }
+
+  .hw-page { max-width: 900px; font-family: monospace; font-size: 1.05rem; line-height: 1.45; }
+  .hw-page .home-header { margin-bottom: 20px; }
+  .hw-page .home-header-title { font-weight: 400; }
+  .hw-page .home-header p { opacity: 1; }
+
+  /* Bubbles only stay pinned while scrolling if there is room beside the content */
+  @media (max-width: 1300px) {
+    .bubbles-container.bubbles-pinned-top-right { position: absolute; }
+  }
+  @media (max-width: 700px) {
+    .hw-page { padding-top: 130px; }
+  }
+
+  .expand-all {
+    font: inherit; font-size: 0.9rem; color: inherit; cursor: pointer;
+    padding: 6px 14px; margin-bottom: 12px;
+    background: var(--hw-soft); border: 1px solid var(--hw-border);
+  }
+  .expand-all:hover { background: var(--hw-strong); }
+
+  /* Collapsible steps */
+  .step { margin-bottom: 8px; scroll-margin-top: 16px; }
+  .step > summary {
+    display: flex; gap: 12px; align-items: baseline;
+    list-style: none; cursor: pointer;
+    padding: 10px 0; font-size: 1.6rem; line-height: 1.25;
+  }
+  .step > summary::-webkit-details-marker { display: none; }
+  .step > summary::before {
+    content: "▸"; flex: none; color: var(--accent-color);
+    transition: transform 0.15s ease;
+  }
+  .step[open] > summary::before { transform: rotate(90deg); }
+  .step > summary:hover { color: var(--accent-color); }
+
+  .step-body {
+    background: var(--hw-panel); border: 2px solid var(--hw-border);
+    padding: 28px; margin: 6px 0 28px;
+  }
+  .step-body > * + * { margin-top: 1em; }
+  .step-body ol, .step-body ul { padding-left: 1.7em; }
+  .step-body li + li { margin-top: 0.15em; }
+  .step-body .spaced > li + li { margin-top: 1em; }
+  .step-body .parts { font-size: 0.8em; }
+  .step-body li > p { margin-top: 0.3em; }
+  .step-body img { display: block; max-width: 100%; height: auto; }
+  .step-body li > img { margin: 1em 0; }
+  .step-body a:not(.link-bar) { color: inherit; }
+
+  .group-label + .link-list { margin-top: 0.4em; }
+  .link-list { display: grid; gap: 12px; }
+  .link-bar {
+    display: block; padding: 10px 22px;
+    background: var(--hw-strong); color: inherit; text-decoration: none;
+  }
+  a.link-bar[href]:hover { background: var(--hw-border); }
+
+  /* Handy Dandy Reference Area */
+  .step-body.reference { padding: 0 0 28px; }
+  .step-body.reference > * + * { margin-top: 0; }
+  .tab-row { display: flex; flex-wrap: wrap; }
+  .tab-row button {
+    font: inherit; color: inherit; cursor: pointer;
+    background: var(--hw-soft); border: 1px solid var(--hw-border); border-width: 0 1px 1px 0;
+  }
+  .tab-row button[aria-selected="true"] { background: var(--hw-strong); font-weight: 700; }
+  .tab-row button:hover { background: var(--hw-strong); }
+  .tab-row button:focus-visible { outline: 2px solid #000; outline-offset: -2px; }
+  .main-tabs { margin-top: 28px; }
+  .main-tabs button { padding: 8px 16px; font-size: 1.2rem; }
+  .sub-tabs button { padding: 6px 12px; font-size: 0.85rem; background: transparent; }
+  .sub-tabs button[aria-selected="true"] { background: var(--hw-soft); }
+  .sub-tabs button:hover { background: var(--hw-soft); }
+
+  .ref-panel { padding: 24px 28px 0; }
+  .ref-panel figure + figure { margin-top: 18px; }
+  .ref-zoom { display: block; width: 100%; padding: 0; border: 0; background: #fff; cursor: zoom-in; }
+  .ref-zoom img { display: block; width: 100%; height: auto; }
+  .ref-panel figcaption { font-size: 0.85rem; margin-top: 4px; }
+  .ref-notes { margin-top: 22px; font-size: 1.2rem; }
+  .ref-notes ul { padding-left: 1.2em; }
+  .ref-empty { font-style: italic; }
+
+  @media (max-width: 560px) {
+    .hw-page { font-size: 1rem; }
+    .step > summary { font-size: 1.3rem; }
+    .step-body { padding: 18px 16px; }
+    .ref-panel { padding: 18px 16px 0; }
+    .main-tabs button { font-size: 1rem; padding: 8px 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bubbles-container bubbles-pinned-top-right" id="bubbles-container"></div>
+
+<div class="page-container hw-page">
+
+  <div class="home-header">
+    <h1 class="home-header-title">Hardware Design</h1>
+    <p>This assumes you know what the important chips of the project are going to be. This is rough guide for how to put them together.</p>
+  </div>
+
+  <button type="button" class="expand-all" id="expand-all">Expand all</button>
+
+  <details class="step" id="step-0">
+    <summary>Step 0: Requirements &amp; Early Design Decisions</summary>
+    <div class="step-body">
+      <p>Depending on where the overall project is at, you may or may not have a list of requirements yet. Ideally, you start with this... but some projects, everyone is just trying to figure it out while also not halting progress. In this case, start with what is likely to not be ‘axed’ later, or what you already know is a requirement.</p>
+      <p>For the meshtastic radio, we know we are using:</p>
+      <ol>
+        <li>PC104 Standard (requirement)</li>
+        <li>UART communication with the OBC (requirement)</li>
+        <li>We will use STM32L4R5ZI (design decision)</li>
+        <li>We will use either SX1262 or SX1268 (design decision)</li>
+        <li>Hardware switch for the shared antenna (self-imposed design decision)</li>
+      </ol>
+      <p>For the rest; we will attempt to follow cubesat design standards: (<a href="CDS.pdf">see link here</a>)</p>
+    </div>
+  </details>
+
+  <details class="step" id="step-1">
+    <summary>Step 1: Gather Materials</summary>
+    <div class="step-body">
+      <p class="group-label">Project background</p>
+      <div class="link-list">
+        <!-- TODO: add href="your google drive url" to the next line to make it clickable -->
+        <a class="link-bar">link to pssp google drive (permission req.) →</a>
+        <a class="link-bar" href="https://meshtastic.org">link to meshtastic.org →</a>
+        <a class="link-bar" href="https://pc104.org/hardware-specifications/pc104/">PC104 Standard →</a>
+        <a class="link-bar" href="CDS.pdf">Cube sat design standard →</a>
+      </div>
+      <p class="group-label">Datasheets</p>
+      <div class="link-list">
+        <a class="link-bar" href="https://www.st.com/resource/en/datasheet/stm32l4r5zi.pdf">STM32L4R5ZI datasheet →</a>
+        <a class="link-bar" href="https://www.semtech.com/products/wireless-rf/lora-connect/sx1262">SX1262/68 datasheet →</a>
+        <a class="link-bar" href="https://www.st.com/en/evaluation-tools/nucleo-l4r5zi.html">STM32L4R5ZI Development Board →</a>
+      </div>
+      <p>more datasheets to be added later...</p>
+    </div>
+  </details>
+
+  <details class="step" id="step-2">
+    <summary>Step 2: Study Datasheets</summary>
+    <div class="step-body">
+      <ol class="spaced">
+        <li>Pull the most important data and set it aside for quick reference. You should be getting to know the chip at this stage. See below for my <a href="satellite-hardware-design.html#step-3" class="step-jump">handy reference section</a> :-)</li>
+        <li>Typically, the ‘typical application’ section of datasheets will be your best friend. However, when there is NO typical application section, you may need to look elsewhere. For microcontrollers, look at the development board schematics + layout if there is one. Otherwise, peek around the internet for open source projects so you have a general idea of what you’re getting into.</li>
+        <li>Why not add the schematics to your <a href="satellite-hardware-design.html#step-3" class="step-jump">handy dandy reference area</a> (see below, again!)</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-3">
+    <summary>Step 3: Handy Dandy Reference Area</summary>
+    <!-- The tabs in here are built from referenceTabs in the script at the bottom of this file. -->
+    <div class="step-body reference">
+      <div class="tab-row main-tabs" id="main-tabs" role="tablist" aria-label="Part"></div>
+      <div class="tab-row sub-tabs" id="sub-tabs" role="tablist" aria-label="Reference topic"></div>
+      <div class="ref-panel" id="ref-panel" role="tabpanel" tabindex="0"></div>
+    </div>
+  </details>
+
+  <details class="step" id="step-4">
+    <summary>Step 4: Set up your design area</summary>
+    <div class="step-body">
+      <ol>
+        <li>Decide on a design software to use. EAGLE, KiCAD, Altium, EasyEDA, etc.</li>
+        <li>Create standards for yourself and the pile of work ahead in regards to the design area.
+          <ol type="a">
+            <li>Grid size (rec. 0.1 in)</li>
+            <li>Sheet size</li>
+            <li>Layout grid (rec. 1 mil)</li>
+            <li>File naming scheme</li>
+            <li>Conceptual grouping of circuits</li>
+            <li>Text size</li>
+          </ol>
+        </li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-5">
+    <summary>Step 5: Break the project into pieces</summary>
+    <div class="step-body">
+      <ol>
+        <li>If chips are selected, that’s a good starting point. Here are some common sections that I’ve encountered, then split into even more specifics...
+          <ol type="a">
+            <li>Power
+              <ol class="parts"><li>Regulators/level generators?</li><li>Current protection?</li><li>Thermal protection?</li><li>Switching?</li></ol>
+            </li>
+            <li>Microcontroller/Computer
+              <ol class="parts"><li>GPIOs</li><li>Communication?</li><li>Crystals</li><li>Power</li><li>ADCs?</li></ol>
+            </li>
+            <li>Inputs
+              <ol class="parts"><li>ESD/protection?</li><li>Levels?</li><li>Debouncing?</li><li>Filtering?</li></ol>
+            </li>
+            <li>Outputs
+              <ol class="parts"><li>ESD/protection?</li><li>Levels?</li><li>Filtering?</li></ol>
+            </li>
+            <li>Project specifics:
+              <ol type="i">
+                <li>Radio module
+                  <ol class="parts"><li>Power?</li><li>GPIO?</li><li>Filtering?</li></ol>
+                </li>
+                <li>Hardware antenna switch
+                  <ol class="parts"><li>Power?</li><li>GPIO?</li><li>Conditions?</li></ol>
+                </li>
+              </ol>
+            </li>
+          </ol>
+        </li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-6">
+    <summary>Step 6: Just get started!</summary>
+    <div class="step-body">
+      <ol>
+        <li>Open up your design environment, and if you’d like, start with what you know you need! For us, that is,
+          <ol type="a">
+            <li>A ‘device’ for stm32l4r5zi</li>
+            <li>A ‘device’ for sx1262/68</li>
+            <li>PC104 connector</li>
+          </ol>
+          <p>What I’m saying is that it’s time to go to ‘footprint’ and schematic symbol mode so you can actually place what you desire into the schematic :-) This will take a while potentially if the plans aren’t already there. Keep in mind that some device symbols and footprints from the internet are not up to snuff for space applications. I believe there is some sort of standard out there for making them TO spec. La-di-da you need to pay for them...</p>
+          <img src="hardware-design-images/ipc-6012ds.png" alt="Store listing for IPC-6012DS, the Space and Military Avionics Applications Addendum to IPC-6012D, priced at $111.00" loading="lazy">
+        </li>
+        <li>Admittedly, the footprint and symbol stuff isn’t so fun. Thus, I recommend switching between schematic design and the symbol+footprint stuff so your mind does numb too too much lol.</li>
+        <li>Use typical application circuits to your advantage and TAKE NOTE OF HOW YOUR PROJECT DIFFERS FROM THE TYPICAL APPLICATION OF COURSE.</li>
+        <li>READ THE DATASHEET.
+          <ol type="a">
+            <li>For microcontrollers, I admit this is a tall order.</li>
+            <li>But seriously, do it. It is worth spending a couple hours to understand the part you will use then potentially hundreds of hours debugging something that was IN THE DATASHEET!</li>
+          </ol>
+        </li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-7">
+    <summary>Step 7: Simulators are your friend</summary>
+    <div class="step-body">
+      <p>If you are using a part/chip from a big, reputable manufacturer, you may get lucky and find they have created both a simulation tool, and the exact part you are using, in a simulator.</p>
+      <ol>
+        <li><a href="https://www.analog.com/en/resources/design-tools-and-calculators/ltspice-simulator.html">LTSpice (analog devices/linear tech) →</a></li>
+        <li><a href="https://www.ti.com/tool/PSPICE-FOR-TI">PSpice (texas instruments) →</a></li>
+      </ol>
+      <p>For simpler circuits! Use my favourite, browser based simulator:</p>
+      <ol start="3">
+        <li><a href="https://www.falstad.com/circuit/">Falstad Simulator →</a></li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-8">
+    <summary>Step 8: Don’t fk up the mechanical constraints</summary>
+    <div class="step-body">
+      <p>La-di-da we are working on the electronics...so much to do...It can be heady sometimes. But after all that design and manufacturing, guess what? If it doesn’t fit, YOU’RE EFFED!</p>
+      <p>So, this is my note that, even if you are not the most comfortable ‘mechanical designer’, toooooo bad. You can’t mess up the physical constraints of the board.</p>
+      <ol>
+        <li>Figure out the physical envelope you have</li>
+        <li>Figure out the weight limit</li>
+        <li>Figure out how thick the board can be</li>
+        <li>Where do the holes need to go? How big are the holes? Plated?</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-9">
+    <summary>Step 9: Prepping for Layout Success</summary>
+    <div class="step-body">
+      <p>Now that you’ve completed the heady exercise of designing CIRCUITS, you get to the fun, but also heady, circuit board layout. I really think of this as ‘subway tunnels’ because you need to</p>
+      <ol>
+        <li>think in distinct layers, and how those layers communicate.</li>
+        <li>You need to think about grounding</li>
+        <li>The size and mechanical constraints of the board</li>
+        <li>How many layers you need, and why.</li>
+        <li>The function of each layer.</li>
+        <li>The circuit layout of each little piece you worked on.</li>
+        <li>Thermalsssss</li>
+        <li>Minimum trace width, via size, what will trigger the DRC</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-10">
+    <summary>Step 10: Lock-in and Layout</summary>
+    <div class="step-body">
+      <p>It’s time to get rid of the ratlines, assuming you have done some good planning for how the layout is going to work.</p>
+      <img src="hardware-design-images/pcb-layout-example.png" alt="Example PCB layout with routed red traces, magenta vias and cyan component outlines" loading="lazy">
+    </div>
+  </details>
+
+  <details class="step" id="step-11">
+    <summary>Step 11: DRC (Design Rule Checks) &amp; Second Eye</summary>
+    <div class="step-body">
+      <p>Run the DRC and see if you’ve failed anything or if there are any warnings. This is to assist in a sanity check. You should also get another electrically-adept person to check your work so you don’t waste your money and time debugging something silly!</p>
+    </div>
+  </details>
+
+  <details class="step" id="step-12">
+    <summary>Step 12: Exporting your Files for MFG</summary>
+    <div class="step-body">
+      <p>Export your design files and check everything over. This includes</p>
+      <ol>
+        <li>BOM (Bill of materials)</li>
+        <li>Gerber files</li>
+        <li>NC Drill files</li>
+        <li>Assembly files</li>
+        <li>Assembly drawings</li>
+      </ol>
+    </div>
+  </details>
+
+  <details class="step" id="step-13">
+    <summary>Step 13: Ordering the PCB</summary>
+    <div class="step-body">
+      <p>Go to one of the many PCB manufacturers like:</p>
+      <ol>
+        <li>JLCPCB</li>
+        <li>PCBWay</li>
+        <li>The purple one? I forget what they are called.</li>
+      </ol>
+      <p>You submit your files and go through whichever manufacturers portal. Usually, they will spend a day or two checking over your files for manufacturing, and if any special methods are required, will bill you extra (I’m looking at you, WSLEDS!!) They may also ask you a few questions or tell you that you are a stupid person for forgetting XYZ (just kidding, they are polite).</p>
+      <p>Then you need to pay up! The price of the PCB will make you happy, the duties and shipping will remove that happiness quickly :-)</p>
+    </div>
+  </details>
+
+</div>
+
+<div id="image-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Enlarged image">
+  <div class="modal-content image-modal-content">
+    <button type="button" class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    <img id="lightbox-image" src="" alt="">
+  </div>
+</div>
+
+<script>
+// ============================================================
+// HANDY DANDY REFERENCE AREA: EDIT YOUR CONTENT HERE
+// ============================================================
+// Each { tab: ... } is a big tab, and each { title: ... } is a subtab under it.
+//
+// To add a photo: put the file in hardware-design-images/ and add a line to images:
+//   { src: "hardware-design-images/my-photo.png", alt: "what the photo shows", caption: "optional" },
+//
+// To add a note: add a string to notes (HTML like <b> and <a> works):
+//   "Remember to tie this pin low!",
+//
+// A subtab with no images and no notes shows "Nothing here yet!".
+const referenceTabs = [
+  {
+    tab: "STM32L4R5ZI",
+    subtabs: [
+      {
+        title: "Absolute Maximums",
+        images: [
+          { src: "hardware-design-images/stm32l4r5zi-voltage-characteristics.png", alt: "Datasheet Table 18: STM32L4R5ZI voltage characteristics" },
+          { src: "hardware-design-images/stm32l4r5zi-current-characteristics.png", alt: "Datasheet Table 19: STM32L4R5ZI current characteristics" },
+        ],
+        notes: [
+          "This is where we can brain dump a bit of stuff about this.",
+        ],
+      },
+      { title: "Typical Operating Characteristics", images: [], notes: [] },
+      { title: "GPIO Pinout", images: [], notes: [] },
+      { title: "Communication Protocols", images: [], notes: [] },
+    ],
+  },
+  {
+    tab: "STM32L4 Dev Board",
+    subtabs: [
+      { title: "Schematics", images: [], notes: [] },
+      { title: "Layout", images: [], notes: [] },
+    ],
+  },
+  {
+    tab: "SX1262/68",
+    subtabs: [
+      { title: "Absolute Maximums", images: [], notes: [] },
+      { title: "Typical Operating Characteristics", images: [], notes: [] },
+      { title: "Pinout", images: [], notes: [] },
+      { title: "Communication Protocols", images: [], notes: [] },
+    ],
+  },
+];
+
+// ============================================================
+// REFERENCE AREA TABS
+// ============================================================
+const refPanel = document.getElementById('ref-panel');
+
+function buildTabRow(row, labels, onSelect) {
+  row.replaceChildren();
+  const buttons = labels.map((label, i) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('role', 'tab');
+    button.textContent = label;
+    button.addEventListener('click', () => select(i));
+    button.addEventListener('keydown', (e) => {
+      const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (!step) return;
+      e.preventDefault();
+      const next = (i + step + buttons.length) % buttons.length;
+      select(next);
+      buttons[next].focus();
+    });
+    row.appendChild(button);
+    return button;
+  });
+
+  function select(index) {
+    buttons.forEach((button, i) => {
+      button.setAttribute('aria-selected', i === index);
+      button.tabIndex = i === index ? 0 : -1;
+    });
+    onSelect(index);
+  }
+  select(0);
+}
+
+function renderRefPanel(subtab) {
+  refPanel.replaceChildren();
+  refPanel.setAttribute('aria-label', subtab.title);
+
+  for (const image of subtab.images) {
+    const figure = document.createElement('figure');
+    const zoom = document.createElement('button');
+    zoom.type = 'button';
+    zoom.className = 'ref-zoom';
+    zoom.setAttribute('aria-label', `Enlarge: ${image.alt}`);
+    zoom.addEventListener('click', () => openImageModal(image, zoom));
+
+    const img = document.createElement('img');
+    img.src = image.src;
+    img.alt = image.alt;
+    zoom.appendChild(img);
+    figure.appendChild(zoom);
+
+    if (image.caption) {
+      const caption = document.createElement('figcaption');
+      caption.textContent = image.caption;
+      figure.appendChild(caption);
+    }
+    refPanel.appendChild(figure);
+  }
+
+  if (subtab.notes.length) {
+    const notes = document.createElement('div');
+    notes.className = 'ref-notes';
+    notes.innerHTML = `<p>Notes</p><ul>${subtab.notes.map((n) => `<li>${n}</li>`).join('')}</ul>`;
+    refPanel.appendChild(notes);
+  }
+
+  if (!subtab.images.length && !subtab.notes.length) {
+    const empty = document.createElement('p');
+    empty.className = 'ref-empty';
+    empty.textContent = 'Nothing here yet!';
+    refPanel.appendChild(empty);
+  }
+}
+
+buildTabRow(document.getElementById('main-tabs'), referenceTabs.map((t) => t.tab), (tabIndex) => {
+  const subtabs = referenceTabs[tabIndex].subtabs;
+  buildTabRow(document.getElementById('sub-tabs'), subtabs.map((s) => s.title), (subIndex) => {
+    renderRefPanel(subtabs[subIndex]);
+  });
+});
+
+// ============================================================
+// IMAGE LIGHTBOX
+// ============================================================
+const imageModal = document.getElementById('image-modal');
+const modalClose = document.getElementById('modal-close');
+let lightboxOpener = null;
+
+function openImageModal(image, opener) {
+  const img = document.getElementById('lightbox-image');
+  img.src = image.src;
+  img.alt = image.alt;
+  lightboxOpener = opener;
+  imageModal.classList.remove('hidden');
+  modalClose.focus();
+}
+
+function closeImageModal() {
+  if (imageModal.classList.contains('hidden')) return;
+  imageModal.classList.add('hidden');
+  if (lightboxOpener) lightboxOpener.focus();
+}
+
+modalClose.addEventListener('click', closeImageModal);
+imageModal.addEventListener('click', (e) => { if (e.target === imageModal) closeImageModal(); });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeImageModal(); });
+
+// ============================================================
+// COLLAPSIBLE STEPS
+// ============================================================
+const steps = [...document.querySelectorAll('details.step')];
+const expandAll = document.getElementById('expand-all');
+
+function updateExpandAll() {
+  expandAll.textContent = steps.every((s) => s.open) ? 'Collapse all' : 'Expand all';
+}
+
+expandAll.addEventListener('click', () => {
+  const open = !steps.every((s) => s.open);
+  steps.forEach((s) => { s.open = open; });
+});
+steps.forEach((s) => s.addEventListener('toggle', updateExpandAll));
+
+function openStep(id) {
+  const step = document.getElementById(id);
+  if (!step || !step.matches('details.step')) return;
+  step.open = true;
+  step.scrollIntoView({ block: 'start' });
+}
+
+document.querySelectorAll('.step-jump').forEach((link) => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    openStep(link.hash.slice(1));
+    history.replaceState(null, '', link.href);
+  });
+});
+if (location.hash) openStep(location.hash.slice(1));
+
+// ============================================================
+// BUBBLES
+// ============================================================
+const bubbles = [
+  { href: "satellite-home.html", lines: ["Back to", "Satellite"], colors: ["#FFB639", "#8178FF", "#FF009B", "#FFB639"], floatAngle: 40, floatDuration: 6, rotateDuration: 4000 },
+  { href: "index.html", lines: ["Back to", "Home"], colors: ["#ff0055", "#7a00ff", "#7a00ff", "#ff0055"], floatAngle: 130, floatDuration: 7, rotateDuration: 5000 },
+];
+
+const BUBBLE_SIZE = 90;
+const BUBBLE_FONT = 36; // in the bubble's 250-unit viewBox, about 13px on screen
+const BUBBLE_FLOAT = 5;
+
+function createBubbleSVG(b, index) {
+  const uid = `bubble-${index}`;
+  const angle = (b.floatAngle * Math.PI) / 180;
+  const floatX = (BUBBLE_FLOAT * Math.cos(angle)).toFixed(1);
+  const floatY = (BUBBLE_FLOAT * Math.sin(angle)).toFixed(1);
+  const [c1, c2, c3, c4] = b.colors;
+  const firstLineY = 125 - ((b.lines.length - 1) * BUBBLE_FONT * 1.15) / 2;
+  const tspans = b.lines.map((line, i) =>
+    `<tspan x="125" y="${firstLineY + i * BUBBLE_FONT * 1.15}">${line}</tspan>`).join('');
+
+  return `
+    <a href="${b.href}" class="sphere-link" aria-label="${b.lines.join(' ')}">
+      <div class="sphere-wrapper" style="--float-x: ${floatX}px; --float-y: ${floatY}px; --float-duration: ${b.floatDuration}s;">
+        <svg class="sphere-svg" data-gradient-id="grad-${uid}" data-rotate-duration="${b.rotateDuration}"
+             viewBox="0 0 250 250" width="${BUBBLE_SIZE}" height="${BUBBLE_SIZE}">
+          <defs>
+            <filter id="warp-${uid}" x="-20%" y="-20%" width="140%" height="140%">
+              <feTurbulence type="fractalNoise" baseFrequency="0.015" numOctaves="2" result="noise" />
+              <feDisplacementMap in="SourceGraphic" in2="noise" scale="45" xChannelSelector="R" yChannelSelector="G" />
+            </filter>
+            <clipPath id="clip-${uid}"><circle cx="125" cy="125" r="120" /></clipPath>
+            <linearGradient id="grad-${uid}" x1="0%" y1="0%" x2="100%" y2="0%" spreadMethod="repeat">
+              <stop offset="0%" stop-color="${c1}" />
+              <stop offset="33.3%" stop-color="${c2}" />
+              <stop offset="66.6%" stop-color="${c3}" />
+              <stop offset="100%" stop-color="${c4}" />
+            </linearGradient>
+            <radialGradient id="shading-${uid}" cx="40%" cy="35%" r="75%">
+              <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+              <stop offset="65%" stop-color="#000000" stop-opacity="0" />
+              <stop offset="100%" stop-color="#000000" stop-opacity="0.55" />
+            </radialGradient>
+            <radialGradient id="highlight-${uid}" cx="32%" cy="28%" r="30%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+            </radialGradient>
+          </defs>
+          <g clip-path="url(#clip-${uid})">
+            <rect x="-20" y="-50" width="300" height="350" fill="url(#grad-${uid})" filter="url(#warp-${uid})" />
+            <circle cx="125" cy="125" r="120" fill="url(#shading-${uid})" />
+            <circle cx="125" cy="125" r="120" fill="url(#highlight-${uid})" />
+          </g>
+          <text class="bubble-text" text-anchor="middle" dominant-baseline="middle" style="font-size: ${BUBBLE_FONT}px;">${tspans}</text>
+        </svg>
+      </div>
+    </a>`;
+}
+
+document.getElementById('bubbles-container').innerHTML = bubbles.map(createBubbleSVG).join('');
+
+let bubbleStartTime = null;
+function animateAllGradients(timestamp) {
+  if (!bubbleStartTime) bubbleStartTime = timestamp;
+  const elapsed = timestamp - bubbleStartTime;
+  document.querySelectorAll('[data-gradient-id]').forEach((svg) => {
+    const duration = Number(svg.dataset.rotateDuration) || 4000;
+    const progress = (elapsed % duration) / duration;
+    const gradient = document.getElementById(svg.dataset.gradientId);
+    if (gradient) gradient.setAttribute('gradientTransform', `translate(${-progress} 0)`);
+  });
+  requestAnimationFrame(animateAllGradients);
+}
+requestAnimationFrame(animateAllGradients);
+</script>
+
+</body>
+</html>
