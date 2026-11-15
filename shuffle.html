@@ -23,11 +23,20 @@
   }
   .controls button:hover, .controls button:focus-visible { background: rgba(255, 0, 119, 0.4); }
   .status { font-family: monospace; opacity: 0.7; margin-top: 12px; min-height: 1.5em; }
-  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  #static { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none;
+    image-rendering: pixelated; opacity: 0; transition: opacity .08s; }
+  #static.on { opacity: 1; }
+  #osd { position: absolute; top: 14px; left: 18px; z-index: 3; pointer-events: none;
+    font-family: monospace; font-weight: 700; font-size: clamp(1rem, 3.5vw, 1.8rem); color: #7dff7d;
+    text-shadow: 2px 2px 0 #000, 0 0 8px rgba(125,255,125,.6); opacity: 0; transition: opacity .4s; }
+  #osd.on { opacity: 1; transition: none; }
+  .chips { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin-top: 14px; }
   .chip {
-    font-family: monospace; font-size: 0.85rem; cursor: pointer; padding: 6px 12px; border-radius: 999px;
+    font-family: monospace; font-size: 0.9rem; cursor: pointer; padding: 8px 12px; border-radius: 8px; text-align: left;
     border: 1px solid #ff0077; background: transparent; color: #000;
   }
+  .chip .num { opacity: .6; margin-right: 8px; }
+  .chip.active .num { opacity: 1; }
   .chip:hover { background: rgba(255, 0, 119, 0.2); }
   .chip.active { background: #ff0077; color: #fff; }
   .hint { font-family: monospace; font-size: 0.85rem; opacity: 0.6; margin-top: 6px; }
@@ -38,27 +47,31 @@
 <div class="page-container">
   <div class="home-header">
     <h1 class="home-header-title">Shuffle</h1>
-    <p>a random pick from my playlists. choose a topic, then hit next.</p>
+    <p>a random pick from my playlists. pick a channel, then hit next.</p>
   </div>
 
   <div class="shuffle-wrap">
-    <div class="chips" id="chips"></div>
-    <div class="player-frame"><div id="player"></div></div>
+    <div class="player-frame"><div id="player"></div><canvas id="static" width="192" height="108"></canvas><div id="osd"></div></div>
 
     <div class="controls">
+      <button id="ch-down">CH ▼</button>
+      <button id="ch-up">CH ▲</button>
       <button id="next">🎲 Next random</button>
       <button id="prev">⏮ Previous</button>
-      <button id="rand-start">Start at random time: <span id="rs-state">off</span></button>
+      <button id="rand-start">Start at random time: <span id="rs-state">on</span></button>
     </div>
 
     <div class="status" id="status">Loading…</div>
-    <div class="hint">Keys: N or → = next, P or ← = previous</div>
+
+    <div class="chips" id="chips"></div>
+
+    <div class="hint">Keys: ↑ / ↓ = change channel, → or N = next video, ← or P = previous</div>
   </div>
 </div>
 
 <script>
   // Videos + topics live in data/playlist-topics.json (edit that file to re-sort).
-  let player, topics = {}, current = 'all', pool = [], history = [], pos = -1, randomStart = false, ready = false;
+  let player, topics = {}, current = 'all', pool = [], history = [], pos = -1, randomStart = true, ready = false;
   const statusEl = document.getElementById('status');
   const chipsEl = document.getElementById('chips');
 
@@ -85,15 +98,44 @@
   };
 
   function buildChips() {
-    const mk = (key, label, n) => {
+    let num = 0;
+    const mk = (key, label) => {
       const b = document.createElement('button');
-      b.className = 'chip'; b.dataset.key = key; b.textContent = `${label} (${n})`;
+      b.className = 'chip'; b.dataset.key = key;
+      b.innerHTML = `<span class="num">${String(num++).padStart(2, '0')}</span><span class="lbl"></span>`;
+      b.querySelector('.lbl').textContent = label;
       b.onclick = () => setTopic(key, true);
       chipsEl.appendChild(b);
     };
-    const total = Object.values(topics).reduce((n, t) => n + t.videos.length, 0);
-    mk('all', 'All', total);
-    for (const [k, t] of Object.entries(topics)) if (t.videos.length) mk(k, t.name, t.videos.length);
+    mk('all', 'All');
+    for (const [k, t] of Object.entries(topics)) if (t.videos.length) mk(k, t.name);
+  }
+
+  const staticEl = document.getElementById('static'), osdEl = document.getElementById('osd');
+  const sctx = staticEl.getContext('2d');
+  let staticTimer, osdTimer;
+
+  function flashStatic(ms = 450) {
+    clearInterval(staticTimer);
+    staticEl.classList.add('on');
+    staticTimer = setInterval(() => {
+      const img = sctx.createImageData(192, 108), d = img.data;
+      for (let i = 0; i < d.length; i += 4) { const v = Math.random() * 255; d[i] = d[i+1] = d[i+2] = v; d[i+3] = 255; }
+      sctx.putImageData(img, 0, 0);
+    }, 50);
+    setTimeout(() => { clearInterval(staticTimer); staticEl.classList.remove('on'); }, ms);
+  }
+
+  function showOsd(text) {
+    osdEl.textContent = text; osdEl.classList.add('on');
+    clearTimeout(osdTimer); osdTimer = setTimeout(() => osdEl.classList.remove('on'), 2500);
+  }
+
+  function channelKeys() { return ['all', ...Object.keys(topics).filter(k => topics[k].videos.length)]; }
+
+  function cycleChannel(dir) {
+    const keys = channelKeys(), i = keys.indexOf(current);
+    setTopic(keys[(i + dir + keys.length) % keys.length], true);
   }
 
   function setTopic(key, play) {
@@ -101,10 +143,15 @@
     pool = key === 'all' ? Object.values(topics).flatMap(t => t.videos) : topics[key].videos;
     history = []; pos = -1;
     chipsEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.key === key));
-    if (play && ready) playRandom();
+    if (play && ready) {
+      const keys = channelKeys();
+      flashStatic(); showOsd(`CH ${String(keys.indexOf(key)).padStart(2, '0')}  ${key === 'all' ? 'All' : topics[key].name}`);
+      playRandom();
+    }
   }
 
   function load(v) {
+    flashStatic(250);
     const startSeconds = randomStart ? Math.floor(Math.random() * 120) : 0;
     player.loadVideoById({ videoId: v.id, startSeconds });
     statusEl.textContent = `${v.title} — ${v.channel}`;
@@ -122,6 +169,8 @@
 
   function playPrev() { if (pos > 0) { pos--; load(history[pos]); } }
 
+  document.getElementById('ch-up').onclick = () => cycleChannel(1);
+  document.getElementById('ch-down').onclick = () => cycleChannel(-1);
   document.getElementById('next').onclick = playRandom;
   document.getElementById('prev').onclick = playPrev;
   document.getElementById('rand-start').onclick = () => {
@@ -131,6 +180,8 @@
   document.addEventListener('keydown', (e) => {
     if (e.key === 'n' || e.key === 'ArrowRight') playRandom();
     if (e.key === 'p' || e.key === 'ArrowLeft') playPrev();
+    if (e.key === 'ArrowUp') { e.preventDefault(); cycleChannel(1); }
+    if (e.key === 'ArrowDown') { e.preventDefault(); cycleChannel(-1); }
   });
 </script>
 
