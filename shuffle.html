@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<base href="/lizsphere/">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon.png">
+<link rel="stylesheet" href="styles.css">
+<title>Shuffle</title>
+
+<style>
+  .shuffle-wrap { max-width: 900px; margin: 0 auto; }
+  .player-frame {
+    position: relative; width: 100%; aspect-ratio: 16 / 9;
+    background: #000; border: 2px solid #ff0077; border-radius: 10px; overflow: hidden;
+  }
+  .player-frame iframe, .player-frame #player { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+  .controls button {
+    font-family: monospace; font-size: 1rem; cursor: pointer;
+    padding: 10px 18px; border-radius: 8px;
+    border: 1px solid #ff0077; background: rgba(255, 0, 119, 0.2); color: #000;
+  }
+  .controls button:hover, .controls button:focus-visible { background: rgba(255, 0, 119, 0.4); }
+  .status { font-family: monospace; opacity: 0.7; margin-top: 12px; min-height: 1.5em; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .chip {
+    font-family: monospace; font-size: 0.85rem; cursor: pointer; padding: 6px 12px; border-radius: 999px;
+    border: 1px solid #ff0077; background: transparent; color: #000;
+  }
+  .chip:hover { background: rgba(255, 0, 119, 0.2); }
+  .chip.active { background: #ff0077; color: #fff; }
+  .hint { font-family: monospace; font-size: 0.85rem; opacity: 0.6; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<div class="page-container">
+  <div class="home-header">
+    <h1 class="home-header-title">Shuffle</h1>
+    <p>a random pick from my playlists. choose a topic, then hit next.</p>
+  </div>
+
+  <div class="shuffle-wrap">
+    <div class="chips" id="chips"></div>
+    <div class="player-frame"><div id="player"></div></div>
+
+    <div class="controls">
+      <button id="next">🎲 Next random</button>
+      <button id="prev">⏮ Previous</button>
+      <button id="rand-start">Start at random time: <span id="rs-state">off</span></button>
+    </div>
+
+    <div class="status" id="status">Loading…</div>
+    <div class="hint">Keys: N or → = next, P or ← = previous</div>
+  </div>
+</div>
+
+<script>
+  // Videos + topics live in data/playlist-topics.json (edit that file to re-sort).
+  let player, topics = {}, current = 'all', pool = [], history = [], pos = -1, randomStart = false, ready = false;
+  const statusEl = document.getElementById('status');
+  const chipsEl = document.getElementById('chips');
+
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  const dataReady = fetch('data/playlist-topics.json').then(r => r.json()).then(d => {
+    topics = d.topics;
+    buildChips();
+    setTopic('all', false);
+  }).catch(() => { statusEl.textContent = 'Could not load data/playlist-topics.json (open the page via a web server, not file://).'; });
+
+  window.onYouTubeIframeAPIReady = function () {
+    player = new YT.Player('player', {
+      width: '100%', height: '100%',
+      playerVars: { playsinline: 1, rel: 0 },
+      events: {
+        onReady: () => { ready = true; dataReady.then(playRandom); },
+        onStateChange: (e) => { if (e.data === YT.PlayerState.ENDED) playRandom(); },
+        onError: () => { statusEl.textContent = "That video can't be played here, skipping…"; setTimeout(playRandom, 800); }
+      }
+    });
+  };
+
+  function buildChips() {
+    const mk = (key, label, n) => {
+      const b = document.createElement('button');
+      b.className = 'chip'; b.dataset.key = key; b.textContent = `${label} (${n})`;
+      b.onclick = () => setTopic(key, true);
+      chipsEl.appendChild(b);
+    };
+    const total = Object.values(topics).reduce((n, t) => n + t.videos.length, 0);
+    mk('all', 'All', total);
+    for (const [k, t] of Object.entries(topics)) if (t.videos.length) mk(k, t.name, t.videos.length);
+  }
+
+  function setTopic(key, play) {
+    current = key;
+    pool = key === 'all' ? Object.values(topics).flatMap(t => t.videos) : topics[key].videos;
+    history = []; pos = -1;
+    chipsEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.key === key));
+    if (play && ready) playRandom();
+  }
+
+  function load(v) {
+    const startSeconds = randomStart ? Math.floor(Math.random() * 120) : 0;
+    player.loadVideoById({ videoId: v.id, startSeconds });
+    statusEl.textContent = `${v.title} — ${v.channel}`;
+  }
+
+  function playRandom() {
+    if (!ready || !pool.length) return;
+    if (pos < history.length - 1) { pos++; load(history[pos]); return; }  // replay forward through history first
+    let v;
+    do { v = pool[Math.floor(Math.random() * pool.length)]; }
+    while (pool.length > 1 && history.length && v.id === history[pos].id);
+    history.push(v); pos = history.length - 1;
+    load(v);
+  }
+
+  function playPrev() { if (pos > 0) { pos--; load(history[pos]); } }
+
+  document.getElementById('next').onclick = playRandom;
+  document.getElementById('prev').onclick = playPrev;
+  document.getElementById('rand-start').onclick = () => {
+    randomStart = !randomStart;
+    document.getElementById('rs-state').textContent = randomStart ? 'on' : 'off';
+  };
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'n' || e.key === 'ArrowRight') playRandom();
+    if (e.key === 'p' || e.key === 'ArrowLeft') playPrev();
+  });
+</script>
+
+</body>
+</html>
