@@ -51,8 +51,8 @@
 <div class="page-container">
   <div class="home-header">
     <h1 class="home-header-title">Shuffle</h1>
-    <p>Inspired by ytch.xyz, these are youtube playlists shuffling like ol' cable tv. Each channel is playing simulataneously to reduce ads popping up 
-      every second. It's a little clunky to start but once it's going it's pretty fun!
+    <p>Inspired by ytch.xyz, these are youtube playlists shuffling like ol' cable tv. Flip through the channels with the buttons or the arrow keys. It's a little clunky to start
+      but once it's going it's pretty fun!
     </p>
   </div>
 
@@ -191,10 +191,13 @@ requestAnimationFrame(animateAllGradients);
 
 <script>
   // Videos + channels live in data/playlist-topics.json (edit that file to re-sort).
-  // Every channel gets its own player and keeps playing in the background (muted),
-  // so changing channel just unmutes one -- no new video load, so no new pre-roll ad.
-  const STAGGER_MS = 1200;      // delay between starting each channel's player
-  let channels = [], active = 0, randomStart = true, ytReady = false, unmuted = false;
+  // A channel's player starts the first time you tune to it, then keeps playing muted in
+  // the background, so flipping back to it is instant (no new load, no new pre-roll ad).
+  // Only the most recently watched MAX_LIVE channels stay alive; older ones are closed.
+  const IS_MOBILE = matchMedia('(max-width: 768px), (pointer: coarse)').matches;
+  const MAX_LIVE = IS_MOBILE ? 1 : 3;
+  let live = [];                // channel indices with a running player, most recent last
+  let channels = [], active = 0, randomStart = false, ytReady = false, unmuted = false;
   const statusEl = document.getElementById('status');
   const chipsEl = document.getElementById('chips');
   const stageEl = document.getElementById('stage');
@@ -223,8 +226,7 @@ requestAnimationFrame(animateAllGradients);
     ytReady = true;
     dataReady.then(() => {
       // Start the visible channel first, then the rest one at a time.
-      const order = channels.map((_, i) => i).sort((a, b) => (a === active ? -1 : b === active ? 1 : a - b));
-      order.forEach((i, n) => setTimeout(() => startChannel(i), n * STAGGER_MS));
+      ensureLive(active);
     });
   };
 
@@ -238,7 +240,7 @@ requestAnimationFrame(animateAllGradients);
 
   function startChannel(i) {
     const c = channels[i], v = pick(c);
-    c.cur = v; c.hist.push(v); c.pos = 0;
+    c.cur = v; c.hist.push(v); c.pos = c.hist.length - 1;
     c.player = new YT.Player(`yt-${i}`, {
       width: '100%', height: '100%', videoId: v.id,
       playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, start: startSec() },
@@ -274,9 +276,22 @@ requestAnimationFrame(animateAllGradients);
     });
   }
 
+  // Start the channel's player if needed, mark it most-recent, and close the oldest extras.
+  function ensureLive(i) {
+    if (!ytReady) return;
+    if (!channels[i].player) startChannel(i);
+    live = live.filter(x => x !== i).concat(i);
+    while (live.length > MAX_LIVE) {
+      const old = live.shift(), c = channels[old];
+      c.player.destroy(); c.player = null; c.ready = false;
+      c.el.innerHTML = `<div id="yt-${old}"></div>`;
+    }
+  }
+
   function setChannel(i, flash = true) {
     if (!channels.length) return;
     active = (i + channels.length) % channels.length;
+    ensureLive(active);
     setActiveUI(); applyAudio();
     if (flash) {
       flashStatic();
@@ -331,11 +346,6 @@ requestAnimationFrame(animateAllGradients);
   document.getElementById('ch-up').onclick = () => setChannel(active + 1);
   document.getElementById('ch-down').onclick = () => setChannel(active - 1);
   document.getElementById('next').onclick = () => nextIn(active);
-  document.getElementById('prev').onclick = () => prevIn(active);
-  document.getElementById('rand-start').onclick = () => {
-    randomStart = !randomStart;
-    document.getElementById('rs-state').textContent = randomStart ? 'on' : 'off';
-  };
   document.addEventListener('keydown', (e) => {
     if (e.key === 'n' || e.key === 'ArrowRight') nextIn(active);
     if (e.key === 'p' || e.key === 'ArrowLeft') prevIn(active);
