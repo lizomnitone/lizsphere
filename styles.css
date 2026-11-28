@@ -432,3 +432,158 @@ h2 {
 @media (max-width: 560px) {
   .artwork { flex-basis: 100%; }
 }
+
+/* ============================================================
+   PERSONAL CURRICULUM (curriculum.html + curriculum/<notebook>/)
+   ============================================================ */
+body.curriculum {
+  background: #dde8ff;
+  font-family: 'Sometype Mono', monospace;
+  color: #000;
+}
+
+.curr-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 96px 24px 64px;
+}
+
+.curr-title {
+  font-family: 'Sometype Mono', monospace;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  margin: 0 0 24px;
+  padding-right: 120px; /* room for the pinned bubbles */
+}
+.curr-sub { font-size: 1.15rem; max-width: 46ch; margin: 0 0 80px; line-height: 1.5; }
+
+/* ---------- Covers (home) ---------- */
+.covers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 48px;
+}
+.cover-wrap { position: relative; }
+.cover {
+  display: flex;
+  justify-content: center;
+  aspect-ratio: 39 / 46;
+  padding: 26% 12% 0;
+  text-decoration: none;
+  color: #fff;
+  background: linear-gradient(to right,
+    var(--left) 0%, var(--base) 9%, var(--base) 93%, var(--right) 100%);
+  transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), box-shadow .25s;
+}
+.cover:hover, .cover:focus-visible { transform: translateY(-6px) rotate(-1deg); box-shadow: 0 14px 28px rgba(0, 0, 0, .12); }
+.cover-title { font-weight: 700; font-size: 1.35rem; text-align: center; line-height: 1.4; }
+
+.cover-pop {
+  display: none;
+  position: absolute;
+  top: 60%;
+  left: 31%;
+  z-index: 5;
+  min-width: 220px;
+  margin: 0;
+  padding: 28px 38px;
+  list-style: none;
+  background: #fff0fb;
+  border: 1px solid #e84fe0;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+.cover-pop a { color: #000; text-decoration: none; }
+.cover-pop a:hover, .cover-pop a:focus-visible { color: #e3548e; text-decoration: underline; }
+.cover-wrap:hover .cover-pop,
+.cover-wrap:focus-within .cover-pop { display: block; }
+
+/* Touch screens: no hover, so show the subject list under each notebook. */
+@media (hover: none) {
+  .cover-pop { display: block; position: static; margin-top: -40px; margin-left: 24px; }
+}
+
+/* ---------- Open notebook ---------- */
+.nb-header { padding: 0 0 56px; }
+.nb-header .curr-title { margin: 0; padding-right: 240px; }
+
+.notebook {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  padding: 76px 0 36px 185px;
+  margin-left: -24px;
+  background: linear-gradient(to right,
+      var(--right) 0, var(--base) 14px, var(--base) 172px,
+      var(--left) 185px, var(--base) 240px,
+      var(--base) calc(100% - 60px), var(--right) 100%);
+}
+
+.paper {
+  min-height: 1100px;
+  padding: 56px 68px 80px;
+  background-color: #faf5f3;
+  /* speckled paper */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.42  0 0 0 0 0.42  -9 0 0 0 6.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+.paper h1 { font-size: 3rem; font-weight: 700; margin: 0 0 18px; line-height: 1.1; }
+.paper h1 + p { font-size: 1.2rem; margin: 0 0 52px; }
+.paper h2, .paper h3 { font-size: 1.2rem; font-weight: 700; margin: 44px 0 4px; }
+.paper p, .paper li { font-size: 1.15rem; line-height: 1.6; }
+.paper ul { margin: 0; padding-left: 36px; list-style: none; }
+.paper ul li::before { content: "•"; margin-left: -22px; margin-right: 10px; }
+.paper a { color: #e3548e; }
+.paper img { max-width: 100%; height: auto; }
+.paper .empty { opacity: .55; }
+
+/* Tabs stick out past the cover's right edge */
+.tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding-top: 66px;
+  margin-right: -22px;
+  align-items: flex-end;
+}
+.tab {
+  display: flex;
+  align-items: center;
+  width: 180px;
+  min-height: 94px;
+  padding: 0 20px 0 26px;
+  background: var(--tab);
+  color: #000;
+  text-decoration: none;
+  font-size: 1.15rem;
+  line-height: 1.25;
+  transition: width .2s ease;
+}
+.tab:hover, .tab:focus-visible { width: 196px; }
+.tab.active { width: 240px; padding-left: 96px; position: relative; z-index: 1; margin-right: 8px; }
+
+/* Narrow screens: tabs become a row of labels above the page */
+@media (max-width: 760px) {
+  .curr-container { padding-top: 120px; }
+  .nb-header .curr-title { padding-right: 0; }
+  .notebook {
+    grid-template-columns: 1fr;
+    padding: 20px 14px 20px 34px;
+    margin: 0 -24px;
+    background: linear-gradient(to right,
+        var(--right) 0, var(--base) 8px, var(--base) 22px,
+        var(--left) 30px, var(--base) 50px,
+        var(--base) calc(100% - 20px), var(--right) 100%);
+  }
+  .tabs {
+    order: -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 0 14px;
+    margin: 0;
+    align-items: stretch;
+  }
+  .tab, .tab:hover, .tab.active { width: auto; min-height: 0; padding: 8px 12px; margin: 0; font-size: .95rem; }
+  .tab.active { outline: 2px solid #000; }
+  .paper { min-height: 60vh; padding: 28px 22px 40px; }
+  .paper h1 { font-size: 2.2rem; }
+}
