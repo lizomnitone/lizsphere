@@ -28,10 +28,10 @@
 // BACK-TO-HOME BUBBLE
 // ============================================================
 const bubbles = [
-  { href: "curriculum.html", label: "Back to Curric.", colors: ["#e04fb8", "#ff8a1f", "#ff8a1f", "#e04fb8"],
-    size: 85, minFontSize: 14, pinned: true, floatDistance: 5 },
-  { href: "index.html", label: "Back to Home", colors: ["#e04fb8", "#ff8a1f", "#ff8a1f", "#e04fb8"],
-    size: 85, minFontSize: 14, pinned: true, floatDistance: 5 },
+  { href: "curriculum.html", label: "Back to\nCurric.", colors: ["#e04fb8", "#f86f6a", "#ff8a1f", "#e04fb8"],
+    size: 150, minFontSize: 44, pinned: true, floatDistance: 5 },
+  { href: "index.html", label: "Back to\nHome", colors: ["#e04fb8", "#f86f6a", "#ff8a1f", "#e04fb8"],
+    size: 150, minFontSize: 44, pinned: true, floatDistance: 5 },
 ];
 
 function randomBetween(min, max) {
@@ -72,6 +72,10 @@ function createBubbleSVG(rawBubble, index) {
   const calculatedFont = Math.round((b.size / 130) * 26);
   const minFont = rawBubble.minFontSize || 14;
   const textFontSize = Math.max(calculatedFont, minFont);
+  // "\n" in a label splits it over several centred lines
+  const lines = b.label.split('\n');
+  const labelLines = lines.map((l, i) =>
+    `<tspan x="125" dy="${i === 0 ? -(lines.length - 1) * 0.55 : 1.1}em">${l}</tspan>`).join('');
 
   const pinnedClass = b.pinned ? ' sphere-wrapper--pinned' : '';
 
@@ -112,7 +116,7 @@ function createBubbleSVG(rawBubble, index) {
             <circle cx="125" cy="125" r="120" fill="url(#highlight-${uid})" />
           </g>
           <text class="bubble-text" x="125" y="125" text-anchor="middle" dominant-baseline="middle"
-                style="font-size: ${textFontSize}px;">${b.label}</text>
+                style="font-size: ${textFontSize}px;">${labelLines}</text>
         </svg>
       </div>
     </a>

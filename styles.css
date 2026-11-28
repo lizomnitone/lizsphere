@@ -453,9 +453,9 @@ body.curriculum {
   font-weight: 400;
   font-size: clamp(1.8rem, 4vw, 2.6rem);
   margin: 0 0 24px;
-  padding-right: 120px; /* room for the pinned bubbles */
+  padding-right: 180px; /* room for the pinned bubbles */
 }
-.curr-sub { font-size: 1.15rem; max-width: 46ch; margin: 0 0 80px; line-height: 1.5; }
+.curr-sub { font-size: 1.25rem; max-width: 62ch; margin: 0 0 80px; line-height: 1.5; }
 
 /* ---------- Covers (home) ---------- */
 .covers {
@@ -505,7 +505,7 @@ body.curriculum {
 
 /* ---------- Open notebook ---------- */
 .nb-header { padding: 0 0 56px; }
-.nb-header .curr-title { margin: 0; padding-right: 240px; }
+.nb-header .curr-title { margin: 0; padding-right: 340px; letter-spacing: .04em; }
 
 .notebook {
   display: grid;
@@ -523,12 +523,12 @@ body.curriculum {
   padding: 56px 68px 80px;
   background-color: #faf5f3;
   /* speckled paper */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 0.45  0 0 0 0 0.42  0 0 0 0 0.42  -9 0 0 0 6.2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.28  0 0 0 0 0.28  30 0 0 0 -21.5'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E");
 }
-.paper h1 { font-size: 3rem; font-weight: 700; margin: 0 0 18px; line-height: 1.1; }
-.paper h1 + p { font-size: 1.2rem; margin: 0 0 52px; }
-.paper h2, .paper h3 { font-size: 1.2rem; font-weight: 700; margin: 44px 0 4px; }
-.paper p, .paper li { font-size: 1.15rem; line-height: 1.6; }
+.paper h1 { font-size: 3.4rem; font-weight: 700; margin: 0 0 18px; line-height: 1.1; }
+.paper h1 + p { font-size: 1.4rem; margin: 0 0 52px; }
+.paper h2, .paper h3 { font-size: 1.4rem; font-weight: 700; margin: 44px 0 4px; }
+.paper p, .paper li { font-size: 1.4rem; line-height: 1.55; }
 .paper ul { margin: 0; padding-left: 36px; list-style: none; }
 .paper ul li::before { content: "•"; margin-left: -22px; margin-right: 10px; }
 .paper a { color: #e3548e; }
@@ -553,7 +553,7 @@ body.curriculum {
   background: var(--tab);
   color: #000;
   text-decoration: none;
-  font-size: 1.15rem;
+  font-size: 1.35rem;
   line-height: 1.25;
   transition: width .2s ease;
 }
@@ -563,6 +563,7 @@ body.curriculum {
 /* Narrow screens: tabs become a row of labels above the page */
 @media (max-width: 760px) {
   .curr-container { padding-top: 120px; }
+  body.curriculum .sphere-svg { width: 92px; height: 92px; }
   .nb-header .curr-title { padding-right: 0; }
   .notebook {
     grid-template-columns: 1fr;
